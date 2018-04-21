@@ -15,6 +15,6 @@
 
 ## Collaborators
 * Clozza, Nicolás
-* de Rienzo, Constanza
+* De Rienzo, Constanza
 * Mamone, Federico
 * Tay, Lucía
