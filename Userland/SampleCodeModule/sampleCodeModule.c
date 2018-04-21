@@ -4,7 +4,8 @@
 #include "mathLib.h"
 #include "plotLib.h"
 
-int main() {
+int main()
+{
 	startShell();
 
 	return 1;

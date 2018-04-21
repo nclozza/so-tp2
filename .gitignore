@@ -45,3 +45,6 @@
 Image/*.img
 Image/*.qcow2
 Image/*.vmdk
+
+#vscode folder
+.vscode

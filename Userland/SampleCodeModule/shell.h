@@ -9,7 +9,7 @@
 #define DR 0
 #define DG 255
 #define DB 255
-#define NULL ((void*)0)
+#define NULL ((void *)0)
 #define helpIns "echo arguments ...          - Prints arguments\n\
 				displayTime                 - Prints date and time to screen\n\
 				setTimeZone timezone        - Set timezone \n\
@@ -41,12 +41,12 @@
 
 void startShell();
 int graph(char input[][MAX_WORD_LENGTH], int words);
-int callFunction(char * buffer);
+int callFunction(char *buffer);
 int echo(char input[][MAX_WORD_LENGTH], int words);
 int clear(int words);
 int overflowGenerator(int n);
-int calculateVerifications(int words, char* input2, char* input3);
-int calculate(char* func, int param1, int param2);
+int calculateVerifications(int words, char *input2, char *input3);
+int calculate(char *func, int param1, int param2);
 extern void opcodeGenerator();
 
 #endif
