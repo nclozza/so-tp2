@@ -32,7 +32,6 @@
 *.x86_64
 *.hex
 *.bin
-*.sh
 
 # Debug files
 *.dSYM/
