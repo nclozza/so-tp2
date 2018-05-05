@@ -30,7 +30,7 @@ mutex_t* mutex_init(char *name)
 	return newMutex;
 }
 
-void mutex_lock(mutex_t * mut)
+int mutex_lock(mutex_t * mut)
 {
     if(mut->value == 1)
     {
@@ -40,12 +40,14 @@ void mutex_lock(mutex_t * mut)
 	{
 		//TODO: SCHEDULER REMOVES	
 	}
+	return 0;
 }
 
-void mutex_unlock(mutex_t * mut)
+int mutex_unlock(mutex_t * mut)
 {
     //TODO: SCHEDULER ADDS
 	mut->value++;
+	return mut->value;
 }
 
 int mutexListSize()
