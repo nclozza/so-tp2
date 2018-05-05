@@ -8,10 +8,17 @@ void givenARequestedPage();
 void whenPageIsReleased();
 void thenPageIsInsertedInStack();
 void thenIndexInStackDecreases();
+void whenAStackPageIsRequested();
+void thenACorrectStackPageAddressIsReturned();
+void givenARequestedStackPage();
+void whenStackPageIsReleased();
+void thenStackPageIsInsertedInStack();
 
 
 uint64_t requestedPage = 0; 
 uint64_t requestedPage2 = 0; 
+uint64_t requestedStackPage = 0;
+uint64_t requestedStackPage2 = 0;
 int index = 0;
 
 void testAllocatePageWhenStackEmpty()
@@ -30,17 +37,51 @@ void testReleasePage()
 void testAllocatePageWhenStackNotEmpty()
 {
 	whenAPageIsRequested();
-	thenACorrectPageAddressIsReturned();
-	thenIndexInStackDecreases();
+	thenACorrectPageAddressIsReturned();	
 }
 
-
+void testAllocateStackPage()
+{
+	whenAStackPageIsRequested();
+	thenACorrectStackPageAddressIsReturned();
+}
+void testReleaseStackPage(){
+	givenARequestedStackPage();
+	whenStackPageIsReleased();
+	thenStackPageIsInsertedInStack();
+}
+void whenAStackPageIsRequested()
+{
+	requestedStackPage = getStackPage();
+}
+void givenARequestedStackPage()
+{
+	requestedStackPage2 = getStackPage();
+}
+void whenStackPageIsReleased()
+{
+	releaseStackPage(requestedStackPage2);
+}
+void thenStackPageIsInsertedInStack()
+{
+	if(requestedStackPage2 == peekAvailableStackPage())
+	{
+		printString("Ok\n",0,255,0);
+	}
+	else
+	{
+		printString("Stack page not inserted in stack\n",0,0,255);
+	}
+}
 void whenAPageIsRequested()
 {
 	index = getIndexInStack();
 	requestedPage = getAvailablePage();
 }
-
+void thenACorrectStackPageAddressIsReturned()
+{
+	checkAreNotEqual(requestedStackPage,0);
+}
 void thenACorrectPageAddressIsReturned()
 {
 	checkAreNotEqual(requestedPage,0);
@@ -66,7 +107,8 @@ void thenPageIsInsertedInStack()
 }
 void thenIndexInStackDecreases()
 {
-	checkAreEqual(index-1,getIndexInStack());
+	index--;
+	checkAreEqual(index,getIndexInStack());
 }
 
 void runPageAllocatorTests()
@@ -79,5 +121,9 @@ void runPageAllocatorTests()
 	testReleasePage();
 	printString("Testing allocating page when stack is not empty...\n",128,128,128);
 	testAllocatePageWhenStackNotEmpty();
+	printString("Testing allocating 1 mega page...\n",128,128,128);
+	testAllocateStackPage();
+	printString("Testing releasing 1 mega page...\n",128,128,128);
+	testReleaseStackPage();
 	printString("Finished testing\n",128,128,128);
 }

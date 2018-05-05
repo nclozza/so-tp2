@@ -10,5 +10,11 @@ void testAllocatePageWhenStackEmpty();
 void testReleasePage();
 void testAllocatePageWhenStackNotEmpty();
 void runPageAllocatorTests();
+void whenAStackPageIsRequested();
+void thenACorrectStackPageAddressIsReturned();
+void givenARequestedStackPage();
+void whenStackPageIsReleased();
+void thenStackPageIsInsertedInStack();
+void testReleaseStackPage();
 
 #endif

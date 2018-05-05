@@ -1,33 +1,89 @@
 #include <stdint.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include "videoDriver.h"
-//#include "pageallocator.h"
-
-#define AVOID_BSS 1
-#define KERNEL 0x0
-#define KERNEL_HEAP 0x200000
-#define KERNEL_STACK 0x400000
-#define SYSTEM_RAM_ADDRESS 0x5020
-#define MB 0x100000
-#define PAGESIZE 0x1000
-#define PAGEQTY 1024 
+#include "pageallocator.h"
 
 static uint64_t size = 1;
+
+static uint64_t pageStack[PAGE_QTY];
 static uint64_t availablePage = 0;
-static uint64_t pageStack[PAGEQTY];
 static int indexInStack = 0;
+
+static uint64_t megasStack[MAX_PROCESSES];
+static uint64_t stackPageIndex = 0;
+static uint64_t availableStackPage = 0;
+
+static uint64_t reserved = 0;
+static uint64_t reservedStack = 0;
+
 extern uint8_t endOfKernel;
+
+
+void restorePages();
 
 void initializePageAllocator()
 {	
 	uint64_t ram = *((uint64_t*)SYSTEM_RAM_ADDRESS);
-	size = (ram * MB)/ PAGESIZE;	
-	uint64_t reserved = (uint64_t)&endOfKernel / (PAGESIZE);
-	availablePage = (reserved + 1);
-
+	size = (ram * MB)/ PAGE_SIZE;	
+	reserved = (uint64_t)&endOfKernel / (PAGE_SIZE);
+	availablePage = (reserved + 1);	
+	reservedStack = (availablePage + PAGE_QTY + 1) * PAGE_SIZE;	
+	availableStackPage = reservedStack;
 }
 
+uint64_t getStackPage()
+{
+	if(stackPageIndex != 0)
+	{
+		uint64_t stackpage = megasStack[stackPageIndex];
+		stackPageIndex--;
+		return stackpage;
+	}
+	else if(availableStackPage < (MAX_PROCESSES+reservedStack))
+	{
+		uint64_t stackpage = availableStackPage * MB;
+		availableStackPage++;
+		return stackpage;
+	}
+	else
+	{
+		//out of 1mb pages 
+		printString("OUT OF MEMORY\n",0, 155, 255);
+		while(1);
+	}
+}
+
+void releaseStackPage(uint64_t stackpage)
+{
+	stackPageIndex++;	
+	if(stackPageIndex < MAX_PROCESSES)
+	{		
+		megasStack[stackPageIndex] = stackpage;
+	}
+	else
+	{		
+		//restoreStackPages();		
+	}
+}
+
+uint64_t peekAvailableStackPage()
+{
+	if(stackPageIndex != 0)
+	{
+		uint64_t stackpage = megasStack[stackPageIndex];	
+		return stackpage;
+	}
+	else if( availableStackPage < (MAX_PROCESSES+reservedStack))
+	{
+		uint64_t stackpage = availableStackPage * MB;		
+		return stackpage;
+	}
+	else
+	{
+		printString("OUT OF MEMORY\n",0, 155, 255);
+		while(1);
+	}
+}
 uint64_t getAvailablePage()
 {
 	if(indexInStack != 0)
@@ -36,14 +92,15 @@ uint64_t getAvailablePage()
 		indexInStack--;
 		return page;
 	}
-	else if( availablePage < size)
+	else if( availablePage < (PAGE_QTY+reserved+1))
 	{
-		uint64_t page = availablePage * PAGESIZE;
+		uint64_t page = availablePage * PAGE_SIZE;
 		availablePage++;
 		return page;
 	}
 	else
 	{
+		//out of 4k pages 
 		printString("OUT OF MEMORY\n",0, 155, 255);
 		while(1);
 	}
@@ -53,12 +110,12 @@ uint64_t peekAvailablePage()
 {	
 	if(indexInStack != 0)
 	{
-		uint64_t page = pageStack[indexInStack];		
+		uint64_t page = pageStack[indexInStack];	
 		return page;
 	}
-	else if( availablePage < size)
+	else if( availablePage < (PAGE_QTY+reserved+1))
 	{
-		uint64_t page = availablePage * PAGESIZE;		
+		uint64_t page = availablePage * PAGE_SIZE;		
 		return page;
 	}
 	else
@@ -70,17 +127,26 @@ uint64_t peekAvailablePage()
 void releasePage(uint64_t page)
 {	
 	indexInStack++;	
-	if(indexInStack < PAGEQTY)
+	if(indexInStack < PAGE_QTY)
 	{		
 		pageStack[indexInStack] = page;
 	}
 	else
-	{
-		printString("OUT OF PAGESTACK SPACE\n",0, 155, 255);
-		while(1);
+	{		
+		restorePages();		
 	}
+}
+
+void restorePages()
+{
+	// indexInStack = 0;
+	// availablePage = reserved + 1;
 }
 int getIndexInStack()
 {
 	return indexInStack;
+}
+uint64_t getAvailableIndex()
+{
+	return availablePage;
 }

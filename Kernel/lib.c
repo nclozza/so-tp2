@@ -48,3 +48,29 @@ void *memcpy(void *destination, const void *source, uint64_t length)
 
 	return destination;
 }
+
+int strcmp(const char *s1, const char *s2)
+{
+	while (*s1 && (*s1 == *s2))
+		s1++, s2++;
+	return *(const unsigned char *)s1 - *(const unsigned char *)s2;
+}
+
+int strlen(const char *s)
+{
+	const char *p = s;
+	while(*s)
+		++s;
+	return s - p;
+}
+
+void strcpy(char* d, const char* s)
+{	
+	while(*s != '\0')
+	{
+		*d = *s;
+		d++;
+		s++;
+	}
+	*d = '\0';	
+}
