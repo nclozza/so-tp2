@@ -14,9 +14,8 @@ void givenARequestedStackPage();
 void whenStackPageIsReleased();
 void thenStackPageIsInsertedInStack();
 
-
-uint64_t requestedPage = 0; 
-uint64_t requestedPage2 = 0; 
+uint64_t requestedPage = 0;
+uint64_t requestedPage2 = 0;
 uint64_t requestedStackPage = 0;
 uint64_t requestedStackPage2 = 0;
 int index = 0;
@@ -37,7 +36,7 @@ void testReleasePage()
 void testAllocatePageWhenStackNotEmpty()
 {
 	whenAPageIsRequested();
-	thenACorrectPageAddressIsReturned();	
+	thenACorrectPageAddressIsReturned();
 }
 
 void testAllocateStackPage()
@@ -45,7 +44,8 @@ void testAllocateStackPage()
 	whenAStackPageIsRequested();
 	thenACorrectStackPageAddressIsReturned();
 }
-void testReleaseStackPage(){
+void testReleaseStackPage()
+{
 	givenARequestedStackPage();
 	whenStackPageIsReleased();
 	thenStackPageIsInsertedInStack();
@@ -64,13 +64,13 @@ void whenStackPageIsReleased()
 }
 void thenStackPageIsInsertedInStack()
 {
-	if(requestedStackPage2 == peekAvailableStackPage())
+	if (requestedStackPage2 == peekAvailableStackPage())
 	{
-		printString("Ok\n",0,255,0);
+		printString("Ok\n", 0, 255, 0);
 	}
 	else
 	{
-		printString("Stack page not inserted in stack\n",0,0,255);
+		printString("Stack page not inserted in stack\n", 0, 0, 255);
 	}
 }
 void whenAPageIsRequested()
@@ -80,11 +80,11 @@ void whenAPageIsRequested()
 }
 void thenACorrectStackPageAddressIsReturned()
 {
-	checkAreNotEqual(requestedStackPage,0);
+	checkAreNotEqual(requestedStackPage, 0);
 }
 void thenACorrectPageAddressIsReturned()
 {
-	checkAreNotEqual(requestedPage,0);
+	checkAreNotEqual(requestedPage, 0);
 }
 void givenARequestedPage()
 {
@@ -96,34 +96,34 @@ void whenPageIsReleased()
 }
 void thenPageIsInsertedInStack()
 {
-	if(requestedPage2 == peekAvailablePage())
+	if (requestedPage2 == peekAvailablePage())
 	{
-		printString("Ok\n",0,255,0);
+		printString("Ok\n", 0, 255, 0);
 	}
 	else
 	{
-		printString("Page not inserted in stack\n",0,0,255);
+		printString("Page not inserted in stack\n", 0, 0, 255);
 	}
 }
 void thenIndexInStackDecreases()
 {
 	index--;
-	checkAreEqual(index,getIndexInStack());
+	checkAreEqual(index, getIndexInStack());
 }
 
 void runPageAllocatorTests()
 {
 	initializePageAllocator();
-	printString("Running tests...\n",128,128,128);
-	printString("Testing allocating page when stack is empty...\n",128,128,128);
+	printString("Running tests...\n", 128, 128, 128);
+	printString("Testing allocating page when stack is empty...\n", 128, 128, 128);
 	testAllocatePageWhenStackEmpty();
-	printString("Testing release of page...\n",128,128,128);
+	printString("Testing release of page...\n", 128, 128, 128);
 	testReleasePage();
-	printString("Testing allocating page when stack is not empty...\n",128,128,128);
+	printString("Testing allocating page when stack is not empty...\n", 128, 128, 128);
 	testAllocatePageWhenStackNotEmpty();
-	printString("Testing allocating 1 mega page...\n",128,128,128);
+	printString("Testing allocating 1 mega page...\n", 128, 128, 128);
 	testAllocateStackPage();
-	printString("Testing releasing 1 mega page...\n",128,128,128);
+	printString("Testing releasing 1 mega page...\n", 128, 128, 128);
 	testReleaseStackPage();
-	printString("Finished testing\n",128,128,128);
+	printString("Finished testing\n", 128, 128, 128);
 }

@@ -59,18 +59,18 @@ int strcmp(const char *s1, const char *s2)
 int strlen(const char *s)
 {
 	const char *p = s;
-	while(*s)
+	while (*s)
 		++s;
 	return s - p;
 }
 
-void strcpy(char* d, const char* s)
-{	
-	while(*s != '\0')
+void strcpy(char *d, const char *s)
+{
+	while (*s != '\0')
 	{
 		*d = *s;
 		d++;
 		s++;
 	}
-	*d = '\0';	
+	*d = '\0';
 }

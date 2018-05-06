@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "videoDriver.h"
 
-char* name;
+char *name;
 semADT openedSemaphore = NULL;
 semADT testingSemaphore = NULL;
 int testingSemaphoreValue;
@@ -52,7 +52,6 @@ void testSemaphoreIsClosed()
 	thenSizeOfSemaphoreListDecreases();
 }
 
-
 void givenAName()
 {
 	name = "SemNameForTest";
@@ -65,12 +64,12 @@ void whenNameIsPassedToOpen()
 
 void thenSemaphoreIsReturned()
 {
-	checkIsNotNull((void*)openedSemaphore);
+	checkIsNotNull((void *)openedSemaphore);
 }
 
 void givenASemaphore()
 {
-	if(testingSemaphore ==NULL)
+	if (testingSemaphore == NULL)
 		testingSemaphore = openedSemaphore;
 }
 
@@ -87,26 +86,26 @@ void thenValueOfSemaphoreIncreases()
 void thenSizeOfSemaphoreListRemainsTheSame()
 {
 	size = semaphoresListSize();
-	checkSizeOfSemaphoreList(listSize,size);	
+	checkSizeOfSemaphoreList(listSize, size);
 }
 
 void thenSizeOfSemaphoreListIncreases()
 {
 	size = semaphoresListSize();
 	listSize++;
-	checkSizeOfSemaphoreList(listSize,size);
+	checkSizeOfSemaphoreList(listSize, size);
 }
 
 void whenSemaphoreIsClosed()
 {
-	if(testingSemaphore!=NULL)
+	if (testingSemaphore != NULL)
 		sem_close(testingSemaphore);
 }
 void thenSizeOfSemaphoreListDecreases()
 {
 	listSize--;
 	size = semaphoresListSize();
-	checkSizeOfSemaphoreList(listSize,size);
+	checkSizeOfSemaphoreList(listSize, size);
 }
 
 void finishedTesting()
@@ -117,17 +116,17 @@ void finishedTesting()
 
 void runSemaphoreTests()
 {
-	printString("Testing semaphore is created...\n",128,128,128);
+	printString("Testing semaphore is created...\n", 128, 128, 128);
 	testSemaphoreIsCreated();
 
-	printString("Testing semaphore value increases when posted...\n",128,128,128);
+	printString("Testing semaphore value increases when posted...\n", 128, 128, 128);
 	testSemaphoreValueIncreasesWhenPostedTo();
 
-	printString("Testing if semaphore already exists, none is created\n",128,128,128);
+	printString("Testing if semaphore already exists, none is created\n", 128, 128, 128);
 	testIfSemaphoreAlreadyCreatedDoesNotCreateNewOne();
 
-	printString("Testing closing a semaphore...\n",128,128,128);
+	printString("Testing closing a semaphore...\n", 128, 128, 128);
 	testSemaphoreIsClosed();
 
-	finishedTesting();	
+	finishedTesting();
 }

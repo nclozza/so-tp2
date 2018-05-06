@@ -5,7 +5,7 @@
 #include "memorymanager.h"
 uint64_t mallocMemory(uint64_t size)
 {
-  void * page = (void*)malloc(size);
+  void *page = (void *)malloc(size);
   //add Process to scheduler
   return (uint64_t)page;
 }
@@ -13,10 +13,8 @@ uint64_t mallocMemory(uint64_t size)
 void freeMemory(uint64_t page)
 {
   //remove process from scheduler
-  free((void*)page);
+  free((void *)page);
 }
-
-
 
 uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9)
 {

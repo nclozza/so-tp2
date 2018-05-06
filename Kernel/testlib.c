@@ -4,10 +4,9 @@
 #include <stdint.h>
 #include "videoDriver.h"
 
-
-void checkIsNotNull(void* value)
+void checkIsNotNull(void *value)
 {
-	if(value == NULL)
+	if (value == NULL)
 	{
 		fail();
 	}
@@ -16,9 +15,9 @@ void checkIsNotNull(void* value)
 		ok();
 	}
 }
-void checkIsNull(void* value)
+void checkIsNull(void *value)
 {
-	if(value != NULL)
+	if (value != NULL)
 	{
 		fail();
 	}
@@ -30,7 +29,7 @@ void checkIsNull(void* value)
 
 void checkAreNotEqual(uint64_t value1, uint64_t value2)
 {
-	if(value1 == value2)
+	if (value1 == value2)
 	{
 		fail();
 	}
@@ -41,7 +40,7 @@ void checkAreNotEqual(uint64_t value1, uint64_t value2)
 }
 void checkAreEqual(uint64_t value1, uint64_t value2)
 {
-	if(value1 != value2)
+	if (value1 != value2)
 	{
 		fail();
 	}
@@ -53,7 +52,7 @@ void checkAreEqual(uint64_t value1, uint64_t value2)
 
 void checkIsNotZero(int value)
 {
-	if(value == 0)
+	if (value == 0)
 	{
 		fail();
 	}
@@ -65,7 +64,7 @@ void checkIsNotZero(int value)
 
 void checkSizeOfSemaphoreList(int mysize, int size)
 {
-	if(size != mysize)
+	if (size != mysize)
 	{
 		fail();
 	}
@@ -76,10 +75,10 @@ void checkSizeOfSemaphoreList(int mysize, int size)
 }
 void ok()
 {
-	printString("Ok\n",0,255,0);
+	printString("Ok\n", 0, 255, 0);
 }
 
-void fail(char* withError)
+void fail(char *withError)
 {
-	printString("Fail\n",0,0,255);
+	printString("Fail\n", 0, 0, 255);
 }

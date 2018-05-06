@@ -10,7 +10,7 @@
 /*Stacks de 1MB*/
 #define MB 0x100000
 
-/*Size of 4k-pages stack*/ 
+/*Size of 4k-pages stack*/
 #define PAGE_QTY 255
 
 #define DATA_ADDRESS 0x500000
