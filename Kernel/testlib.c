@@ -27,6 +27,18 @@ void checkIsNull(void *value)
 	}
 }
 
+void checkIsZero(int value)
+{
+	if (value == 0)
+	{
+		ok();
+	}
+	else
+	{
+		fail();
+	}
+}
+
 void checkAreNotEqual(uint64_t value1, uint64_t value2)
 {
 	if (value1 == value2)
