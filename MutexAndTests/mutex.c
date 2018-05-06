@@ -1,8 +1,7 @@
 #include "mutex.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
+#include <stdint.h>
+#include "memorymanager.h"
+#include "lib.h"
 
 static mutexADT* mutex;
 static int id = 0;
@@ -18,14 +17,14 @@ mutex_t* mutex_init(char *name)
 			return mutex[i];
 		}
 	}
-	mutexADT newMutex = malloc(sizeof(mutex_t));
-	newMutex->name = malloc(strlen(name)+1);
+	mutexADT newMutex = (mutexADT)malloc(sizeof(mutex_t));
+	newMutex->name = (char*)malloc(strlen(name)+1);
 	strcpy(newMutex->name,name); 
 	newMutex->value = 1;
 	newMutex->id = id;
 	id++;
 	numberOfMutexes++;
-	mutex = realloc(mutex,numberOfMutexes * sizeof(mutexADT));
+	mutex = (mutexADT)malloc(numberOfMutexes * sizeof(mutexADT));
 	mutex[numberOfMutexes - 1] = newMutex;
 	return newMutex;
 }
@@ -45,8 +44,12 @@ int mutex_lock(mutex_t * mut)
 
 int mutex_unlock(mutex_t * mut)
 {
-    //TODO: SCHEDULER ADDS
-	mut->value++;
+	if(mut->value == 0)
+	{
+    	//TODO: SCHEDULER ADDS
+
+		mut->value++;
+	}
 	return mut->value;
 }
 
