@@ -21,6 +21,7 @@ void sysWriteChar(char ch, unsigned char color_blue, unsigned char color_green, 
 void sysGetChar(char *ch);
 void copy(char *copy, char *original, int len);
 int subStrleng(const char *s, const char c);
-void sysPrintFloat(float num, int B, int G, int R);
+uint64_t sysMalloc(uint64_t bytes);
+void sysFree(uint64_t address);
 
 #endif
