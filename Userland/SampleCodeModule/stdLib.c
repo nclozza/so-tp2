@@ -124,3 +124,13 @@ void sysPaintPixel(int x, int y, char B, char G, char R)
 {
   sysCall(5, x, y, B, G, R);
 }
+
+uint64_t sysMalloc(uint64_t bytes)
+{  
+  return sysCall(6,bytes,0,0,0,0);
+}
+
+void sysFree(uint64_t address)
+{
+  sysCall(7,address,0,0,0,0);
+}
