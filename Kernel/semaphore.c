@@ -12,14 +12,14 @@ sem_t *sem_open(char *name)
 	int i;
 	for (i = 0; i < numberOfSemaphores; i++)
 	{
-		if (strcmp(name, semaphores[i]->name) == 0)
+		if (strcmpKernel(name, semaphores[i]->name) == 0)
 		{
 			return semaphores[i];
 		}
 	}
 	semADT newSemaphore = (semADT)malloc(sizeof(sem_t));
-	newSemaphore->name = (char *)malloc(strlen(name) + 1);
-	strcpy(newSemaphore->name, name);
+	newSemaphore->name = (char *)malloc(strlenKernel(name) + 1);
+	strcpyKernel(newSemaphore->name, name);
 	newSemaphore->value = 0;
 	newSemaphore->id = id;
 	id++;
@@ -28,6 +28,7 @@ sem_t *sem_open(char *name)
 	semaphores[numberOfSemaphores - 1] = newSemaphore;
 	return newSemaphore;
 }
+
 
 int sem_post(sem_t *sem)
 {

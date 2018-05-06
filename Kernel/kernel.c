@@ -6,8 +6,8 @@
 #include "videoDriver.h"
 #include "idtLoader.h"
 #include "stdio.h"
-#include "pageAllocatorTest.h"
-#include "semaphoreTests.h"
+#include "tests.h"
+
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -55,8 +55,7 @@ int main()
 
 	void (*module)();
 	module = sampleCodeModuleAddress;
-	runPageAllocatorTests();
-	runSemaphoreTests();
+	runTests();
 	module();
 
 	return 0;

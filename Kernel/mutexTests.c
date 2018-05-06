@@ -1,17 +1,18 @@
 #include "mutex.h"
-#include "mutexTestLib.h"
+#include "testlib.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "videoDriver.h"
 
-char* name;
+char* mutexName;
 mutexADT openedMutex = NULL;
 mutexADT testingMutex = NULL;
 int testingMutexValue;
-int listSize = 0;
-int size = 0;
+int listSizeMutex = 0;
+int sizeAux = 0;
 
-void givenAName();
-void whenNameIsPassedToOpen();
+void givenAMutexName();
+void whenMutexIsPassedToOpen();
 void thenMutexIsReturned();
 void givenAMutex();
 void givenAMutexLocked();
@@ -26,8 +27,8 @@ void thenSizeOfMutexListDecreases();
 
 void testMutexIsCreated()
 {
-	givenAName();
-	whenNameIsPassedToOpen();
+	givenAMutexName();
+	whenMutexIsPassedToOpen();
 	thenMutexIsReturned();
 	thenSizeOfMutexListIncreases();
 }
@@ -48,8 +49,8 @@ void testMutexValueIncreasesWhenUnlock()
 
 void testIfMutexAlreadyCreatedDoesNotCreateNewOne()
 {
-	givenAName();
-	whenNameIsPassedToOpen();
+	givenAMutexName();
+	whenMutexIsPassedToOpen();
 	thenSizeOfMutexListRemainsTheSame();
 	thenMutexIsReturned();
 }
@@ -62,14 +63,14 @@ void testMutexIsClosed()
 }
 
 
-void givenAName()
+void givenAMutexName()
 {
-	name = "MutNameForTest";
+	mutexName = "MutNameForTest";
 }
 
-void whenNameIsPassedToOpen()
+void whenMutexIsPassedToOpen()
 {
-	openedMutex = mutex_init(name);
+	openedMutex = mutex_init(mutexName);
 }
 
 void thenMutexIsReturned()
@@ -110,15 +111,15 @@ void thenValueOfMutexIncreases()
 
 void thenSizeOfMutexListRemainsTheSame()
 {
-	size = mutexListSize();
-	checkSizeOfMutexList(listSize,size);	
+	sizeAux = mutexListSize();
+	checkSizeOfSemaphoreList(listSizeMutex,sizeAux);	
 }
 
 void thenSizeOfMutexListIncreases()
 {
-	size = mutexListSize();
-	listSize++;
-	checkSizeOfMutexList(listSize,size);
+	sizeAux = mutexListSize();
+	listSizeMutex++;
+	checkSizeOfSemaphoreList(listSizeMutex,sizeAux);
 }
 
 void whenMutexIsClosed()
@@ -128,35 +129,33 @@ void whenMutexIsClosed()
 }
 void thenSizeOfMutexListDecreases()
 {
-	listSize--;
-	size = mutexListSize();
-	checkSizeOfMutexList(listSize,size);
+	listSizeMutex--;
+	sizeAux = mutexListSize();
+	checkSizeOfSemaphoreList(listSizeMutex,sizeAux);
 }
 
-void finishedTesting()
+void finishedMutexTesting()
 {
 	mutex_close(openedMutex);
 	freeMutexList();
 }
 
-int main(int argc, char const *argv[])
+void runMutexTests()
 {
-	printf("Testing Mutex is created...\n");
+	printString("Testing Mutex is created...\n", 128, 128, 128);
 	testMutexIsCreated();
 
-	printf("Testing Mutex value decreases when lock...\n");
+	printString("Testing Mutex value decreases when lock...\n", 128, 128, 128);
 	testMutexValueDecreasesWhenLock();
 
-	printf("Testing Mutex value increases when unlock...\n");
+	printString("Testing Mutex value increases when unlock...\n", 128, 128, 128);
 	testMutexValueIncreasesWhenUnlock();
 
-	printf("Testing if Mutex already exists, none is created\n");
+	printString("Testing if Mutex already exists, none is created\n", 128, 128, 128);
 	testIfMutexAlreadyCreatedDoesNotCreateNewOne();
 
-	printf("Testing closing a Mutex...\n");
+	printString("Testing closing a Mutex...\n", 128, 128, 128);
 	testMutexIsClosed();
 
-	finishedTesting();
-
-	return 0;
+	finishedMutexTesting();
 }

@@ -1,5 +1,5 @@
-#include "mutex.h"
 #include <stdint.h>
+#include "mutex.h"
 #include "memorymanager.h"
 #include "lib.h"
 
@@ -12,19 +12,19 @@ mutex_t* mutex_init(char *name)
     int i;
 	for (i = 0; i < numberOfMutexes; i++)
 	{
-		if(strcmp(name,mutex[i]->name)==0)
+		if(strcmpKernel(name,mutex[i]->name)==0)
 		{			
 			return mutex[i];
 		}
 	}
 	mutexADT newMutex = (mutexADT)malloc(sizeof(mutex_t));
-	newMutex->name = (char*)malloc(strlen(name)+1);
-	strcpy(newMutex->name,name); 
+	newMutex->name = (char*)malloc(strlenKernel(name)+1);
+	strcpyKernel(newMutex->name,name); 
 	newMutex->value = 1;
 	newMutex->id = id;
 	id++;
 	numberOfMutexes++;
-	mutex = (mutexADT)malloc(numberOfMutexes * sizeof(mutexADT));
+	mutex = (mutexADT*)malloc(numberOfMutexes * sizeof(mutexADT));
 	mutex[numberOfMutexes - 1] = newMutex;
 	return newMutex;
 }
