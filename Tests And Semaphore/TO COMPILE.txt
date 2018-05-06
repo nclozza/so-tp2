@@ -1,4 +1,0 @@
-TO COMPILE:
-
-gcc -Wall -pedantic -Werror -o semaphore.o -c semaphore.c
-gcc -Wall -pedantic -Werror -o test semaphoreTests.c testlib.c semaphore.o
