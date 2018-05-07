@@ -23,5 +23,7 @@ void copy(char *copy, char *original, int len);
 int subStrleng(const char *s, const char c);
 uint64_t sysMalloc(uint64_t bytes);
 void sysFree(uint64_t address);
+void sysUp(uint64_t mut);
+void sysDown(uint64_t mut);
 
 #endif

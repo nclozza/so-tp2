@@ -134,3 +134,13 @@ void sysFree(uint64_t address)
 {
   sysCall(7,address,0,0,0,0);
 }
+
+void sysUp(uint64_t mut)
+{
+  sysCall(8,mut,0,0,0,0);
+}
+
+void sysDown(uint64_t mut)
+{
+  sysCall(9,mut,0,0,0,0);
+}
