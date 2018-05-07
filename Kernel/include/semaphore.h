@@ -10,11 +10,11 @@ typedef struct sem_t
 
 typedef struct sem_t *semADT;
 
-sem_t *sem_open(char *name);
-int sem_post(sem_t *sem);
-int sem_wait(sem_t *sem);
+int sem_open(char *name);
+int sem_post(int id);
+int sem_wait(int id);
 int semaphoresListSize();
-int sem_close(sem_t *sem);
+int sem_close(int id);
 void freeSemaphoresList();
 
 #endif

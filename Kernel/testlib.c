@@ -74,6 +74,18 @@ void checkIsNotZero(int value)
 	}
 }
 
+void checkIsNotMinusOne(int value)
+{
+	if(value == -1)
+	{
+		fail();
+	}
+	else
+	{
+		ok();
+	}
+}
+
 void checkSizeOfSemaphoreList(int mysize, int size)
 {
 	if (size != mysize)

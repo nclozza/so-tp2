@@ -1,9 +1,10 @@
+#include <stdint.h>
 #include "shell.h"
 #include "stdLib.h"
 #include "stdio.h"
 #include "plotLib.h"
 #include "mathLib.h"
-
+#include "semaphoreUserlandTests.h"
 static int R = DR;
 static int G = DG;
 static int B = DB;
@@ -17,7 +18,15 @@ void startShell()
 	char lastString[MAX_WORD_LENGTH] = {0};
 	int counter = 0;
 	char ch;
-
+	// int* page = (int*)sysMalloc(100);
+	// sysPrintInt(*page,0,155,255);
+	// sysPrintString("\n",CB,CG,CR);
+	// *page = 12;
+	// sysPrintInt(*page,0,155,255);
+	// sysPrintString("\n",CB,CG,CR);
+	// sysFree(page);
+	// sysPrintInt(*page,0,155,255);
+	//runUserlandSemaphoreTests();
 	sysPrintString("$> ", CB, CG, CR);
 
 	while (isRunning)
@@ -79,7 +88,14 @@ int callFunction(char *buffer)
 	int words = 0;
 	char input[MAX_WORDS][MAX_WORD_LENGTH] = {{0}};
 	char *aux = buffer;
-
+	int foreground = 0;
+	if(*aux=='&')
+	{
+		foreground = 1;
+		aux++;
+	}
+	if(foreground==1)
+		sysPrintString("foreground true\n",0,155,255);
 	while (*aux != '\0' && wordLength < MAX_WORD_LENGTH)
 	{
 		if (*aux == ' ' || *aux == '\n')
@@ -99,10 +115,12 @@ int callFunction(char *buffer)
 
 	if (strcmp(input[0], "echo") == 0)
 	{
-		return echo(input, words);
+		sysPrintString("called echo\n",0,155,255);
+		//call echo.c con input, words
 	}
 	else if (strcmp(input[0], "setFontColor") == 0)
 	{
+		sysPrintString("called setFontColor\n",0,155,255);
 		if (words != 2)
 		{
 			sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
@@ -144,7 +162,8 @@ int callFunction(char *buffer)
 	}
 	else if (strcmp(input[0], "clear") == 0)
 	{
-		return clear(words);
+		sysPrintString("called clear\n",0,155,255);
+		//call clear.c con words
 	}
 	else if (strcmp(input[0], "opcode") == 0)
 	{
@@ -158,79 +177,13 @@ int callFunction(char *buffer)
 	}
 	else if (strcmp(input[0], "calculate") == 0)
 	{
-		int ver = calculateVerifications(words, input[2], input[3]);
-
-		if (ver)
-		{
-			int input2 = toInt(input[2]);
-			int input3 = toInt(input[3]);
-
-			int ans = calculate(input[1], input2, input3);
-
-			sysPrintString("Calculated: ", B, G, R);
-			sysPrintInt(ans, B, G, R);
-			sysPrintString("\n", B, G, R);
-		}
-
-		return 0;
+		sysPrintString("called calculate\n",0,155,255);
+		//call calculate.c con words, input[1], input[2], input[3]
 	}
 	else if (strcmp(input[0], "help") == 0)
 	{
-		if (words > 2)
-		{
-			sysPrintString("No extra parameters for help\n", CB, CG, CR);
-
-			return 1;
-		}
-		if (words == 2)
-		{
-			if (strcmp(input[1], "echo") == 0)
-			{
-				sysPrintString(ECHO_INS, B, G, R);
-			}
-			else if (strcmp(input[1], "displayTime") == 0)
-			{
-				sysPrintString(DISPLAY_TIME_INS, B, G, R);
-			}
-			else if (strcmp(input[1], "setTimeZone") == 0)
-			{
-				sysPrintString(SET_TIME_ZONE_INS, B, G, R);
-			}
-			else if (strcmp(input[1], "setFontColor") == 0)
-			{
-				sysPrintString(SET_FONT_COLOR_INS, B, G, R);
-			}
-			else if (strcmp(input[1], "clear") == 0)
-			{
-				sysPrintString(CLEAR_INS, B, G, R);
-			}
-			else if (strcmp(input[1], "calculate") == 0)
-			{
-				sysPrintString(CALCULATE_INS, B, G, R);
-			}
-			else if (strcmp(input[1], "exit") == 0)
-			{
-				sysPrintString(EXIT_INS, B, G, R);
-			}
-			else if (strcmp(input[1], "plot") == 0)
-			{
-				sysPrintString(PLOT_INS, B, G, R);
-			}
-			else if (strcmp(input[1], "opcode") == 0)
-			{
-				sysPrintString(OPCODE_INS, B, G, R);
-			}
-			else
-			{
-				sysPrintString("Not a valid command\n", CB, CG, CR);
-			}
-		}
-		else
-		{
-			sysPrintString(helpIns, B, G, R);
-		}
-
-		return 0;
+		sysPrintString("called help\n",0,155,255);
+		//call help.c con words, input[1]
 	}
 	else if (strcmp(input[0], "exit") == 0)
 	{
@@ -249,59 +202,20 @@ int callFunction(char *buffer)
 	}
 	else if (strcmp(input[0], "plot") == 0)
 	{
-		return graph(input, words);
+		sysPrintString("called plot\n",0,155,255);
+		//call plot.c con input, words
 	}
 	else if (strcmp(input[0], "displayTime") == 0)
 	{
-		if (words != 1)
-		{
-			sysPrintString("Wrong parameters: displayTime\n", CB, CG, CR);
-
-			return 1;
-		}
-		int timeBuff[6];
-
-		sysGetTime(timeBuff);
-		sysPrintInt((timeBuff[2] + timeZone) % 24, B, G, R);
-		sysPrintString(":", B, G, R);
-		if (timeBuff[1] / 10 == 0)
-			sysPrintString("0", B, G, R);
-		sysPrintInt(timeBuff[1], B, G, R);
-		sysPrintString(":", B, G, R);
-		if (timeBuff[0] / 10 == 0)
-			sysPrintString("0", B, G, R);
-		sysPrintInt(timeBuff[0], B, G, R);
-
-		sysPrintString(" - ", B, G, R);
-		if ((timeBuff[2] + timeZone) / 24 != 0)
-			sysPrintInt(timeBuff[3] + 1, B, G, R);
-		else
-			sysPrintInt(timeBuff[3], B, G, R);
-
-		sysPrintString("/", B, G, R);
-		sysPrintInt(timeBuff[4], B, G, R);
-		sysPrintString("/", B, G, R);
-		sysPrintInt(timeBuff[5], B, G, R);
-		sysPrintString("\n", B, G, R);
-
-		return 0;
+		sysPrintString("called displayTime\n",0,155,255);
+		//call displayTime.c con words, timeZone
 	}
 	else if (strcmp(input[0], "setTimeZone") == 0)
 	{
-		if (words != 2)
-		{
-			sysPrintString("Wrong parameters: setTimeZone timezone\n", CB, CG, CR);
-			return 1;
-		}
-		if (toInt(input[1]) > 12 || toInt(input[1]) < -11)
-		{
-			sysPrintString("Timezone values must be between -11 and +12\n", CB, CG, CR);
-			return 1;
-		}
-
-		timeZone = toInt(input[1]);
-
-		return 0;
+		sysPrintString("called setTimeZone\n",0,155,255);
+		//call setTimeZone.c con words, input[1], timeZone
+		timeZone = -3;
+		
 	}
 	else
 	{
@@ -313,93 +227,8 @@ int callFunction(char *buffer)
 	return 1;
 }
 
-int calculate(char *func, int param1, int param2)
-{
 
-	int (*operations[4])(int x, int y);
-	operations[0] = add;
-	operations[1] = subtract;
-	operations[2] = multiply;
-	operations[3] = divide;
-	char *operationsName[4] = {"add", "subtract", "multiply", "divide"};
 
-	for (int i = 0; i < 4; ++i)
-	{
-		if (strcmp(func, operationsName[i]) == 0)
-		{
-			return operations[i](param1, param2);
-		}
-	}
 
-	return 0;
-}
 
-int calculateVerifications(int words, char *input2, char *input3)
-{
-	if (isNum(input2) == 2 || isNum(input3) == 2)
-	{
-		sysPrintString("Wrong parameters for calculate: Numbers must be integer\n", CB, CG, CR);
-		return 0;
-	}
-	if (words != 4 || !isNum(input2) || !isNum(input3))
-	{
-		//veryfing that there are four inputs and that the last two are numbers
-		sysPrintString("Wrong parameters for calculate\n", CB, CG, CR);
-		return 0;
-	}
-	return 1;
-}
 
-int echo(char input[][MAX_WORD_LENGTH], int words)
-{
-	for (int i = 1; i < (words + 1); i++)
-	{
-		sysPrintString(input[i], B, G, R);
-		sysPrintString(" ", B, G, R);
-	}
-
-	sysPrintString("\n", B, G, R);
-
-	return 0;
-}
-
-int clear(int words)
-{
-	if (words != 1)
-	{
-		sysPrintString("No extra parameters for clear\n", CB, CG, CR);
-
-		return 2;
-	}
-
-	sysClear();
-
-	return 0;
-}
-
-int graph(char input[4][MAX_WORD_LENGTH], int words)
-{
-	if (words != (GRAPH_PARAMETERS + 1))
-	{
-		sysPrintString("Wrong amount of parameters for plot command\n\
-		Use command help for guidelines\n",
-									 CB, CG, CR);
-
-		return 2;
-	}
-
-	for (int i = 1; i <= GRAPH_PARAMETERS; i++)
-	{
-		if (!isNum(input[i]))
-		{
-			sysPrintString("Wrong parameters passed to plot command\n\
-			Use command help for guidelines\n",
-										 CB, CG, CR);
-
-			return 2;
-		}
-	}
-
-	graphMain(toFloat(input[1]), toFloat(input[2]), toFloat(input[3]));
-	return 0;
-}

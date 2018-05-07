@@ -4,6 +4,10 @@
 #include "keyboardDriver.h"
 #include "memorymanager.h"
 #include "mutex.h"
+#include "semaphore.h"
+
+#define ERROR 1
+#define SUCCESS 0
 
 uint64_t mallocMemory(uint64_t size)
 {
@@ -24,25 +28,24 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
   {
   case 1:
     getTimeRTC(rsi);
-    break;
+    return SUCCESS;
   case 2:
     getChar((char *)rsi);
-    break;
+    return SUCCESS;
   case 3:
     clearScreen();
-    break;
+    return SUCCESS;
   case 4:
     writeChar((char)rsi, rdx, rcx, r8);
-    break;
+    return SUCCESS;
   case 5:
     paintPixel(rsi, rdx, (char)rcx, (char)r8, (char)r9);
-    break;
+    return SUCCESS;
   case 6:
     return mallocMemory(rsi);
-    break;
   case 7:
     freeMemory(rsi);
-    break;
+    return SUCCESS;
   case 8:
     mutex_unlock((mutex_t*)rsi);
     break;
@@ -55,6 +58,19 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
   case 11:
     return (uint64_t)mutex_close((mutex_t*)rsi);
     break;
+  case 12:
+    return sem_open((char*)rsi);    
+  case 13:
+    return sem_close((int)rsi);    
+  case 14:
+    return sem_wait((int)rsi);    
+  case 15:
+    return sem_post((int)rsi);
+  case 16:
+    return semaphoresListSize();
+  case 17:
+    freeSemaphoresList();
+    return SUCCESS;
   }
-  return 0;
+  return ERROR;
 }

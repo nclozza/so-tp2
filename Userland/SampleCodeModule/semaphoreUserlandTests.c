@@ -1,9 +1,6 @@
-#include "semaphore.h"
-#include "testlib.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include "videoDriver.h"
-
+#include "stdLib.h"
+#include "shell.h"
+#include <stdint.h>
 char* name;
 int openedSemaphore = -1;
 int testingSemaphore = -1;
@@ -21,6 +18,7 @@ void thenSizeOfSemaphoreListRemainsTheSame();
 void thenSizeOfSemaphoreListIncreases();
 void whenSemaphoreIsClosed();
 void thenSizeOfSemaphoreListDecreases();
+void whenWait();
 
 void testSemaphoreIsCreated()
 {
@@ -52,6 +50,12 @@ void testSemaphoreIsClosed()
 	thenSizeOfSemaphoreListDecreases();
 }
 
+void testWait()
+{
+	givenASemaphore();
+	whenWait();
+}
+
 void givenAName()
 {
 	name = "SemNameForTest";
@@ -59,7 +63,7 @@ void givenAName()
 
 void whenNameIsPassedToOpen()
 {
-	openedSemaphore = sem_open(name);
+	openedSemaphore = sysSemOpen(name);
 }
 
 void thenSemaphoreIsReturned()
@@ -70,12 +74,16 @@ void thenSemaphoreIsReturned()
 void givenASemaphore()
 {
 	if(testingSemaphore == -1 && openedSemaphore !=-1)
-		testingSemaphore = openedSemaphore;
+		testingSemaphore = openedSemaphore;	
 }
 
+void whenWait()
+{
+	sysSemWait(testingSemaphore);
+}
 void whenSemaphoreIsPosted()
 {
-	testingSemaphoreValue = sem_post(testingSemaphore);
+	testingSemaphoreValue = sysSemPost(testingSemaphore);
 }
 
 void thenValueOfSemaphoreIncreases()
@@ -85,48 +93,54 @@ void thenValueOfSemaphoreIncreases()
 
 void thenSizeOfSemaphoreListRemainsTheSame()
 {
-	size = semaphoresListSize();
-	checkSizeOfSemaphoreList(listSize, size);
+	size = sysSemaphoresListSize();
+	checkSizeOfSemaphoreList(listSize,size);	
 }
 
 void thenSizeOfSemaphoreListIncreases()
 {
-	size = semaphoresListSize();
+	size = sysSemaphoresListSize();
 	listSize++;
-	checkSizeOfSemaphoreList(listSize, size);
+	checkSizeOfSemaphoreList(listSize,size);
 }
 
 void whenSemaphoreIsClosed()
 {
 	if(testingSemaphore!=-1)
-		sem_close(testingSemaphore);
+	{
+		sysSemClose(testingSemaphore);
+		testingSemaphore = -1;
+	}			
 }
 void thenSizeOfSemaphoreListDecreases()
 {	
 	listSize--;
-	size = semaphoresListSize();
-	checkSizeOfSemaphoreList(listSize, size);
+	size = sysSemaphoresListSize();
+	checkSizeOfSemaphoreList(listSize,size);
 }
 
 void finishedTesting()
 {
-	sem_close(openedSemaphore);
-	freeSemaphoresList();
+	sysSemClose(openedSemaphore);
+	sysFreeSemaphoresList();
 }
 
-void runSemaphoreTests()
+void runUserlandSemaphoreTests()
 {
-	printString("Testing semaphore is created...\n", 128, 128, 128);
+	sysPrintString("Testing semaphore is created...\n",128,128,128);
 	testSemaphoreIsCreated();
 
-	printString("Testing semaphore value increases when posted...\n", 128, 128, 128);
+	sysPrintString("Testing semaphore value increases when posted...\n",128,128,128);
 	testSemaphoreValueIncreasesWhenPostedTo();
 
-	printString("Testing if semaphore already exists, none is created\n", 128, 128, 128);
+	sysPrintString("Testing if semaphore already exists, none is created\n",128,128,128);
 	testIfSemaphoreAlreadyCreatedDoesNotCreateNewOne();
 
-	printString("Testing closing a semaphore...\n", 128, 128, 128);
+	sysPrintString("Testing closing a semaphore...\n",128,128,128);
 	testSemaphoreIsClosed();
 
-	finishedTesting();
+	// sysPrintString("Testing wait on semaphore, should lock process...\n",128,128,128);
+	// testWait();
+
+	finishedTesting();	
 }
