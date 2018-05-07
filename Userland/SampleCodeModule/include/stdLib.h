@@ -23,5 +23,21 @@ void copy(char *copy, char *original, int len);
 int subStrleng(const char *s, const char c);
 uint64_t sysMalloc(uint64_t bytes);
 void sysFree(uint64_t address);
+void checkIsNotNull(void* value);
+void checkIsNull(void* value);
+void checkAreEqual(uint64_t value1, uint64_t value2);
+void checkAreNotEqual(uint64_t value1, uint64_t value2);
+void checkIsNotZero(int value);
+void checkIsNotMinusOne(int value);
+void checkSizeOfSemaphoreList(int mysize, int size);
+void ok();
+void fail();
+
+int sysSemOpen(char* name);
+int sysSemClose(int id);
+int sysSemWait(int id);
+int sysSemPost(int id);
+int sysSemaphoresListSize();
+void sysFreeSemaphoresList();
 
 #endif

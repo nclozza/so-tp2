@@ -64,8 +64,9 @@ int sem_wait(int id)
 		return 1;
 
 	sem->value--;
-	if(sem->value <0)
+	if(sem->value <=0)
 	{
+		while(1);
 		//TODO: SCHEDULER REMOVES	
 	}
 	return 0;

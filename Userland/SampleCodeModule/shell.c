@@ -4,7 +4,7 @@
 #include "stdio.h"
 #include "plotLib.h"
 #include "mathLib.h"
-
+#include "semaphoreUserlandTests.h"
 static int R = DR;
 static int G = DG;
 static int B = DB;
@@ -26,6 +26,7 @@ void startShell()
 	// sysPrintString("\n",CB,CG,CR);
 	// sysFree(page);
 	// sysPrintInt(*page,0,155,255);
+	//runUserlandSemaphoreTests();
 	sysPrintString("$> ", CB, CG, CR);
 
 	while (isRunning)

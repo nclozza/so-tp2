@@ -53,7 +53,12 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
   case 14:
     return sem_wait((int)rsi);    
   case 15:
-    return sem_post((int)rsi);    
+    return sem_post((int)rsi);
+  case 16:
+    return semaphoresListSize();
+  case 17:
+    freeSemaphoresList();
+    return SUCCESS;
   }
   return ERROR;
 }

@@ -1,4 +1,5 @@
 #include "stdLib.h"
+#include "shell.h"
 #include "mathLib.h"
 #include <stdint.h>
 #define MAX_DIGITS 20
@@ -52,6 +53,7 @@ int strleng(const char *s)
 {
   return subStrleng(s, '\0');
 }
+
 
 void sysPrintInt(int num, int B, int G, int R)
 {
@@ -135,3 +137,126 @@ void sysFree(uint64_t address)
   sysCall(7,address,0,0,0,0);
 }
 
+
+int sysSemOpen(char* name)
+{
+  return (int)sysCall(12,(uint64_t)name,0,0,0,0);
+}
+
+int sysSemClose(int id)
+{
+  return (int)sysCall(13,id,0,0,0,0);
+}
+
+int sysSemWait(int id)
+{
+  return (int)sysCall(14,id,0,0,0,0);
+}
+
+int sysSemPost(int id)
+{
+  return (int)sysCall(15,id,0,0,0,0);
+}
+
+int sysSemaphoresListSize()
+{
+  return (int)sysCall(16,0,0,0,0,0);
+}
+
+void sysFreeSemaphoresList()
+{
+  sysCall(17,0,0,0,0,0);
+}
+
+
+
+void checkIsNotNull(void* value)
+{
+  if(value == NULL)
+  {
+    fail();
+  }
+  else
+  {
+    ok();
+  }
+}
+void checkIsNull(void* value)
+{
+  if(value != NULL)
+  {
+    fail();
+  }
+  else
+  {
+    ok();
+  }
+}
+
+void checkAreNotEqual(uint64_t value1, uint64_t value2)
+{
+  if(value1 == value2)
+  {
+    fail();
+  }
+  else
+  {
+    ok();
+  }
+}
+void checkAreEqual(uint64_t value1, uint64_t value2)
+{
+  if(value1 != value2)
+  {
+    fail();
+  }
+  else
+  {
+    ok();
+  }
+}
+
+void checkIsNotZero(int value)
+{
+  if(value == 0)
+  {
+    fail();
+  }
+  else
+  {
+    ok();
+  }
+}
+
+void checkIsNotMinusOne(int value)
+{
+  if(value == -1)
+  {
+    fail();
+  }
+  else
+  {
+    ok();
+  }
+}
+
+void checkSizeOfSemaphoreList(int mysize, int size)
+{
+  if(size != mysize)
+  {
+    fail();
+  }
+  else
+  {
+    ok();
+  }
+}
+void ok()
+{
+  sysPrintString("Ok\n",0,255,0);
+}
+
+void fail()
+{
+  sysPrintString("Fail\n",0,0,255);
+}
