@@ -5,8 +5,8 @@
 #include "videoDriver.h"
 
 char* name;
-semADT openedSemaphore = NULL;
-semADT testingSemaphore = NULL;
+int openedSemaphore = -1;
+int testingSemaphore = -1;
 int testingSemaphoreValue;
 int listSize = 0;
 int size = 0;
@@ -65,12 +65,12 @@ void whenNameIsPassedToOpen()
 
 void thenSemaphoreIsReturned()
 {
-	checkIsNotNull((void*)openedSemaphore);
+	checkIsNotMinusOne(openedSemaphore);
 }
 
 void givenASemaphore()
 {
-	if(testingSemaphore ==NULL)
+	if(testingSemaphore == -1 && openedSemaphore !=-1)
 		testingSemaphore = openedSemaphore;
 }
 
@@ -81,7 +81,7 @@ void whenSemaphoreIsPosted()
 
 void thenValueOfSemaphoreIncreases()
 {
-	checkIsNotZero(testingSemaphoreValue);
+	checkIsNotMinusOne(testingSemaphoreValue);
 }
 
 void thenSizeOfSemaphoreListRemainsTheSame()
@@ -99,11 +99,11 @@ void thenSizeOfSemaphoreListIncreases()
 
 void whenSemaphoreIsClosed()
 {
-	if(testingSemaphore!=NULL)
+	if(testingSemaphore!=-1)
 		sem_close(testingSemaphore);
 }
 void thenSizeOfSemaphoreListDecreases()
-{
+{	
 	listSize--;
 	size = semaphoresListSize();
 	checkSizeOfSemaphoreList(listSize,size);

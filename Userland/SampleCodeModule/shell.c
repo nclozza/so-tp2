@@ -87,12 +87,14 @@ int callFunction(char *buffer)
 	int words = 0;
 	char input[MAX_WORDS][MAX_WORD_LENGTH] = {{0}};
 	char *aux = buffer;
-	// boolean foreground = false;
-	// if(*aux='&')
-	// {
-	// 	foreground = true;
-	// 	aux++;
-	// }
+	int foreground = 0;
+	if(*aux=='&')
+	{
+		foreground = 1;
+		aux++;
+	}
+	if(foreground==1)
+		sysPrintString("foreground true\n",0,155,255);
 	while (*aux != '\0' && wordLength < MAX_WORD_LENGTH)
 	{
 		if (*aux == ' ' || *aux == '\n')
@@ -112,10 +114,12 @@ int callFunction(char *buffer)
 
 	if (strcmp(input[0], "echo") == 0)
 	{
+		sysPrintString("called echo\n",0,155,255);
 		//call echo.c con input, words
 	}
 	else if (strcmp(input[0], "setFontColor") == 0)
 	{
+		sysPrintString("called setFontColor\n",0,155,255);
 		if (words != 2)
 		{
 			sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
@@ -157,6 +161,7 @@ int callFunction(char *buffer)
 	}
 	else if (strcmp(input[0], "clear") == 0)
 	{
+		sysPrintString("called clear\n",0,155,255);
 		//call clear.c con words
 	}
 	else if (strcmp(input[0], "opcode") == 0)
@@ -171,10 +176,12 @@ int callFunction(char *buffer)
 	}
 	else if (strcmp(input[0], "calculate") == 0)
 	{
+		sysPrintString("called calculate\n",0,155,255);
 		//call calculate.c con words, input[1], input[2], input[3]
 	}
 	else if (strcmp(input[0], "help") == 0)
 	{
+		sysPrintString("called help\n",0,155,255);
 		//call help.c con words, input[1]
 	}
 	else if (strcmp(input[0], "exit") == 0)
@@ -194,14 +201,17 @@ int callFunction(char *buffer)
 	}
 	else if (strcmp(input[0], "plot") == 0)
 	{
+		sysPrintString("called plot\n",0,155,255);
 		//call plot.c con input, words
 	}
 	else if (strcmp(input[0], "displayTime") == 0)
 	{
+		sysPrintString("called displayTime\n",0,155,255);
 		//call displayTime.c con words, timeZone
 	}
 	else if (strcmp(input[0], "setTimeZone") == 0)
 	{
+		sysPrintString("called setTimeZone\n",0,155,255);
 		//call setTimeZone.c con words, input[1], timeZone
 		timeZone = -3;
 		
