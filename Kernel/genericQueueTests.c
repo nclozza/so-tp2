@@ -94,7 +94,7 @@ void testElementPeekedFromQueue()
 
 void whenElementIsPeeked()
 {
-  queueElement auxElement = peek(queue);
+  peek(queue);
 }
 
 void testElementDequeuedFromQueue()
@@ -106,7 +106,7 @@ void testElementDequeuedFromQueue()
 
 void whenElementIsDequeued()
 {
-  queueElement auxElement = dequeue(queue);
+  dequeue(queue);
 }
 
 void finishedGenericQueueTests()

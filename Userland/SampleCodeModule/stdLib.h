@@ -27,6 +27,20 @@ void sysUp(uint64_t mut);
 void sysDown(uint64_t mut);
 uint64_t sysMutexInit(uint64_t name);
 uint64_t sysMutexClose(uint64_t mut);
-
+void checkIsNotNull(void* value);
+void checkIsNull(void* value);
+void checkAreEqual(uint64_t value1, uint64_t value2);
+void checkAreNotEqual(uint64_t value1, uint64_t value2);
+void checkIsNotZero(int value);
+void checkIsNotMinusOne(int value);
+void checkSizeOfSemaphoreList(int mysize, int size);
+void ok();
+void fail();
+int sysSemOpen(char* name);
+int sysSemClose(int id);
+int sysSemWait(int id);
+int sysSemPost(int id);
+int sysSemaphoresListSize();
+void sysFreeSemaphoresList();
 
 #endif
