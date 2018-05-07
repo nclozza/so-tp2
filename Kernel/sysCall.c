@@ -49,6 +49,12 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
   case 9:
     mutex_lock((mutex_t*)rsi);
     break;
+  case 10:
+    return (uint64_t)mutex_init((char*)rsi);
+    break;
+  case 11:
+    return (uint64_t)mutex_close((mutex_t*)rsi);
+    break;
   }
   return 0;
 }
