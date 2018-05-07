@@ -134,3 +134,23 @@ void sysFree(uint64_t address)
 {
   sysCall(7,address,0,0,0,0);
 }
+
+void sysMutexUp(uint64_t mut)
+{
+  sysCall(8,mut,0,0,0,0);
+}
+
+void sysMutexDown(uint64_t mut)
+{
+  sysCall(9,mut,0,0,0,0);
+}
+
+uint64_t sysMutexInit(uint64_t name)
+{
+  return sysCall(10,name,0,0,0,0);
+}
+
+uint64_t sysMutexClose(uint64_t mut)
+{
+  return sysCall(11,mut,0,0,0,0);
+}
