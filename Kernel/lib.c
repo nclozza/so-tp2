@@ -74,3 +74,12 @@ void strcpyKernel(char *d, const char *s)
 	}
 	*d = '\0';
 }
+
+void strcatKernel(char *d, const char *s){
+    int i,j;
+    for (i = 0; d[i] != '\0'; i++);
+    for (j = 0; s[j] != '\0'; j++)
+        d[i+j] = s[j];
+    d[i+j] = '\0';
+    return d;
+}

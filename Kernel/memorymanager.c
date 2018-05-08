@@ -29,3 +29,11 @@ void free(void *page)
 		printString("Error in freeing memory\n", 0, 0, 255);
 	}
 }
+
+void* realloc(void* ptr, uint64_t size)
+{
+	void *newptr = malloc(size);
+	memcpy(newptr, ptr, size);
+	free(ptr);
+	return newptr;
+}
