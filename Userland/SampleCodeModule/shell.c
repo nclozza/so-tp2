@@ -6,7 +6,7 @@
 #include "mathLib.h"
 #include "semaphoreUserlandTests.h"
 #include "commands.h"
-#include "messageQueueUserlandTests"
+#include "messageQueueUserlandTests.h"
 
 #define STEP 10
 #define BUFFERSIZE 1024
