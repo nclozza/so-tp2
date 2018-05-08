@@ -17,13 +17,13 @@ static int B = DB;
 static int isRunning = 1;
 static command commands[] = {
 	{"help\n",help},
-	{"echo",echo},
+	{"echo\n",echo},
 	{"displayTime\n",displayTime},
-	{"setTimeZone",setTimeZone},
-	{"setFontColor",setFontColor},
+	{"setTimeZone\n",setTimeZone},
+	{"setFontColor\n",setFontColor},
 	{"clear\n",clear},
-	{"calculate",calculate},
-	{"plot",plot},	
+	{"calculate\n",calculate},
+	{"plot\n",plot},	
 	{"exit\n",exit},
 	{"opcode\n",opcode},
 	{"prodcons\n",prodcons}
