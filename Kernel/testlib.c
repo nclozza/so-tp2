@@ -39,6 +39,7 @@ void checkIsZero(int value)
 	}
 }
 
+
 void checkAreNotEqual(uint64_t value1, uint64_t value2)
 {
 	if (value1 == value2)
