@@ -44,7 +44,7 @@ int createMessage(char* name, int messageSize)
 		initMessages();
 
 	messageADT newMessage = malloc(sizeof(messageCDT));
-	strcpy(newMessage->name, name);
+	strcpyKernel(newMessage->name, name);
 	newMessage->id = id;
 	newMessage->messageSize = messageSize;
 	id++;
@@ -65,7 +65,7 @@ int openMessage(char* name, int arg2)
 {
 	for (int i = 0; i < messagesCount; i++)
 	{
-		if(strcmp(messages[i]->name, name) == 0)
+		if(strcmpKernel(messages[i]->name, name) == 0)
 			return messages[i]->id;
 	}
 	return -1;
@@ -80,7 +80,7 @@ int readMessage(char* buffer, int id)
 			if(messages[i]->contentCount <= 0)
 				//block(id, READ);													//preguntarle a nico (se deberia bloquear porque no hay nada que leer, espera que alguien haga un write)
 
-			strcpy(buffer, messages[i]->buffer);
+			strcpyKernel(buffer, messages[i]->buffer);
 			messages[i]->contentCount = 0;
 
 			for(int j=0; j<=((messages[i]->messageSize)*MAX_SIZE_BUFFER); j++)
@@ -99,7 +99,7 @@ int writeMessage(char* content, int id)
 	{
 		if(messages[i]->id == id)
 		{
-			if(strlen(content) > messages[i]->messageSize)
+			if(strlenKernel(content) > messages[i]->messageSize)
 				return FAIL;
 
 			if(messages[i]->contentCount >= MAX_SIZE_BUFFER)
