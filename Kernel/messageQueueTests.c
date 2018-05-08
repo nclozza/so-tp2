@@ -2,6 +2,28 @@
 #include "testlib.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "videoDriver.h"
+
+void testMessageQueueIsCreated();
+void givenAName();
+void givenASize();
+void whenNameAndSizeArePassedToCreate();
+void thenIdIsReturned();
+void testMessageQueueIsOpened();
+void whenNameIsPassedToOpen();
+void thenExistingIdIsReturned();
+void testMessageQueueIsWritten();
+void givenContent();
+void whenContentAndIdArePassedToWrite();
+void thenTestIsASuccess();
+void testMessageQueueIsRead();
+void givenABuffer();
+void whenBufferAndIdArePassedToRead();
+void thenCheckIfBufferAndContentAreEqual();
+void testMessageQueueIsClosed();
+void whenIdIsPassedToClose();
+int runMessageQueueTests();
+
 
 #define SUCCESS 0
 #define FAIL 1
@@ -25,7 +47,8 @@ void givenAName()
 	name = "MessageQueueNameForTest";
 }
 
-void givenASize(){
+void givenASize()
+{
 	size = 10;
 }
 
@@ -114,22 +137,21 @@ void whenIdIsPassedToClose()
 	test = closeMessage("", id);
 }
 
-int main(int argc, char const *argv[])
+int runMessageQueueTests()
 {
-	printf("Testing if messageQueue is created...\n");
+	printString("Testing if messageQueue is created...\n", 128, 128, 128);
 	testMessageQueueIsCreated();
 
-	printf("Testing if messageQueue is opened...\n");
+	printString("Testing if messageQueue is opened...\n", 128, 128, 128);
 	testMessageQueueIsOpened();
 
-	printf("Testing if messageQueue is written...\n");
+	printString("Testing if messageQueue is written...\n", 128, 128, 128);
 	testMessageQueueIsWritten();
 
-
-	printf("Testing if messageQueue is read...\n");
+	printString("Testing if messageQueue is read...\n", 128, 128, 128);
 	testMessageQueueIsRead();
 
-	printf("Testing if messageQueue is closed...\n");
+	printString("Testing if messageQueue is closed...\n", 128, 128, 128);
 	testMessageQueueIsClosed();
 
 	//finishedTesting();
