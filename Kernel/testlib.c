@@ -39,17 +39,6 @@ void checkIsZero(int value)
 	}
 }
 
-void checkIsZero(int value)
-{
-	if(value != 0)
-	{
-		fail();
-	}
-	else
-	{
-		ok();
-	}
-}
 
 void checkAreNotEqual(uint64_t value1, uint64_t value2)
 {

@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "pageallocator.h"
 #include "videoDriver.h"
+#include "lib.h"
 
 void *malloc(uint64_t size)
 {

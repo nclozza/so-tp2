@@ -81,5 +81,4 @@ void strcatKernel(char *d, const char *s){
     for (j = 0; s[j] != '\0'; j++)
         d[i+j] = s[j];
     d[i+j] = '\0';
-    return d;
 }
