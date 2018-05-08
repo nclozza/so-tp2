@@ -6,7 +6,6 @@
 #include "mathLib.h"
 #include "semaphoreUserlandTests.h"
 #include "commands.h"
-#include "messageQueueUserlandTests.h"
 
 #define STEP 10
 #define BUFFERSIZE 1024
@@ -18,13 +17,13 @@ static int B = DB;
 static int isRunning = 1;
 static command commands[] = {
 	{"help\n",help},
-	{"echo\n",echo},
+	{"echo",echo},
 	{"displayTime\n",displayTime},
-	{"setTimeZone\n",setTimeZone},
-	{"setFontColor\n",setFontColor},
+	{"setTimeZone",setTimeZone},
+	{"setFontColor",setFontColor},
 	{"clear\n",clear},
-	{"calculate\n",calculate},
-	{"plot\n",plot},	
+	{"calculate",calculate},
+	{"plot",plot},	
 	{"exit\n",exit},
 	{"opcode\n",opcode},
 	{"prodcons\n",prodcons}
@@ -49,9 +48,7 @@ void startShell()
 	// sysFree(page);
 	// sysPrintInt(*page,0,155,255);
 	//runUserlandSemaphoreTests();
-	runUserlandMessageQueueTests();
-	sysPrintString("$> ", CB, CG, CR);
-
+	
 	while (isRunning)
 	{
 

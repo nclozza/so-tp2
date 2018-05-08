@@ -3,27 +3,7 @@
 #include "memorymanager.h"
 #include "videoDriver.h"
 #include "lib.h"
-
-void testMessageQueueIsCreated();
-void givenAMessageName();
-void givenASize();
-void whenNameAndSizeArePassedToCreate();
-void thenIdIsReturned();
-void testMessageQueueIsOpened();
-void whenMessageNameIsPassedToOpen();
-void thenExistingIdIsReturned();
-void testMessageQueueIsWritten();
-void givenContent();
-void whenContentAndIdArePassedToWrite();
-void thenTestIsASuccess();
-void testMessageQueueIsRead();
-void givenABuffer();
-void whenBufferAndIdArePassedToRead();
-void thenCheckIfBufferAndContentAreEqual();
-void testMessageQueueIsClosed();
-void whenIdIsPassedToClose();
-int runMessageQueueTests();
-
+#include "messageQueueTests.h"
 
 #define SUCCESS 0
 #define FAIL 1

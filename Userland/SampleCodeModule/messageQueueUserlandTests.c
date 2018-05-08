@@ -1,6 +1,7 @@
 #include "stdLib.h"
 #include "shell.h"
 #include <stdint.h>
+#include "messageQueueUserlandTests.h"
 
 void testMessageQueueIsCreated();
 void givenAMessageName();
@@ -20,7 +21,6 @@ void whenBufferAndIdArePassedToRead();
 void thenCheckIfBufferAndContentAreEqual();
 void testMessageQueueIsClosed();
 void whenIdIsPassedToClose();
-void runUserlandMessageQueueTests();
 
 #define SUCCESS 0
 #define FAIL 1
