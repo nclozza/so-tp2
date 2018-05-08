@@ -23,40 +23,41 @@ int help(int argc,char* argv[])
 
 	if (argc == 2)
 	{
-		char* input1 = argv[2];
-		if (strcmp(input1, "echo") == 0)
+		char* input1 = argv[1];
+
+		if (strcmp(input1, "echo\n") == 0)
 		{
 			sysPrintString(ECHO_INS, B, G, R);
 		}
-		else if (strcmp(input1, "displayTime") == 0)
+		else if (strcmp(input1, "displayTime\n") == 0)
 		{
 			sysPrintString(DISPLAY_TIME_INS, B, G, R);
 		}
-		else if (strcmp(input1, "setTimeZone") == 0)
+		else if (strcmp(input1, "setTimeZone\n") == 0)
 		{
 			sysPrintString(SET_TIME_ZONE_INS, B, G, R);
 		}
-		else if (strcmp(input1, "setFontColor") == 0)
+		else if (strcmp(input1, "setFontColor\n") == 0)
 		{
 			sysPrintString(SET_FONT_COLOR_INS, B, G, R);
 		}
-		else if (strcmp(input1, "clear") == 0)
+		else if (strcmp(input1, "clear\n") == 0)
 		{
 			sysPrintString(CLEAR_INS, B, G, R);
 		}
-		else if (strcmp(input1, "calculate") == 0)
+		else if (strcmp(input1, "calculate\n") == 0)
 		{
 			sysPrintString(CALCULATE_INS, B, G, R);
 		}
-		else if (strcmp(input1, "exit") == 0)
+		else if (strcmp(input1, "exit\n") == 0)
 		{
 			sysPrintString(EXIT_INS, B, G, R);
 		}
-		else if (strcmp(input1, "plot") == 0)
+		else if (strcmp(input1, "plot\n") == 0)
 		{
 			sysPrintString(PLOT_INS, B, G, R);
 		}
-		else if (strcmp(input1, "opcode") == 0)
+		else if (strcmp(input1, "opcode\n") == 0)
 		{
 			sysPrintString(OPCODE_INS, B, G, R);
 		}
@@ -74,7 +75,7 @@ int help(int argc,char* argv[])
 }
 int echo(int argc,char* argv[])
 {
-	for (int i = 1; i < (argc + 1); i++)
+	for (int i = 1; i < argc ; i++)
 	{
 		sysPrintString(argv[i], B, G, R);
 		sysPrintString(" ", B, G, R);

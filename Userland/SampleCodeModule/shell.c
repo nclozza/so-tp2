@@ -10,6 +10,24 @@
 #define STEP 10
 #define BUFFERSIZE 1024
 
+static command commands[] = {
+	{"help\0",help},
+	{"help\n",help},
+	{"echo\0",echo},
+	{"echo\n",echo},
+	{"displayTime\n",displayTime},
+	{"setTimeZone\n",setTimeZone},
+	{"setFontColor\n",setFontColor},
+	{"clear\n",clear},
+	{"calculate\n",calculate},
+	{"calculate\0",calculate},
+	{"plot\n",plot},
+	{"plot\0",plot},	
+	{"exit\n",exit},
+	{"opcode\n",opcode},
+	{"prodcons\n",prodcons}
+};
+
 
 static int R = DR;
 static int G = DG;
@@ -26,14 +44,6 @@ void startShell()
 	char lastString[MAX_WORD_LENGTH] = {0};
 	int counter = 0;
 	char ch;
-	// int* page = (int*)sysMalloc(100);
-	// sysPrintInt(*page,0,155,255);
-	// sysPrintString("\n",CB,CG,CR);
-	// *page = 12;
-	// sysPrintInt(*page,0,155,255);
-	// sysPrintString("\n",CB,CG,CR);
-	// sysFree(page);
-	// sysPrintInt(*page,0,155,255);
 	//runUserlandSemaphoreTests();
 	sysPrintString("$> ", CB, CG, CR);
 
@@ -92,7 +102,82 @@ int callFunction(char *buffer)
 		return 1;
 	}
 
-	// int wordLength = 0;
+	int words;
+	char** argv;	
+	parseParams(buffer,&words,&argv);
+
+	//call echo.c con words,input[1],input[1],...,input[words]
+	//call clear.c con words
+	//call calculate.c con words, input[1], input[2], input[3]
+	//call help.c con words, input[1]
+	//call plot.c con input, words
+	//call displayTime.c con words, timeZone
+	//call setTimeZone.c con words, input[1], timeZone
+
+	
+	int i,valid=0;	
+	for(i = 0; i < CMD_SIZE && valid==0; i++)
+	{
+		if(strcmp(argv[0],commands[i].name)==0)
+		{						
+
+			int status = commands[i].function(words,argv);
+			if(status == ERROR)
+			{
+				sysPrintString("Error\n",0,155,255);
+				return ERROR;
+			}
+			else if(status == EXITCODE)
+			{
+				isRunning = 0;				
+				for(int i = 0 ; i < words; i++)
+				{
+					sysFree((uint64_t)argv[i]);
+				}
+				sysFree((uint64_t)argv);
+			}			
+			valid = 1;	
+		}
+	}	
+
+	if(valid==0)
+	{		
+		sysPrintString("Wrong input\n", CB, CG, CR);
+	}
+
+	return 1;
+}
+
+void parseParams(char * command, int * argc, char *** argv) {
+  char buffer[BUFFERSIZE];
+  int count = 0, size = 0, i = 0, j = 0;
+  do {
+    if(command[i] != ' ' && command[i] != 0) 
+    {
+      buffer[j] = command[i];
+      j++;
+    } 
+    else if(j != 0) 
+    {
+      if(size - count == 0) 
+      {
+        size += STEP;
+        (*argv) = (char **)sysMalloc(sizeof(void*)*size);
+      }
+      (*argv)[count] = (char*)sysMalloc(sizeof(char)*(j+1));
+      for (int k = 0; k < j; k++) 
+      {
+        (*argv)[count][k] = buffer[k];
+      }
+      (*argv)[count][j] = 0; //Null terminated
+      count++;
+      j = 0;
+    }
+  } while (command[i++] != 0);
+
+  (*argc) = count;
+}
+// int wordLength = 0;
 	// int words = 0;
 	// char input[MAX_WORDS][MAX_WORD_LENGTH] = {{0}};
 	// char *aux = buffer;
@@ -109,7 +194,7 @@ int callFunction(char *buffer)
 	// {
 	// 	if (*aux == ' ' || *aux == '\n')
 	// 	{
-	// 		input[words][wordLength] = '\0';
+	// 		(*argv)[wordLength] = '\0';
 	// 		wordLength = 0;
 	// 		words++;
 	// 	}
@@ -121,80 +206,3 @@ int callFunction(char *buffer)
 
 	// 	aux++;
 	// }
-
-	int words;
-	char** argv;	
-	parseParams(buffer,&words,&argv);
-
-	//call echo.c con words,input[1],input[1],...,input[words]
-	//call clear.c con words
-	//call calculate.c con words, input[1], input[2], input[3]
-	//call help.c con words, input[1]
-	//call plot.c con input, words
-	//call displayTime.c con words, timeZone
-	//call setTimeZone.c con words, input[1], timeZone
-
-	
-	int i,valid=0;	
-	for(i = 0; i < CMD_SIZE; i++)
-	{
-		if(strcmp(argv[0],commands[i].name)==0)
-		{			
-			sysPrintString("called ",0,155,255);
-			sysPrintString(commands[i].name,0,155,255);
-			sysPrintString("\n",0,155,255);
-
-			int status = commands[i].function(words,argv);
-			if(status == ERROR)
-			{
-				sysPrintString("Error\n",0,155,255);
-				return ERROR;
-			}
-			else if(status == EXITCODE)
-			{
-				isRunning = 0;				
-				for(int i = 0 ; i < words; i++)
-				{
-					sysFree((uint64_t)argv[i]);
-				}
-				sysFree((uint64_t)argv);
-			}
-			valid = 1;			
-		}
-	}	
-
-	if(valid==0)
-		sysPrintString("Wrong input\n", CB, CG, CR);
-
-	return 1;
-}
-
-
-
-
-
-
-void parseParams(char * command, int * argc, char *** argv) {
-  char buffer[BUFFERSIZE];
-  int count = 0, size = 0, i = 0, j = 0;
-  do {
-    if(command[i] != ' ' && command[i] != 0) {
-      buffer[j] = command[i];
-      j++;
-    } else if(j != 0) {
-      if(size - count == 0) {
-        size += STEP;
-        (*argv) = (char **)sysMalloc(sizeof(void*)*size);
-      }
-      (*argv)[count] = (char*)sysMalloc(sizeof(char)*(j+1));
-      for (int k = 0; k < j; k++) {
-        (*argv)[count][k] = buffer[k];
-      }
-      (*argv)[count][j] = 0; //Null terminated
-      count++;
-      j = 0;
-    }
-  } while (command[i++] != 0);
-
-  (*argc) = count;
-}
