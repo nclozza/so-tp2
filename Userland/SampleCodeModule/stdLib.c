@@ -211,7 +211,7 @@ int sysWriteMessage(uint64_t content, uint64_t id)
   return (int)sysCall(21,content, id, 0,0,0);
 }
 
-int closeMessage(uint64_t arg1, uint64_t id)
+int sysCloseMessage(uint64_t arg1, uint64_t id)
 {
   return (int)sysCall(22, arg1,id,0,0,0);
 }
