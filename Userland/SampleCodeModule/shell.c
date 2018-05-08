@@ -5,11 +5,19 @@
 #include "plotLib.h"
 #include "mathLib.h"
 #include "semaphoreUserlandTests.h"
+#include "commands.h"
+
+#define STEP 10
+#define BUFFERSIZE 1024
+
+
 static int R = DR;
 static int G = DG;
 static int B = DB;
 static int isRunning = 1;
-static int timeZone = -3;
+
+//static int timeZone = -3;
+void parseParams(char * command, int * argc, char *** argv);
 
 void startShell()
 {
@@ -80,149 +88,83 @@ void startShell()
 int callFunction(char *buffer)
 {
 	if (buffer == NULL)
-	{
+	{		
 		return 1;
 	}
 
-	int wordLength = 0;
-	int words = 0;
-	char input[MAX_WORDS][MAX_WORD_LENGTH] = {{0}};
-	char *aux = buffer;
-	int foreground = 0;
-	if(*aux=='&')
-	{
-		foreground = 1;
-		aux++;
-	}
-	if(foreground==1)
-		sysPrintString("foreground true\n",0,155,255);
-	while (*aux != '\0' && wordLength < MAX_WORD_LENGTH)
-	{
-		if (*aux == ' ' || *aux == '\n')
-		{
-			input[words][wordLength] = '\0';
-			wordLength = 0;
-			words++;
-		}
-		else
-		{
-			input[words][wordLength] = *aux;
-			wordLength++;
-		}
+	// int wordLength = 0;
+	// int words = 0;
+	// char input[MAX_WORDS][MAX_WORD_LENGTH] = {{0}};
+	// char *aux = buffer;
+	// int foreground = 0;
+	// if(*aux=='&')
+	// {
+	// 	foreground = 1;
+	// 	aux++;
+	// }
+	// if(foreground==1)
+	// 	sysPrintString("foreground true\n",0,155,255);
 
-		aux++;
-	}
+	// while (*aux != '\0' && wordLength < MAX_WORD_LENGTH)
+	// {
+	// 	if (*aux == ' ' || *aux == '\n')
+	// 	{
+	// 		input[words][wordLength] = '\0';
+	// 		wordLength = 0;
+	// 		words++;
+	// 	}
+	// 	else
+	// 	{
+	// 		input[words][wordLength] = *aux;
+	// 		wordLength++;
+	// 	}
 
-	if (strcmp(input[0], "echo") == 0)
-	{
-		sysPrintString("called echo\n",0,155,255);
-		//call echo.c con input, words
-	}
-	else if (strcmp(input[0], "setFontColor") == 0)
-	{
-		sysPrintString("called setFontColor\n",0,155,255);
-		if (words != 2)
-		{
-			sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
-			return 1;
-		}
-		if (strcmp(input[1], "red") == 0)
-		{
-			R = 255;
-			B = 0;
-			G = 0;
-		}
-		else if (strcmp(input[1], "green") == 0)
-		{
-			R = 0;
-			B = 0;
-			G = 255;
-		}
-		else if (strcmp(input[1], "blue") == 0)
-		{
-			R = 0;
-			B = 255;
-			G = 0;
-		}
-		else if (strcmp(input[1], "default") == 0)
-		{
-			R = DR;
-			B = DB;
-			G = DG;
-		}
-		else
-		{
-			sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
-			return 1;
-		}
+	// 	aux++;
+	// }
 
-		sysPrintString("Set font color\n", B, G, R);
+	int words;
+	char** argv;	
+	parseParams(buffer,&words,&argv);
 
-		return 0;
-	}
-	else if (strcmp(input[0], "clear") == 0)
+	//call echo.c con words,input[1],input[1],...,input[words]
+	//call clear.c con words
+	//call calculate.c con words, input[1], input[2], input[3]
+	//call help.c con words, input[1]
+	//call plot.c con input, words
+	//call displayTime.c con words, timeZone
+	//call setTimeZone.c con words, input[1], timeZone
+
+	
+	int i,valid=0;	
+	for(i = 0; i < CMD_SIZE; i++)
 	{
-		sysPrintString("called clear\n",0,155,255);
-		//call clear.c con words
-	}
-	else if (strcmp(input[0], "opcode") == 0)
-	{
-		if (words != 1)
-		{
-			sysPrintString("No extra parameters for opcode\n", CB, CG, CR);
-			return 1;
+		if(strcmp(argv[0],commands[i].name)==0)
+		{			
+			sysPrintString("called ",0,155,255);
+			sysPrintString(commands[i].name,0,155,255);
+			sysPrintString("\n",0,155,255);
+
+			int status = commands[i].function(words,argv);
+			if(status == ERROR)
+			{
+				sysPrintString("Error\n",0,155,255);
+				return ERROR;
+			}
+			else if(status == EXITCODE)
+			{
+				isRunning = 0;				
+				for(int i = 0 ; i < words; i++)
+				{
+					sysFree((uint64_t)argv[i]);
+				}
+				sysFree((uint64_t)argv);
+			}
+			valid = 1;			
 		}
-		opcodeGenerator();
-		return 0;
-	}
-	else if (strcmp(input[0], "calculate") == 0)
-	{
-		sysPrintString("called calculate\n",0,155,255);
-		//call calculate.c con words, input[1], input[2], input[3]
-	}
-	else if (strcmp(input[0], "help") == 0)
-	{
-		sysPrintString("called help\n",0,155,255);
-		//call help.c con words, input[1]
-	}
-	else if (strcmp(input[0], "exit") == 0)
-	{
-		if (words != 1)
-		{
-			sysPrintString("No extra parameters for exit\n", CB, CG, CR);
+	}	
 
-			return 1;
-		}
-		sysClear();
-		sysPrintString("See you soon", CB, CG, CR);
-
-		isRunning = 0;
-
-		return 0;
-	}
-	else if (strcmp(input[0], "plot") == 0)
-	{
-		sysPrintString("called plot\n",0,155,255);
-		//call plot.c con input, words
-	}
-	else if (strcmp(input[0], "displayTime") == 0)
-	{
-		sysPrintString("called displayTime\n",0,155,255);
-		//call displayTime.c con words, timeZone
-	}
-	else if (strcmp(input[0], "setTimeZone") == 0)
-	{
-		sysPrintString("called setTimeZone\n",0,155,255);
-		//call setTimeZone.c con words, input[1], timeZone
-		timeZone = -3;
-		
-	}
-	else
-	{
+	if(valid==0)
 		sysPrintString("Wrong input\n", CB, CG, CR);
-
-		return 1;
-	}
 
 	return 1;
 }
@@ -232,3 +174,27 @@ int callFunction(char *buffer)
 
 
 
+void parseParams(char * command, int * argc, char *** argv) {
+  char buffer[BUFFERSIZE];
+  int count = 0, size = 0, i = 0, j = 0;
+  do {
+    if(command[i] != ' ' && command[i] != 0) {
+      buffer[j] = command[i];
+      j++;
+    } else if(j != 0) {
+      if(size - count == 0) {
+        size += STEP;
+        (*argv) = (char **)sysMalloc(sizeof(void*)*size);
+      }
+      (*argv)[count] = (char*)sysMalloc(sizeof(char)*(j+1));
+      for (int k = 0; k < j; k++) {
+        (*argv)[count][k] = buffer[k];
+      }
+      (*argv)[count][j] = 0; //Null terminated
+      count++;
+      j = 0;
+    }
+  } while (command[i++] != 0);
+
+  (*argc) = count;
+}

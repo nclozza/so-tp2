@@ -150,9 +150,9 @@ void sysMutexDown(uint64_t mut)
   sysCall(9,mut,0,0,0,0);
 }
 
-uint64_t sysMutexInit(uint64_t name)
+uint64_t sysMutexInit(char* name)
 {
-  return sysCall(10,name,0,0,0,0);
+  return sysCall(10,(uint64_t)name,0,0,0,0);
 }
 
 uint64_t sysMutexClose(uint64_t mut)

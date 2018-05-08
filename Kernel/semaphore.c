@@ -26,7 +26,7 @@ int sem_open(char *name)
 	newSemaphore->id = id;
 	id++;
 	numberOfSemaphores++;
-	semaphores = (semADT *)malloc(numberOfSemaphores * sizeof(semADT));
+	semaphores = (semADT *)malloc(numberOfSemaphores  * sizeof(semADT)); // realloc
 	semaphores[numberOfSemaphores - 1] = newSemaphore;
 	return newSemaphore->id;
 }
