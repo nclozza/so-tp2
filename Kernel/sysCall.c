@@ -5,6 +5,8 @@
 #include "memorymanager.h"
 #include "mutex.h"
 #include "semaphore.h"
+#include "processes.h"
+#include "scheduler.h"
 
 #define ERROR 1
 #define SUCCESS 0
@@ -71,6 +73,8 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
   case 17:
     freeSemaphoresList();
     return SUCCESS;
+  case 18:
+    exec_process(create_process(ptr, params, name));
   }
   return ERROR;
 }

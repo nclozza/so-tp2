@@ -56,7 +56,10 @@ int main()
 	void (*module)();
 	module = sampleCodeModuleAddress;
 	runTests();
-	module();
+
+	sys_exec((uint64_t)sampleCodeModuleAddress, 0, "shell");
+
+	//module();
 
 	return 0;
 }
