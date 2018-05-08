@@ -10,25 +10,6 @@
 #define STEP 10
 #define BUFFERSIZE 1024
 
-static command commands[] = {
-	{"help\0",help},
-	{"help\n",help},
-	{"echo\0",echo},
-	{"echo\n",echo},
-	{"displayTime\n",displayTime},
-	{"setTimeZone\n",setTimeZone},
-	{"setFontColor\n",setFontColor},
-	{"clear\n",clear},
-	{"calculate\n",calculate},
-	{"calculate\0",calculate},
-	{"plot\n",plot},
-	{"plot\0",plot},	
-	{"exit\n",exit},
-	{"opcode\n",opcode},
-	{"prodcons\n",prodcons}
-};
-
-
 static int R = DR;
 static int G = DG;
 static int B = DB;
