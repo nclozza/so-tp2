@@ -15,13 +15,17 @@ static int G = DG;
 static int B = DB;
 static int isRunning = 1;
 static command commands[] = {
+	{"help\0",help},
 	{"help\n",help},
+	{"echo\0",echo},
 	{"echo\n",echo},
 	{"displayTime\n",displayTime},
 	{"setTimeZone\n",setTimeZone},
 	{"setFontColor\n",setFontColor},
 	{"clear\n",clear},
+	{"calculate\0",calculate},
 	{"calculate\n",calculate},
+	{"plot\0",plot},
 	{"plot\n",plot},	
 	{"exit\n",exit},
 	{"opcode\n",opcode},
