@@ -48,6 +48,7 @@ void startShell()
 	// sysFree(page);
 	// sysPrintInt(*page,0,155,255);
 	//runUserlandSemaphoreTests();
+	runUserlandMessageQueueTests();
 	sysPrintString("$> ", CB, CG, CR);
 
 	while (isRunning)
