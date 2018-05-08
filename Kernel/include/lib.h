@@ -1,6 +1,8 @@
 #ifndef LIB_H
 #define LIB_H
 
+#include <stdint.h>
+
 #define SUCCESS 0
 #define FAIL 1
 

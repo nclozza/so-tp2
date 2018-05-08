@@ -4,6 +4,7 @@
 #include "lib.h"
 #include "genericQueue.h"
 #include "memorymanager.h"
+#include <stdlib.h>
 
 #define MESSAGE_OPERATIONS 5
 #define MAX_QUEUES 10

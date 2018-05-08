@@ -2,7 +2,7 @@
 
 typedef struct messageCDT
 {
-	const char* name;
+	char* name;
 	int id;
 	char* buffer;
 	int contentCount;
@@ -12,7 +12,7 @@ typedef struct messageCDT
 static int id = 0;
 static int messagesCount = 0;
 static messageADT* messages;
-static messageOperation messageOperations[MESSAGE_OPERATIONS];
+//static messageOperation messageOperations[MESSAGE_OPERATIONS];
 static queueADT rMsgQueues[MAX_QUEUES], wMsgQueues[MAX_QUEUES];
 
 uint8_t initMsg(int msgId)
@@ -35,7 +35,7 @@ void msgString(char* buffer)
 
 void initMessages()
 {
-	messages = malloc(sizeof(messageADT));
+	messages = (messageADT*)malloc(sizeof(messageADT));
 }
 
 int createMessage(char* name, int messageSize)
@@ -43,12 +43,12 @@ int createMessage(char* name, int messageSize)
 	if(id == 0)
 		initMessages();
 
-	messageADT newMessage = malloc(sizeof(messageCDT));
-	strcpy(newMessage->name, name);
+	messageADT newMessage = (messageADT)malloc(sizeof(messageCDT));
+	strcpyKernel(newMessage->name, name);
 	newMessage->id = id;
 	newMessage->messageSize = messageSize;
 	id++;
-	newMessage->buffer = malloc(messageSize*MAX_SIZE_BUFFER+1);
+	newMessage->buffer =(char*)malloc(messageSize*MAX_SIZE_BUFFER+1);
 
 	for(int j=0; j<=((newMessage->messageSize)*MAX_SIZE_BUFFER); j++)
 				newMessage->buffer[j] = 0;
@@ -65,7 +65,7 @@ int openMessage(char* name, int arg2)
 {
 	for (int i = 0; i < messagesCount; i++)
 	{
-		if(strcmp(messages[i]->name, name) == 0)
+		if(strcmpKernel(messages[i]->name, name) == 0)
 			return messages[i]->id;
 	}
 	return -1;
@@ -80,7 +80,7 @@ int readMessage(char* buffer, int id)
 			if(messages[i]->contentCount <= 0)
 				//block(id, READ);													//preguntarle a nico (se deberia bloquear porque no hay nada que leer, espera que alguien haga un write)
 
-			strcpy(buffer, messages[i]->buffer);
+			strcpyKernel(buffer, messages[i]->buffer);
 			messages[i]->contentCount = 0;
 
 			for(int j=0; j<=((messages[i]->messageSize)*MAX_SIZE_BUFFER); j++)
@@ -99,7 +99,7 @@ int writeMessage(char* content, int id)
 	{
 		if(messages[i]->id == id)
 		{
-			if(strlen(content) > messages[i]->messageSize)
+			if(strlenKernel(content) > messages[i]->messageSize)
 				return FAIL;
 
 			if(messages[i]->contentCount >= MAX_SIZE_BUFFER)
@@ -133,6 +133,7 @@ int closeMessage(char*arg1, int id)
 	return FAIL;
 }
 
+/*
 int executeMessage(int operation, char* arg1, int arg2)
 {
 	if(operation < 0 || operation > MESSAGE_OPERATIONS)
@@ -149,6 +150,7 @@ void setupMessages()
 	messageOperations[READ] = &readMessage;
 	messageOperations[WRITE] = &writeMessage;
 }
+*/
 
 void destroyMsg(int msgId)
 {
