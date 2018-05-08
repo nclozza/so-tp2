@@ -193,27 +193,27 @@ void sysFreeSemaphoresList()
 
 int sysCreateMessage(uint64_t name, uint64_t messageSize)
 {
-  return (int)sysCall(18,name, messageSize, 0,0);
+  return (int)sysCall(18,name, messageSize, 0,0,0);
 }
 
 int sysOpenMessage(uint64_t name, uint64_t arg2)
 {
-  return (int)sysCall(19, name, arg2,0,0);
+  return (int)sysCall(19, name, arg2,0,0,0);
 }
 
 int sysReadMessage(uint64_t buffer, uint64_t id)
 {
-  return (int)sysCall(20, buffer, id,0,0);
+  return (int)sysCall(20, buffer, id,0,0,0);
 }
 
 int sysWriteMessage(uint64_t content, uint64_t id)
 {
-  return (int)sysCall(21,content, id, 0,0);
+  return (int)sysCall(21,content, id, 0,0,0);
 }
 
 int closeMessage(uint64_t arg1, uint64_t id)
 {
-  return (int)sysCall(22, arg1,id,0,0);
+  return (int)sysCall(22, arg1,id,0,0,0);
 }
 
 void checkIsNotNull(void* value)

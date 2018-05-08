@@ -1,16 +1,16 @@
 #include "messageQueue.h"
 #include "testlib.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "memorymanager.h"
 #include "videoDriver.h"
+#include "lib.h"
 
 void testMessageQueueIsCreated();
-void givenAName();
+void givenAMessageName();
 void givenASize();
 void whenNameAndSizeArePassedToCreate();
 void thenIdIsReturned();
 void testMessageQueueIsOpened();
-void whenNameIsPassedToOpen();
+void whenMessageNameIsPassedToOpen();
 void thenExistingIdIsReturned();
 void testMessageQueueIsWritten();
 void givenContent();
@@ -28,55 +28,56 @@ int runMessageQueueTests();
 #define SUCCESS 0
 #define FAIL 1
 
-char* name;
-char* content;
-int size;
-int id, id2;
-int test;
+char* messageName;
+char* messageBuffer;
+char* messageContent;
+int messageSize;
+int messageId, messageId2;
+int messageTest;
 
 void testMessageQueueIsCreated()
 {
-	givenAName();
+	givenAMessageName();
 	givenASize();
 	whenNameAndSizeArePassedToCreate();
 	thenIdIsReturned();
 }
 
-void givenAName()
+void givenAMessageName()
 {
-	name = "MessageQueueNameForTest";
+	messageName = "MessageQueueNameForTest";
 }
 
 void givenASize()
 {
-	size = 10;
+	messageSize = 10;
 }
 
 void whenNameAndSizeArePassedToCreate()
 {
-	id = createMessage(name, size);
+	messageId = createMessage(messageName, messageSize);
 }
 
 void thenIdIsReturned()
 {
-	checkIsZero(id);
+	checkIsZero(messageId);
 }
 
 void testMessageQueueIsOpened()
 {
-	givenAName();
-	whenNameIsPassedToOpen();
+	givenAMessageName();
+	whenMessageNameIsPassedToOpen();
 	thenExistingIdIsReturned();
 }
 
-void whenNameIsPassedToOpen()
+void whenMessageNameIsPassedToOpen()
 {
-	id2 = openMessage(name, 0);
+	messageId2 = openMessage(messageName, 0);
 }
 
 void thenExistingIdIsReturned()
 {
-	checkAreEqual(id, id2);
+	checkAreEqual(messageId, messageId2);
 }
 
 void testMessageQueueIsWritten()
@@ -88,17 +89,17 @@ void testMessageQueueIsWritten()
 
 void givenContent()
 {
-	content = "content"
+	messageContent = "content";
 }
 
 void whenContentAndIdArePassedToWrite()
 {
-	test = writeMessage(content, id);
+	messageTest = writeMessage(messageContent, messageId);
 }
 
 void thenTestIsASuccess()
 {
-	checkIsZero(test);	//zero = success
+	checkIsZero(messageTest);	//zero = success
 }
 
 void testMessageQueueIsRead()
@@ -110,20 +111,22 @@ void testMessageQueueIsRead()
 
 void givenABuffer()
 {
-	buffer = malloc(size*MAX_SIZE_BUFFER+1);
+	messageBuffer = (char*) malloc(messageSize*MAX_SIZE_BUFFER+1);
 }
 
 void whenBufferAndIdArePassedToRead()
 {
-	test = readMessage(buffer, id);
+	messageTest = readMessage(messageBuffer, messageId);
 }
 
 void thenCheckIfBufferAndContentAreEqual()
-{
-	if(test == 0)	//success
-		checkAreEqual(buffer, content);
-
-	checkIsZero(test);
+{	
+	int testAux = -1;
+	if(messageTest == 0)
+	{	//success
+		testAux = strcmpKernel(messageBuffer, messageContent);
+	}
+	checkIsZero(testAux);
 }
 
 void testMessageQueueIsClosed()
@@ -134,7 +137,7 @@ void testMessageQueueIsClosed()
 
 void whenIdIsPassedToClose()
 {
-	test = closeMessage("", id);
+	messageTest = closeMessage("", messageId);
 }
 
 int runMessageQueueTests()

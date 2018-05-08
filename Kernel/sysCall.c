@@ -5,6 +5,7 @@
 #include "memorymanager.h"
 #include "mutex.h"
 #include "semaphore.h"
+#include "messageQueue.h"
 
 #define ERROR 1
 #define SUCCESS 0

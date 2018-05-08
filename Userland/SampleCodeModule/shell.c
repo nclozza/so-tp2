@@ -15,6 +15,19 @@ static int R = DR;
 static int G = DG;
 static int B = DB;
 static int isRunning = 1;
+static command commands[] = {
+	{"help\n",help},
+	{"echo\n",echo},
+	{"displayTime\n",displayTime},
+	{"setTimeZone\n",setTimeZone},
+	{"setFontColor\n",setFontColor},
+	{"clear\n",clear},
+	{"calculate\n",calculate},
+	{"plot\n",plot},	
+	{"exit\n",exit},
+	{"opcode\n",opcode},
+	{"prodcons\n",prodcons}
+};
 
 //static int timeZone = -3;
 void parseParams(char * command, int * argc, char *** argv);
