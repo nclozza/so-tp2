@@ -39,14 +39,18 @@
 #define EXIT_INS "Quits the shell.\n"
 #define OPCODE_INS "Creates opcode exception for testing purposes.\n"
 
+#define ERROR 2 
+#define EXITCODE 14
+
+						
 void startShell();
-int graph(char input[][MAX_WORD_LENGTH], int words);
 int callFunction(char *buffer);
-int echo(char input[][MAX_WORD_LENGTH], int words);
-int clear(int words);
+int graph(char input[][MAX_WORD_LENGTH], int words);
+
+
 int overflowGenerator(int n);
 int calculateVerifications(int words, char *input2, char *input3);
-int calculate(char *func, int param1, int param2);
+
 extern void opcodeGenerator();
 
 #endif

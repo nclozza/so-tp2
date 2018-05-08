@@ -23,6 +23,12 @@ void copy(char *copy, char *original, int len);
 int subStrleng(const char *s, const char c);
 uint64_t sysMalloc(uint64_t bytes);
 void sysFree(uint64_t address);
+
+void sysMutexUp(uint64_t mut);
+void sysMutexDown(uint64_t mut);
+uint64_t sysMutexInit(char* name);
+uint64_t sysMutexClose(uint64_t mut);
+
 void checkIsNotNull(void* value);
 void checkIsNull(void* value);
 void checkAreEqual(uint64_t value1, uint64_t value2);
