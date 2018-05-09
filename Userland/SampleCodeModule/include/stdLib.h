@@ -56,5 +56,6 @@ int sysOpenMessage(uint64_t name, uint64_t arg2);
 int sysReadMessage(uint64_t buffer, uint64_t id);
 int sysWriteMessage(uint64_t content, uint64_t id);
 int closeMessage(uint64_t arg1, uint64_t id);
+void sysPrintPIDS();
 
 #endif

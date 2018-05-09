@@ -70,6 +70,10 @@ int help(int argc, char *argv[])
 		{
 			sysPrintString(PRODCONS_INS, B, G, R);
 		}
+		else if (strcmp(input1, "ps\n") == 0)
+		{
+			
+		}
 		else
 		{
 			sysPrintString("Not a valid command\n", CB, CG, CR);

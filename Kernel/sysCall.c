@@ -102,6 +102,9 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
     return SUCCESS;
   case 26:
     return ppid_process(get_current_process()); 
+  case 27:
+    printPIDS();
+    return SUCCESS;
   }
   return ERROR;
 }

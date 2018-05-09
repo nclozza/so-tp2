@@ -4,6 +4,7 @@
 #include <stdint.h>
 #define MAX_DIGITS 20
 
+
 extern int sysCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
 static unsigned long int next = 1;
@@ -270,6 +271,11 @@ void sysEndProcess()
 int sysPpid()
 {
   return (int)sysCall(26,0,0,0,0,0);
+}
+
+void sysPrintPIDS()
+{
+  sysCall(27,0,0,0,0,0);
 }
 
 void checkIsNotNull(void* value)

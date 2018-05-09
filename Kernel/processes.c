@@ -5,6 +5,7 @@
 #include "mutex.h"
 #include "memorymanager.h"
 #include "scheduler.h"
+#include "videoDriver.h"
 
 /* El stack newStackFrame y el llenado del mismo se tomó de
 ** https://bitbucket.org/RowDaBoat/wyrm
@@ -303,4 +304,13 @@ uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t params
   newStackFrame->base = 0x000;
 
   return (uint64_t)&newStackFrame->gs;
+}
+
+void printPIDS()
+{
+  int i;
+  for (i=0; i<processesNumber; i++)
+  {
+    printInt(processesTable[i]->pid,0,0,0);
+  }
 }
