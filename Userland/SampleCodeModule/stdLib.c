@@ -6,6 +6,8 @@
 
 extern int sysCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
+static unsigned long int next = 1;
+
 void ok();
 void fail();
 
@@ -305,4 +307,11 @@ void ok()
 void fail()
 {
   sysPrintString("Fail\n",0,0,255);
+}
+
+//Taken from the K&R C programming language book. Returns a pseudo-random integer of 0-32767.
+int rand()
+{
+    next = next * 1103515245 + 12345;
+    return (unsigned int)(next/65536) % 32768;
 }

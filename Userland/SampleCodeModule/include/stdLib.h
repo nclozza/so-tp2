@@ -38,6 +38,7 @@ void checkIsNotMinusOne(int value);
 void checkSizeOfSemaphoreList(int mysize, int size);
 void ok();
 void fail();
+int rand();
 
 int sysSemOpen(char* name);
 int sysSemClose(int id);

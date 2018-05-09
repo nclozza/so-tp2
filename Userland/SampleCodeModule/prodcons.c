@@ -34,34 +34,37 @@ void removeItemFromBuffer()
 
 void producer() 
 {
-    sysSemWait(fullSem);
+    sysSemWait(fullSem);  //if buffer is full: wait; else: pass
     sysMutexDown(buffer_mutex);
 
     if(items < BUFFER_SIZE)
      	putItemIntoBuffer();
     else
-       	sysPrintString("Can't add anymore items, buffer is full\n",0,155,255);
+       	sysPrintString("Can't add anymore items, buffer is full\n",0,155,255);  //should never get here because fullSem allowed it to pass
 
     sysMutexUp(buffer_mutex);
-    sysSemPost(emptySem);
+    sysSemPost(emptySem); //alert: there's an item to consume
 }
 
 void consumer() 
 {
-    sysSemWait(emptySem);
+    sysSemWait(emptySem); //if buffer is empty: wait; else: pass
     sysMutexDown(buffer_mutex);
 
     if(items != 0)
        	removeItemFromBuffer();
     else
-      	sysPrintString("Can't remove anymore items, buffer is empty\n",0,155,255);
+      	sysPrintString("Can't remove anymore items, buffer is empty\n",0,155,255); //should never get here because fullSem allowed it to pass
     
     sysMutexUp(buffer_mutex);
-    sysSemPost(emptySem);    
+    sysSemPost(fullSem);  //alert: there's space for one item
 }
 
 void runProdCons()
 {
+  int iterations = 0;
+  int random;
+
   buffer_mutex = sysMutexInit("buffer_mutex");
   fullSem = sysSemOpen("fullSem");
   emptySem = sysSemOpen("emptySem");
@@ -71,10 +74,20 @@ void runProdCons()
     sysSemPost(fullSem);
   }
 
-  while(1)
+  while(iterations < MAX_ITERATIONS)
   {
-    producer();
-    consumer();
+    random = rand() % 2; //generates 0s and 1s randomly 
+    
+    if (random == 0)
+    {
+      producer();
+    }
+    else
+    {
+      consumer();
+    }
+
+    iterations++;
   }
 
   sysMutexClose(buffer_mutex);
