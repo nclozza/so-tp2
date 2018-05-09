@@ -5,7 +5,7 @@
 
 #define IS_DIGIT(c) ((c - '0') >= 0 && (c - '0') <= 9)
 #define DECIMAL_PLACES 4
-
+void *memcpy(void *destination, const void *source, uint64_t length);
 void reset(char *string, int size);
 int strleng(const char *s);
 void sysPrintString(char *string, int R, int G, int B);
@@ -23,6 +23,8 @@ void copy(char *copy, char *original, int len);
 int subStrleng(const char *s, const char c);
 uint64_t sysMalloc(uint64_t bytes);
 void sysFree(uint64_t address);
+int sysExec(void* function,char** argv,char*name);
+void setForeground(int pid);
 
 void sysMutexUp(uint64_t mut);
 void sysMutexDown(uint64_t mut);

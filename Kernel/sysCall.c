@@ -25,7 +25,15 @@ void freeMemory(uint64_t page)
   //remove process from scheduler
   free((void *)page);
 }
-  
+void setForeground(int pid)
+{
+  process*p = get_process_by_pid(pid);
+  if(p==NULL){
+    printString(": name of process is: ",0,155,255);
+    return;
+  }
+  set_foreground_process(pid);
+}
 uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9)
 {
   switch (rdi)
@@ -76,7 +84,16 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
     freeSemaphoresList();
     return SUCCESS;
   case 18:
-    exec_process(createProcess(rsi, rdx, (char *) rcx));
+    return exec_process(createProcess(rsi, rdx, (char *) rcx));    
+  case 19:
+    setForeground((int)rsi);
+    return SUCCESS;
+  case 20:
+    end_process();
+    return SUCCESS;
+  case 21:
+    return ppid_process(get_current_process());
+
   }
   return ERROR;
 }

@@ -18,6 +18,9 @@ int timeZone = -3;
 
 int help(int argc,char* argv[])
 {
+	sysPrintString("adentro de help\n",0,155,255);
+	sysPrintInt(argc,0,155,255);
+	sysPrintString("\n",0,155,255);
 	if(argc>2)
 		return ERROR;	
 

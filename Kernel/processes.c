@@ -72,11 +72,10 @@ process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name
   strcpyKernel(newProcess->name, name);
 
   newProcess->stackPage = getStackPage(); /* Pide al MemoryAllocator espacio para el stack */
-
+  
   newProcess->status = READY;
 
   newProcess->rsp = createNewProcessStack(newProcessRIP, newProcess->stackPage, params);
-
   setNullAllProcessPages(newProcess);
 
   /* Agerga proceso a la tabla de procesos. Adentro usa un lock. */
@@ -105,8 +104,9 @@ process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name
 
 process *get_process_by_pid(uint64_t pid)
 {
-  if (pid < MAX_PROCESSES && processesTable[pid] != NULL && !is_delete_process(processesTable[pid]))
+  if (pid < MAX_PROCESSES && processesTable[pid] != NULL && !is_delete_process(processesTable[pid])){
     return processesTable[pid];
+  }
 
   return NULL;
 }
