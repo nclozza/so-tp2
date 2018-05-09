@@ -21,6 +21,7 @@ GLOBAL _overflowHandler
 GLOBAL _opcodeHandler
 GLOBAL _generalProtection
 
+EXTERN timer_handler
 EXTERN next_process
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -94,7 +95,21 @@ picSlaveMask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
-	irqHandlerMaster 0
+	pushState
+
+	call timer_handler
+
+	mov rdi, rsp
+	call next_process
+
+	mov rsp, rax
+
+	mov al, 0x20
+	out 0x20, al
+
+	popState
+
+	iretq
 
 ;Keyboard
 _irq01Handler:

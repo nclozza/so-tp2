@@ -33,7 +33,7 @@ void unblock_process(process *p);
 int is_blocked_process(process *p);
 void unblock_read_process(process *p);
 void block_read_process(process *p);
-void block_foreground_process(process *p); /* Se desbloquea al ahcer set_foreground */
+void block_foreground_process(process *p); /* Se desbloquea al hacer set_foreground */
 
 uint64_t pid_process(process *p);
 uint64_t ppid_process(process *p);

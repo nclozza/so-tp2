@@ -43,20 +43,16 @@ struct c_process
 {
   char status;
   char name[MAX_PROCESS_NAME];
-  //uint64_t instructionPointer;
   uint64_t rsp;
   uint64_t stackPage;
   uint64_t dataPageCount;
   void *dataPage[MAX_DATA_PAGES];
   uint64_t pid;
   uint64_t ppid;
-  //uint64_t open_fds; /* bit map */
 };
 
 static void unblock_foreground_process(process *p);
 static void free_data_pages(process *p);
-
-void sizeOfTable();
 
 static process *processesTable[MAX_PROCESSES] = {NULL};
 static process *foreground = NULL;
@@ -107,9 +103,24 @@ process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name
   {
     /* Pone en foreground al primer proceso */
     foreground = newProcess;
+    newProcess->ppid = 0;
   }
 
+  printString("PID: ", 0, 155, 255);
+  printInt(newProcess->pid, 0, 155, 255);
+  printString("\nPPID: ", 0, 155, 255);
+  printInt(newProcess->ppid, 0, 155, 255);
+  printString("\n", 0, 155, 255);
+
   return newProcess;
+}
+
+process *get_process_by_pid(uint64_t pid)
+{
+  if (pid < MAX_PROCESSES && processesTable[pid] != NULL && !is_delete_process(processesTable[pid]))
+    return processesTable[pid];
+
+  return NULL;
 }
 
 void setNullAllProcessPages(process *process)
@@ -176,6 +187,8 @@ void set_rsp_process(process *p, uint64_t rsp)
 
 uint64_t get_rsp_process(process *p)
 {
+  printString("GET_RSP\n", 0, 155, 255);
+  printHex(p);
   if (p != NULL)
     return p->rsp;
   return -1;

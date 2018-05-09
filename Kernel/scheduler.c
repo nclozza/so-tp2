@@ -56,13 +56,16 @@ uint64_t next_process(uint64_t current_rsp)
 
 uint64_t exec_process(process *new_process)
 {
-	printString("ESTOY EN EXEC PROCESS", 0 , 155, 255);
+	printString("ESTOY EN EXEC PROCESS\n", 0 , 155, 255);
 
 	int pid;
 
 	add_process(new_process);
 
 	pid = pid_process(new_process);
+	printString("PID: ", 0, 155, 255);
+	printInt(pid,0, 155, 255);
+	printString("\n", 0, 155, 255);
 
 	if (pid == 0)
 		_change_process(get_rsp_process(current->p));
@@ -72,6 +75,7 @@ uint64_t exec_process(process *new_process)
 
 static void add_process(process *p)
 {
+	printString("ESTOY EN ADD PROCESS\n", 0 , 155, 255);
 
 	list_node *new_node = (list_node *)malloc(sizeof(*new_node));
 
@@ -89,6 +93,8 @@ static void add_process(process *p)
 		new_node->next = current->next;
 		current->next = new_node;
 	}
+
+	printString("ESTOY SALIENDO DE ADD PROCESS\n", 0 , 155, 255);
 }
 
 void yield_process()

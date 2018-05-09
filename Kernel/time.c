@@ -22,8 +22,9 @@ static void add_sleep_process(sleep_process *p);
 /* Controla la cantidad de ticks del timer tick */
 void timer_handler()
 {
-	printString("ESTOY EN EL TIMER HANDLER, HOLA CONI", 0, 155, 255);
+	//printString("ESTOY EN EL TIMER HANDLER, HOLA CONI", 0, 155, 255);
 	ticks++;
+
 	sleep_process *current = sleeping_processes;
 	sleep_process *prev = NULL;
 	sleep_process *sp;
