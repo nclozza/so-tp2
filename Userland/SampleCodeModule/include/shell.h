@@ -20,7 +20,8 @@
 				help (optional)command      - Displays help instructions for command\n\
 				exit                        - Exits the shell\n\
 				prodcons                    - Offers a solution for the producer-consumer problem\n\
-				opcode                      - Tests opcode exception\n"
+				opcode                      - Tests opcode exception\n\
+				ps							- Prints a list of all processes"
 #define ECHO_INS "Receives a variable amount of arguments, prints them in the screen (max 32).\n"
 #define DISPLAY_TIME_INS "Receives no arguments. Prints current date and time.\n\
 							Default timezone is UTC-3.\n"
@@ -40,6 +41,7 @@
 #define EXIT_INS "Quits the shell.\n"
 #define OPCODE_INS "Creates opcode exception for testing purposes.\n"
 #define PRODCONS_INS "Receives no arguments. Producers put items into a buffer and consumers retrieve them.\n"
+#define PS_INS "Receives no arguments. Lists all processes and their properties."
 
 #define ERROR 2 
 #define EXITCODE 14

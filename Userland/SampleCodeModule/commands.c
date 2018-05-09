@@ -72,7 +72,7 @@ int help(int argc, char *argv[])
 		}
 		else if (strcmp(input1, "ps\n") == 0)
 		{
-			
+			sysPrintString(PS_INS, B, G, R);
 		}
 		else
 		{
@@ -153,8 +153,19 @@ int opcode(int argc,char* argv[])
 int prodcons(int argc,char* argv[])
 {
 	if (argc != 1)
+		sysPrintString("No extra parameters for prodcons\n", CB, CG, CR);
 		sysEndProcess();
 	runProdCons();
+	sysEndProcess();
+}
+
+int ps(int argc, char* argv[])
+{
+	if(argc != 1){
+		sysPrintString("No extra parameters for ps\n", CB, CG, CR);
+		sysEndProcess();
+	}
+	sysPrintPIDS();
 	sysEndProcess();
 }
 

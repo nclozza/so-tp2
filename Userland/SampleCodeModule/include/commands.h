@@ -14,6 +14,7 @@ int plot(int argc,char* argv[]);
 int exit(int argc,char* argv[]);
 int opcode(int argc,char* argv[]);
 int prodcons(int argc,char* argv[]);
+int ps(int argc, char* argv[]);
 
 
 typedef struct{
