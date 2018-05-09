@@ -96,16 +96,17 @@ picSlaveMask:
 _irq00Handler:
 	pushState
 
-	call timer_handler
+	;call timer_handler
 
 	mov rdi, rsp
 	call next_process
 
 	mov rsp, rax
 
+	;End Of Interrupt
 	mov al, 0x20
 	out 0x20, al
-
+	
 	popState
 
 	iretq

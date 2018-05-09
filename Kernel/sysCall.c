@@ -6,6 +6,7 @@
 #include "memorymanager.h"
 #include "mutex.h"
 #include "semaphore.h"
+#include "messageQueue.h"
 #include "scheduler.h"
 #include "processes.h"
 
@@ -60,16 +61,14 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
     return SUCCESS;
   case 8:
     mutex_unlock((mutex_t*)rsi);
-    break;
+    return SUCCESS;
   case 9:
     mutex_lock((mutex_t*)rsi);
-    break;
+    return SUCCESS;
   case 10:
     return (uint64_t)mutex_init((char*)rsi);
-    break;
   case 11:
     return (uint64_t)mutex_close((mutex_t*)rsi);
-    break;
   case 12:
     return sem_open((char*)rsi);    
   case 13:
@@ -84,16 +83,25 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
     freeSemaphoresList();
     return SUCCESS;
   case 18:
-    return exec_process(createProcess(rsi, rdx, (char *) rcx));    
+    return createMessage((char*) rsi, (int) rdx);
   case 19:
+    return openMessage((char*) rsi, (int) rdx);
+  case 20:
+    return readMessage((char*) rsi, (int) rdx);
+  case 21:
+    return writeMessage((char*) rsi, (int) rdx);
+  case 22:
+    return closeMessage((char*) rsi, (int) rdx);
+  case 23:
+    return exec_process(createProcess(rsi, rdx, (char *) rcx));    
+  case 24:
     setForeground((int)rsi);
     return SUCCESS;
-  case 20:
+  case 25:
     end_process();
     return SUCCESS;
-  case 21:
-    return ppid_process(get_current_process());
-
+  case 26:
+    return ppid_process(get_current_process()); 
   }
   return ERROR;
 }

@@ -93,12 +93,6 @@ process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name
     newProcess->ppid = 0;
   }
 
-  // printString("PID: ", 0, 155, 255);
-  // printInt(newProcess->pid, 0, 155, 255);
-  // printString("\nPPID: ", 0, 155, 255);
-  // printInt(newProcess->ppid, 0, 155, 255);
-  // printString("\n", 0, 155, 255);
-
   return newProcess;
 }
 
@@ -189,8 +183,6 @@ void set_rsp_process(process *p, uint64_t rsp)
 
 uint64_t get_rsp_process(process *p)
 {
-  //printString("GET_RSP\n", 0, 155, 255);
-  //printHex(p);
   if (p != NULL)
     return p->rsp;
   return -1;
@@ -243,7 +235,9 @@ void block_read_process(process *p)
 void set_foreground_process(process *p)
 {
   if (foreground == get_current_process())
+  {
     set_foreground_force_process(p);
+  }
 }
 
 void set_foreground_force_process(process *p)

@@ -3,6 +3,7 @@
 #include "mutexTests.h"
 #include "videoDriver.h"
 #include "genericQueueTests.h"
+#include "messageQueueTests.h"
 
 void runTests()
 {
@@ -11,5 +12,6 @@ void runTests()
 	runSemaphoreTests();
 	runMutexTests();
     runGenericQueueTests();
+    runMessageQueueTests();
     printString("Finished testing\n", 128, 128, 128);
 }

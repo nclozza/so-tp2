@@ -6,6 +6,7 @@
 
 extern int sysCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
+static unsigned long int next = 1;
 void *memcpy(void *destination, const void *source, uint64_t length)
 {
   /*
@@ -229,22 +230,48 @@ void sysFreeSemaphoresList()
   sysCall(17,0,0,0,0,0);
 }
 
+int sysCreateMessage(uint64_t name, uint64_t messageSize)
+{
+  return (int)sysCall(18,name, messageSize, 0,0,0);
+}
+
+int sysOpenMessage(uint64_t name, uint64_t arg2)
+{
+  return (int)sysCall(19, name, arg2,0,0,0);
+}
+
+int sysReadMessage(uint64_t buffer, uint64_t id)
+{
+  return (int)sysCall(20, buffer, id,0,0,0);
+}
+
+int sysWriteMessage(uint64_t content, uint64_t id)
+{
+  return (int)sysCall(21,content, id, 0,0,0);
+}
+
+int sysCloseMessage(uint64_t arg1, uint64_t id)
+{
+  return (int)sysCall(22, arg1,id,0,0,0);
+}
+
 int sysExec(void* function,char** argv,char*name)
 {
-  return (uint64_t)sysCall(18,(uint64_t)function,(uint64_t)argv,(uint64_t)name,0,0);
+  return (uint64_t)sysCall(23,(uint64_t)function,(uint64_t)argv,(uint64_t)name,0,0);
 }
 void sysSetForeground(int pid)
 {
-  sysCall(19,(uint64_t)pid,0,0,0,0);
+  sysCall(24,(uint64_t)pid,0,0,0,0);
 }
 void sysEndProcess()
 {
-  sysCall(20,0,0,0,0,0);
+  sysCall(25,0,0,0,0,0);
 }
 int sysPpid()
 {
-  return (int)sysCall(21,0,0,0,0,0);
+  return (int)sysCall(26,0,0,0,0,0);
 }
+
 void checkIsNotNull(void* value)
 {
   if(value == NULL)
@@ -266,6 +293,11 @@ void checkIsNull(void* value)
   {
     ok();
   }
+}
+
+int rand()
+{
+  return 0;
 }
 
 void checkAreNotEqual(uint64_t value1, uint64_t value2)

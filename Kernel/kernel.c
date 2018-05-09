@@ -56,18 +56,13 @@ int main()
 	load_idt();
 	paintBackGround();
 	initializePageAllocator();
-	/*
-	void (*module)();
-	module = sampleCodeModuleAddress;
-	*/
+
 	//runTests();
 
-	//printString("ESTOY ADENTRO DE MAIN\n", 0, 155, 255);
 	exec_process(createProcess((uint64_t)init, 0, "init"));
 
-	//module();
-
-	while (1);
+	while (1)
+		;
 
 	return 0;
 }

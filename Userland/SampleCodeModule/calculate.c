@@ -29,13 +29,14 @@ int runCalculate(char *func, int param1, int param2)
 	operations[1] = subtract;
 	operations[2] = multiply;
 	operations[3] = divide;
-	char *operationsName[4] = {"add", "subtract", "multiply", "divide"};
+	char *operationsName[4] = {"add\0", "subtract\n", "multiply\n", "divide\n"};
 
 	for (int i = 0; i < 4; ++i)
 	{
 		if (strcmp(func, operationsName[i]) == 0)
 		{
-			return operations[i](param1, param2);
+			sysPrintInt( operations[i](param1, param2),0,155,255);
+			return 0;
 		}
 	}
 

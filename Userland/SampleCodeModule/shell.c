@@ -15,6 +15,23 @@ static int R = DR;
 static int G = DG;
 static int B = DB;
 static int isRunning = 1;
+static command commands[] = {
+	{"help\0",help},
+	{"help\n",help},
+	{"echo\0",echo},
+	{"echo\n",echo},
+	{"displayTime\n",displayTime},
+	{"setTimeZone\n",setTimeZone},
+	{"setFontColor\n",setFontColor},
+	{"clear\n",clear},
+	{"calculate\0",calculate},
+	{"calculate\n",calculate},
+	{"plot\0",plot},
+	{"plot\n",plot},	
+	{"exit\n",exit},
+	{"opcode\n",opcode},
+	{"prodcons\n",prodcons}
+};
 
 //static int timeZone = -3;
 void parseParams(char * command, int * argc, char *** argv);
@@ -22,19 +39,10 @@ void parseParams(char * command, int * argc, char *** argv);
 void startShell()
 {
 	sysPrintString("Shell initialized\n", CB, CG, CR);
-	
 	char string[MAX_WORD_LENGTH] = {0};
 	char lastString[MAX_WORD_LENGTH] = {0};
 	int counter = 0;
 	char ch;
-	// int* page = (int*)sysMalloc(100);
-	// sysPrintInt(*page,0,155,255);
-	// sysPrintString("\n",CB,CG,CR);
-	// *page = 12;
-	// sysPrintInt(*page,0,155,255);
-	// sysPrintString("\n",CB,CG,CR);
-	// sysFree(page);
-	// sysPrintInt(*page,0,155,255);
 	//runUserlandSemaphoreTests();
 	sysPrintString("$> ", CB, CG, CR);
 
@@ -93,36 +101,6 @@ int callFunction(char *buffer)
 		return 1;
 	}
 
-	// int wordLength = 0;
-	// int words = 0;
-	// char input[MAX_WORDS][MAX_WORD_LENGTH] = {{0}};
-	// char *aux = buffer;
-	// int foreground = 0;
-	// if(*aux=='&')
-	// {
-	// 	foreground = 1;
-	// 	aux++;
-	// }
-	// if(foreground==1)
-	// 	sysPrintString("foreground true\n",0,155,255);
-
-	// while (*aux != '\0' && wordLength < MAX_WORD_LENGTH)
-	// {
-	// 	if (*aux == ' ' || *aux == '\n')
-	// 	{
-	// 		input[words][wordLength] = '\0';
-	// 		wordLength = 0;
-	// 		words++;
-	// 	}
-	// 	else
-	// 	{
-	// 		input[words][wordLength] = *aux;
-	// 		wordLength++;
-	// 	}
-
-	// 	aux++;
-	// }
-
 	int words;
 	char** argv;	
 	parseParams(buffer,&words,&argv);
@@ -137,37 +115,17 @@ int callFunction(char *buffer)
 	int foreground = 1;
 	
 	int i,valid=0;	
-	for(i = 0; i < CMD_SIZE; i++)
+	for(i = 0; i < CMD_SIZE && valid==0; i++)
 	{
 		if(strcmp(argv[0],commands[i].name)==0)
-		{	execProcess(commands[i].function,argv,commands[i].name,foreground);		
-			//int status = commands[i].function(words,argv);
-			// if(status == ERROR)
-			// {
-			// 	sysPrintString("Error\n",0,155,255);
-			// 	return ERROR;
-			// }
-			// else if(status == EXITCODE)
-			// {
-			// 	isRunning = 0;				
-			// 	for(int i = 0 ; i < words; i++)
-			// 	{
-			// 		sysFree((uint64_t)argv[i]);
-			// 	}
-			// 	sysFree((uint64_t)argv);
-			// }
+		{	
+			execProcess(commands[i].function,argv,commands[i].name,foreground);		
 			valid = 1;			
 		}
 	}	
 
 	if(valid==0)
-	{
-		sysPrintString(argv[0], CB, CG, CR);
-		sysPrintString("\n", CB, CG, CR);
-		sysPrintString(argv[1], CB, CG, CR);
-		sysPrintString("\n", CB, CG, CR);
 		sysPrintString("Wrong input\n", CB, CG, CR);
-	}
 
 	return 1;
 }

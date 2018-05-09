@@ -7,6 +7,7 @@
 #include "mathLib.h"
 #include "prodcons.h"
 #include "calculate.h"
+
 static int R = DR;
 static int G = DG;
 static int B = DB;
@@ -16,52 +17,58 @@ static int blue = 9;
 static int defaultColor = 10;
 int timeZone = -3;
 
-int help(int argc,char* argv[])
+int help(int argc, char *argv[])
 {
-	sysPrintString("adentro de help\n",0,155,255);
-	sysPrintInt(argc,0,155,255);
-	sysPrintString("\n",0,155,255);
-	if(argc>2)
-		return ERROR;	
+	// sysPrintString("adentro de help\n",0,155,255);
+	// sysPrintInt(argc,0,155,255);
+	// sysPrintString("\n",0,155,255);
+	argc = 0;
+	if (argc > 2)
+		sysEndProcess();
 
 	if (argc == 2)
 	{
-		char* input1 = argv[2];
-		if (strcmp(input1, "echo") == 0)
+		char* input1 = argv[1];
+
+		if (strcmp(input1, "echo\n") == 0)
 		{
 			sysPrintString(ECHO_INS, B, G, R);
 		}
-		else if (strcmp(input1, "displayTime") == 0)
+		else if (strcmp(input1, "displayTime\n") == 0)
 		{
 			sysPrintString(DISPLAY_TIME_INS, B, G, R);
 		}
-		else if (strcmp(input1, "setTimeZone") == 0)
+		else if (strcmp(input1, "setTimeZone\n") == 0)
 		{
 			sysPrintString(SET_TIME_ZONE_INS, B, G, R);
 		}
-		else if (strcmp(input1, "setFontColor") == 0)
+		else if (strcmp(input1, "setFontColor\n") == 0)
 		{
 			sysPrintString(SET_FONT_COLOR_INS, B, G, R);
 		}
-		else if (strcmp(input1, "clear") == 0)
+		else if (strcmp(input1, "clear\n") == 0)
 		{
 			sysPrintString(CLEAR_INS, B, G, R);
 		}
-		else if (strcmp(input1, "calculate") == 0)
+		else if (strcmp(input1, "calculate\n") == 0)
 		{
 			sysPrintString(CALCULATE_INS, B, G, R);
 		}
-		else if (strcmp(input1, "exit") == 0)
+		else if (strcmp(input1, "exit\n") == 0)
 		{
 			sysPrintString(EXIT_INS, B, G, R);
 		}
-		else if (strcmp(input1, "plot") == 0)
+		else if (strcmp(input1, "plot\n") == 0)
 		{
 			sysPrintString(PLOT_INS, B, G, R);
 		}
-		else if (strcmp(input1, "opcode") == 0)
+		else if (strcmp(input1, "opcode\n") == 0)
 		{
 			sysPrintString(OPCODE_INS, B, G, R);
+		}
+		else if (strcmp(input1, "prodcons\n") == 0)
+		{
+			sysPrintString(PRODCONS_INS, B, G, R);
 		}
 		else
 		{
@@ -73,11 +80,11 @@ int help(int argc,char* argv[])
 		sysPrintString(helpIns, B, G, R);
 	}
 
-	return 0;
+	sysEndProcess();
 }
 int echo(int argc,char* argv[])
 {
-	for (int i = 1; i < (argc + 1); i++)
+	for (int i = 1; i < argc ; i++)
 	{
 		sysPrintString(argv[i], B, G, R);
 		sysPrintString(" ", B, G, R);
@@ -85,20 +92,21 @@ int echo(int argc,char* argv[])
 
 	sysPrintString("\n", B, G, R);
 
-	return 0;
+	sysEndProcess();
 }
 
-int clear(int argc,char* argv[])
-{	
+int clear(int argc, char *argv[])
+{
+	argc = 0;
 	if (argc != 1)
 	{
 		sysPrintString("No extra parameters for clear\n", CB, CG, CR);
 
-		return ERROR;
+		sysEndProcess();
 	}
 
 	sysClear();
-	return 0;
+	sysEndProcess();
 }
 
 int calculate(int argc, char *argv[])
@@ -123,26 +131,27 @@ int calculate(int argc, char *argv[])
 		sysPrintInt(ans, 255, 255, 0);
 		sysPrintString("\n", 255, 255, 0);
 	}
-	return 0;
+	sysEndProcess();
 }
 
 int opcode(int argc,char* argv[])
 {
+	argc = 1;
 	if (argc != 1)
 	{
 		sysPrintString("No extra parameters for opcode\n", CB, CG, CR);
-		return ERROR;
+		sysEndProcess();
 	}
 	opcodeGenerator();
-	return 0;
+	sysEndProcess();
 }
 
 int prodcons(int argc,char* argv[])
 {
-	if(argc!=1)
-		return ERROR;
+	if (argc != 1)
+		sysEndProcess();
 	runProdCons();
-	return 0;
+	sysEndProcess();
 }
 
 int plot(int argc,char* argv[])
@@ -154,7 +163,7 @@ int plot(int argc,char* argv[])
 		Use command help for guidelines\n",
 									 CB, CG, CR);
 
-		return 2;
+		sysEndProcess();
 	}
 
 	for (int i = 1; i <= GRAPH_PARAMETERS; i++)
@@ -165,13 +174,13 @@ int plot(int argc,char* argv[])
 			Use command help for guidelines\n",
 										 CB, CG, CR);
 
-			return 2;
+			sysEndProcess();
 		}
 	}
 
 	graphMain(toFloat(argv[1]), toFloat(argv[2]), toFloat(argv[3]));
-	
-	return 0;
+
+	sysEndProcess();
 }
 
 int displayTime(int argc, char *argv[])
@@ -179,7 +188,7 @@ int displayTime(int argc, char *argv[])
 	if (argc != 1)
 	{
 		sysPrintString("Wrong parameters: displayTime\n", CB, CG, CR);
-		return ERROR;
+		sysEndProcess();
 	}
 	int timeBuff[6];
 
@@ -205,8 +214,8 @@ int displayTime(int argc, char *argv[])
 	sysPrintString("/", B, G, R);
 	sysPrintInt(timeBuff[5], B, G, R);
 	sysPrintString("\n", B, G, R);
-		
-	return 0;
+
+	sysEndProcess();
 }
 
 int setTimeZone(int argc, char *argv[])
@@ -215,22 +224,23 @@ int setTimeZone(int argc, char *argv[])
 	if (argc != 2)
 	{
 		sysPrintString("Wrong parameters: setTimeZone timezone\n", CB, CG, CR);
-		return ERROR;
+		sysEndProcess();
 	}
 	else
 	{
 		if (input1 > 12 || input1 < -11)
 		{
 			sysPrintString("Timezone values must be between -11 and +12\n", CB, CG, CR);
-			return ERROR;
+			sysEndProcess();
 		}
 		timeZone = input1;
-		return input1;
+		sysEndProcess();
 	}
 }
 
 int exit(int argc,char* argv[])
 {
+	//MATAR LA SHELL
 	return EXITCODE;
 }
 

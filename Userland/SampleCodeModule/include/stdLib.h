@@ -24,6 +24,8 @@ int subStrleng(const char *s, const char c);
 uint64_t sysMalloc(uint64_t bytes);
 void sysFree(uint64_t address);
 int sysExec(void* function,char** argv,char*name);
+void sysEndProcess();
+int sysPpid();
 void setForeground(int pid);
 
 void sysMutexUp(uint64_t mut);
@@ -40,6 +42,7 @@ void checkIsNotMinusOne(int value);
 void checkSizeOfSemaphoreList(int mysize, int size);
 void ok();
 void fail();
+int rand();
 
 int sysSemOpen(char* name);
 int sysSemClose(int id);
@@ -47,5 +50,11 @@ int sysSemWait(int id);
 int sysSemPost(int id);
 int sysSemaphoresListSize();
 void sysFreeSemaphoresList();
+
+int sysCreateMessage(uint64_t name, uint64_t messageSize);
+int sysOpenMessage(uint64_t name, uint64_t arg2);
+int sysReadMessage(uint64_t buffer, uint64_t id);
+int sysWriteMessage(uint64_t content, uint64_t id);
+int closeMessage(uint64_t arg1, uint64_t id);
 
 #endif
