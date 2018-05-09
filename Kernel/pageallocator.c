@@ -38,10 +38,10 @@ uint64_t getStackPage()
 		stackPageIndex--;
 		return stackpage;
 	}
-	else if (availableStackPage < (MAX_PROCESSES + reservedStack))
+	else if (availableStackPage < (MAX_PROCESSES * MB + reservedStack))
 	{
-		uint64_t stackpage = availableStackPage * MB;
-		availableStackPage++;
+		uint64_t stackpage = availableStackPage;
+		availableStackPage += MB;
 		return stackpage;
 	}
 	else

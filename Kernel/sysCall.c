@@ -1,3 +1,4 @@
+#include "processes.h"
 #include "interrupts.h"
 #include "videoDriver.h"
 #include "time.h"
@@ -5,7 +6,6 @@
 #include "memorymanager.h"
 #include "mutex.h"
 #include "semaphore.h"
-#include "processes.h"
 #include "scheduler.h"
 
 #define ERROR 1
@@ -74,7 +74,7 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
     freeSemaphoresList();
     return SUCCESS;
   case 18:
-    exec_process(create_process(ptr, params, name));
+    exec_process(createProcess(rsi, rdx, (char *) rcx));
   }
   return ERROR;
 }

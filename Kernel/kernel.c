@@ -7,6 +7,8 @@
 #include "idtLoader.h"
 #include "stdio.h"
 #include "tests.h"
+#include "scheduler.h"
+#include "pageallocator.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -52,12 +54,14 @@ int main()
 {
 	load_idt();
 	paintBackGround();
-
+	initializePageAllocator();
+	/*
 	void (*module)();
 	module = sampleCodeModuleAddress;
-	runTests();
+	*/
+	//runTests();
 
-	sys_exec((uint64_t)sampleCodeModuleAddress, 0, "shell");
+	exec_process(createProcess((uint64_t)sampleCodeModuleAddress, 0, "shell"));
 
 	//module();
 

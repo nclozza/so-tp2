@@ -1,59 +1,149 @@
-#include "./include/memorymanager.h"
-//#include "scheduler.h"
-//#include "dirs.h"
-#include "./include/videoDriver.h"
-#include "./include/mutex.h"
-#include "./include/processes.h"
+#include "memorymanager.h"
+#include "scheduler.h"
+#include "dirs.h"
+#include "videoDriver.h"
+#include "mutex.h"
+#include "processes.h"
 #include "defs.h"
-//#include "interrupts.h"
+#include "interrupts.h"
 
 #define QUANTUM 1
 
-static void add_process(process * p);
-uint64_t exec_process(process * new_process);
-
-typedef struct c_node {
+typedef struct c_node
+{
 	int quantum;
 	process *p;
 	struct c_node *next;
 } list_node;
 
+static void add_process(process *p);
+static void set_next_current();
+
+void _change_process(uint64_t rsp);
+
+/* Proceso actualmente corriendo */
 static list_node *current = NULL;
 static list_node *prev = NULL;
 
-uint64_t exec_process(process * new_process) {
+void _yield_process();
+
+process *get_current_process()
+{
+	return current->p;
+}
+
+uint64_t next_process(uint64_t current_rsp)
+{
+	if (current == NULL)
+		return current_rsp;
+
+	unassign_quantum();
+
+	if (current->quantum > 0)
+		return current_rsp;
+
+	current->quantum = QUANTUM;
+
+	set_rsp_process(current->p, current_rsp);
+
+	prev = current;
+	current = current->next;
+
+	set_next_current();
+
+	return get_rsp_process(current->p);
+}
+
+uint64_t exec_process(process *new_process)
+{
+	printString("ESTOY EN EXEC PROCESS", 0 , 155, 255);
+
 	int pid;
 
 	add_process(new_process);
 
 	pid = pid_process(new_process);
 
-  /*
 	if (pid == 0)
 		_change_process(get_rsp_process(current->p));
-  */
 
 	return pid;
 }
 
-static void add_process(process * p) {
+static void add_process(process *p)
+{
 
-	list_node *new_node = (list_node *) malloc(sizeof(*new_node));
+	list_node *new_node = (list_node *)malloc(sizeof(*new_node));
 
 	new_node->p = p;
 	new_node->quantum = QUANTUM;
 
-	//set_superlock();
-
-	if (current == NULL) {
+	if (current == NULL)
+	{
 		current = new_node;
 		current->next = current;
 		prev = current;
 	}
-	else {
+	else
+	{
 		new_node->next = current->next;
 		current->next = new_node;
 	}
+}
 
-	//unset_superlock();
+void yield_process()
+{
+	current->next->quantum += 1; /* Quantum al siguiente proceso pues el actual quitó tiempo */
+	current->quantum = 0;
+	_yield_process();
+}
+
+/* Se avanza con el proceso que está delante */
+void end_process()
+{
+
+	list_node *n = current;
+
+	destroy_process(n->p);
+
+	prev->next = current->next;
+
+	current = current->next;
+
+	set_next_current();
+
+	free((void *)n);
+
+	assign_quantum(); /* Se le da un quantum al nuevo proceso */
+
+	_change_process(get_rsp_process(current->p));
+}
+
+static void set_next_current()
+{
+	while (is_blocked_process(current->p) || is_delete_process(current->p))
+	{
+		list_node *next = current->next;
+
+		if (is_delete_process(current->p))
+		{
+			prev->next = next;
+			destroy_process(current->p);
+			free((void *)current);
+		}
+		else
+			prev = current;
+
+		current = next;
+	}
+}
+
+void assign_quantum()
+{
+	current->quantum += 1;
+}
+
+void unassign_quantum()
+{
+	current->quantum -= 1;
 }

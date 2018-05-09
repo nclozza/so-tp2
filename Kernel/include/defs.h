@@ -21,4 +21,7 @@
 
 #define NULL ((void *)0)
 
+#define LOCKED 0
+#define UNLOCKED 1
+
 #endif

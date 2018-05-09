@@ -1,9 +1,10 @@
-#include "./include/defs.h"
-#include "./include/lib.h"
-#include "./include/processes.h"
-#include "./include/pageallocator.h"
-#include "./include/mutex.h"
-#include "./include/memorymanager.h"
+#include "processes.h"
+#include "defs.h"
+#include "lib.h"
+#include "pageallocator.h"
+#include "mutex.h"
+#include "memorymanager.h"
+#include "scheduler.h"
 
 /* El stack newStackFrame y el llenado del mismo se tomó de
 ** https://bitbucket.org/RowDaBoat/wyrm
@@ -38,67 +39,33 @@ typedef struct
   uint64_t base;
 } stackFrame;
 
-struct process
+struct c_process
 {
   char status;
   char name[MAX_PROCESS_NAME];
-  uint64_t instructionPointer;
+  //uint64_t instructionPointer;
   uint64_t rsp;
   uint64_t stackPage;
   uint64_t dataPageCount;
   void *dataPage[MAX_DATA_PAGES];
   uint64_t pid;
   uint64_t ppid;
-  uint64_t open_fds; /* bit map */
+  //uint64_t open_fds; /* bit map */
 };
 
-static mutexADT getTableMutexSingleton();
-static void lockTable();
-static void unlockTable();
-static uint64_t pid_process(process * p);
-static int insertProcess(process *p);
-process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name);
-static void setNullAllProcessPages(process *process);
-static uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t params);
+static void unblock_foreground_process(process *p);
+static void free_data_pages(process *p);
+
+void sizeOfTable();
 
 static process *processesTable[MAX_PROCESSES] = {NULL};
 static process *foreground = NULL;
 
 static uint64_t processesNumber = 0;
-static mutexADT mutexTable = NULL;
 
-static mutexADT getTableMutexSingleton()
-{
-  if (mutexTable == NULL)
-  {
-    mutexTable = mutex_init("mutexTable");
-  }
-
-  return mutexTable;
-}
-
-static void lockTable()
-{
-  mutex_lock(getTableMutexSingleton());
-}
-
-static void unlockTable()
-{
-  mutex_unlock(getTableMutexSingleton());
-}
-
-static uint64_t pid_process(process * p)
-{
-	if (p != NULL)
-		return p->pid;
-	return -1;
-}
-
-static int insertProcess(process *p)
+int insertProcess(process *p)
 {
   int i;
-
-  lockTable();
 
   for (i = 0; i < MAX_PROCESSES; i++)
   {
@@ -107,32 +74,24 @@ static int insertProcess(process *p)
       processesNumber++;
       p->pid = i;
       processesTable[i] = p;
-      unlockTable();
       return i;
     }
   }
-
-  unlockTable();
 
   return -1;
 }
 
 process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name)
 {
-  uint64_t newstackPage = getStackPage();
-
   process *newProcess = (process *)malloc(sizeof(*newProcess));
 
   strcpyKernel(newProcess->name, name);
 
-                                        /* DUDA EXISTENCIAL */
-  newProcess->stackPage = newstackPage + sizeof(stackFrame); /* Pide al MemoryAllocator espacio para el stack */
-
-  newProcess->instructionPointer = newProcessRIP;
+  newProcess->stackPage = getStackPage(); /* Pide al MemoryAllocator espacio para el stack */
 
   newProcess->status = READY;
 
-  newProcess->rsp = createNewProcessStack(newProcessRIP, newstackPage, params);
+  newProcess->rsp = createNewProcessStack(newProcessRIP, newProcess->stackPage, params);
 
   setNullAllProcessPages(newProcess);
 
@@ -147,16 +106,13 @@ process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name
   else
   {
     /* Pone en foreground al primer proceso */
-    /* Como vamos a manejar esto????  */
-    // foreground = newProcess;
+    foreground = newProcess;
   }
-
-  newProcess->open_fds = 0;
 
   return newProcess;
 }
 
-static void setNullAllProcessPages(process *process)
+void setNullAllProcessPages(process *process)
 {
   int i;
 
@@ -168,12 +124,150 @@ static void setNullAllProcessPages(process *process)
   process->dataPageCount = 0;
 }
 
+void destroy_process(process *p)
+{
+  if (p != NULL)
+  {
+    processesNumber--;
+    free_data_pages(p);
+    if (foreground == p)
+      set_foreground_process(processesTable[p->ppid]);
+    processesTable[p->pid] = NULL;
+    free((void *)p->stackPage);
+    free((void *)p);
+  }
+}
+
+/* Libera las páginas de datos usadas por el proceso. */
+static void free_data_pages(process *p)
+{
+  int i;
+
+  for (i = 0; i < MAX_DATA_PAGES && p->dataPageCount > 0; i++)
+  {
+    if (p->dataPage[i] != NULL)
+    {
+      free((void *)p->dataPage[i]);
+      p->dataPageCount -= 1;
+    }
+  }
+}
+
+int kill_process(process *p)
+{
+  if (p != NULL && p->pid != 1 && p->pid != 0)
+    p->status = DELETE;
+
+  return p != NULL;
+}
+
+int is_delete_process(process *p)
+{
+  if (p != NULL)
+    return p->status == DELETE;
+  return 0;
+}
+
+void set_rsp_process(process *p, uint64_t rsp)
+{
+  if (p != NULL)
+    p->rsp = rsp;
+}
+
+uint64_t get_rsp_process(process *p)
+{
+  if (p != NULL)
+    return p->rsp;
+  return -1;
+}
+
+uint64_t pid_process(process *p)
+{
+  if (p != NULL)
+    return p->pid;
+  return -1;
+}
+
+uint64_t ppid_process(process *p)
+{
+  if (p != NULL)
+    return p->ppid;
+  return -1;
+}
+
+void block_process(process *p)
+{
+  if (p != NULL && p->status != DELETE)
+    p->status = BLOCKED;
+}
+
+void unblock_process(process *p)
+{
+  if (p != NULL && p->status != DELETE)
+    p->status = READY;
+}
+
+int is_blocked_process(process *p)
+{
+  if (p != NULL)
+    return p->status == BLOCKED || p->status == BLOCKED_READ || p->status == BLOCKED_FOREGROUND;
+  return 1;
+}
+
+void unblock_read_process(process *p)
+{
+  if (p->status == BLOCKED_READ)
+    unblock_process(p);
+}
+
+void block_read_process(process *p)
+{
+  p->status = BLOCKED_READ;
+}
+
+void set_foreground_process(process *p)
+{
+  if (foreground == get_current_process())
+    set_foreground_force_process(p);
+}
+
+void set_foreground_force_process(process *p)
+{
+  if (p != NULL && p->pid != 0)
+  {
+    foreground = p;
+    unblock_foreground_process(p);
+  }
+}
+
+static void unblock_foreground_process(process *p)
+{
+  if (p != NULL && p->status == BLOCKED_FOREGROUND)
+    p->status = READY;
+}
+
+void block_foreground_process(process *p)
+{
+  if (p != NULL)
+    p->status = BLOCKED_FOREGROUND;
+}
+
+process *get_foreground_process()
+{
+  return foreground;
+}
+
+uint64_t number_processes()
+{
+  return processesNumber;
+}
+
 /* Llena el stack para que sea hookeado al cargar un nuevo proceso
 ** https://bitbucket.org/RowDaBoat/wyrm */
 
-static uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t params)
+uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t params)
 {
-  stackFrame *newStackFrame = (stackFrame *)stackPage;
+  stackFrame *newStackFrame = (stackFrame *)stackPage - 1;
 
   newStackFrame->gs = 0x001;
   newStackFrame->fs = 0x002;
