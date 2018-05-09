@@ -19,25 +19,27 @@
 				plot coef_a coef_b coef_c   - Plots a Quadratic function for the given values\n\
 				help (optional)command      - Displays help instructions for command\n\
 				exit                        - Exits the shell\n\
+				prodcons                    - Offers a solution for the producer-consumer problem\n\
 				opcode                      - Tests opcode exception\n"
-#define ECHO_INS "Recieves a variable amount of arguments, prints them in the screen (max 32).\n"
-#define DISPLAY_TIME_INS "Recieves no arguments. Prints current date and time.\n\
+#define ECHO_INS "Receives a variable amount of arguments, prints them in the screen (max 32).\n"
+#define DISPLAY_TIME_INS "Receives no arguments. Prints current date and time.\n\
 							Default timezone is UTC-3.\n"
-#define SET_TIME_ZONE_INS "Recieves an integer between -11 and 12.\n\
+#define SET_TIME_ZONE_INS "Receives an integer between -11 and 12.\n\
 							The parameter is set as the computer timezone in\n\
 							future time printings.\n"
-#define SET_FONT_COLOR_INS "Recieves a string (red, blue, green or default). \n\
+#define SET_FONT_COLOR_INS "Receives a string (red, blue, green or default). \n\
 							The fontcolor for future user printings is changed.\n"
 #define CLEAR_INS "Removes information from screen, starts over.\n"
-#define CALCULATE_INS "Recieves 3 arguments.\n\
+#define CALCULATE_INS "Receives 3 arguments.\n\
 							Arg 1: Operation (add, substract, multiply, divide).\n\
 							Arg 2 and 3: Operands, integer numbers.\n"
-#define PLOT_INS "Recieves 3 arguments.\n\
+#define PLOT_INS "Receives 3 arguments.\n\
 							The arguments correspond to the rational coefficients for\n\
 							a quadratic function\n\
 							Once inside navigate with the arrow keys and use +/- to zoom in/out\n"
 #define EXIT_INS "Quits the shell.\n"
 #define OPCODE_INS "Creates opcode exception for testing purposes.\n"
+#define PRODCONS_INS "Receives no arguments. Producers put items into a buffer and consumers retrieve them.\n"
 
 #define ERROR 2 
 #define EXITCODE 14

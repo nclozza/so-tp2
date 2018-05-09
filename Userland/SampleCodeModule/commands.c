@@ -61,6 +61,10 @@ int help(int argc,char* argv[])
 		{
 			sysPrintString(OPCODE_INS, B, G, R);
 		}
+		else if (strcmp(input1, "prodcons\n") == 0)
+		{
+			sysPrintString(PRODCONS_INS, B, G, R);
+		}
 		else
 		{
 			sysPrintString("Not a valid command\n", CB, CG, CR);
