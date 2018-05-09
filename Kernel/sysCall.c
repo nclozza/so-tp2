@@ -7,6 +7,7 @@
 #include "mutex.h"
 #include "semaphore.h"
 #include "scheduler.h"
+#include "processes.h"
 
 #define ERROR 1
 #define SUCCESS 0
@@ -14,6 +15,7 @@
 uint64_t mallocMemory(uint64_t size)
 {
   void *page = (void *)malloc(size);
+  add_data_page(get_current_process(), page);
   //add Process to scheduler
   return (uint64_t)page;
 }

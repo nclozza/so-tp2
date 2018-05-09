@@ -17,7 +17,18 @@
 #define MAX_DATA_PAGES 64
 #define MAX_PROCESS_NAME 64
 
-typedef struct c_process process;
+typedef struct
+{
+  char status;
+  char name[MAX_PROCESS_NAME];
+  uint64_t rsp;
+  uint64_t stackPage;
+  uint64_t dataPageCount;
+  void *dataPage[MAX_DATA_PAGES];
+  uint64_t pid;
+  uint64_t ppid;
+} process;
+//typedef struct c_process process;
 typedef char status;
 
 void initialize_process_mutex();
@@ -34,7 +45,6 @@ int is_blocked_process(process *p);
 void unblock_read_process(process *p);
 void block_read_process(process *p);
 void block_foreground_process(process *p); /* Se desbloquea al hacer set_foreground */
-
 uint64_t pid_process(process *p);
 uint64_t ppid_process(process *p);
 uint64_t number_processes();

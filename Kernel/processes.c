@@ -39,18 +39,6 @@ typedef struct
   uint64_t base;
 } stackFrame;
 
-struct c_process
-{
-  char status;
-  char name[MAX_PROCESS_NAME];
-  uint64_t rsp;
-  uint64_t stackPage;
-  uint64_t dataPageCount;
-  void *dataPage[MAX_DATA_PAGES];
-  uint64_t pid;
-  uint64_t ppid;
-};
-
 static void unblock_foreground_process(process *p);
 static void free_data_pages(process *p);
 
@@ -106,11 +94,11 @@ process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name
     newProcess->ppid = 0;
   }
 
-  printString("PID: ", 0, 155, 255);
-  printInt(newProcess->pid, 0, 155, 255);
-  printString("\nPPID: ", 0, 155, 255);
-  printInt(newProcess->ppid, 0, 155, 255);
-  printString("\n", 0, 155, 255);
+  // printString("PID: ", 0, 155, 255);
+  // printInt(newProcess->pid, 0, 155, 255);
+  // printString("\nPPID: ", 0, 155, 255);
+  // printInt(newProcess->ppid, 0, 155, 255);
+  // printString("\n", 0, 155, 255);
 
   return newProcess;
 }
@@ -164,6 +152,20 @@ static void free_data_pages(process *p)
   }
 }
 
+void add_data_page(process *p, void *page)
+{
+  int i = 0;
+
+  while (i < MAX_DATA_PAGES && p->dataPage[i] != NULL)
+    i++;
+
+  if (i < MAX_DATA_PAGES)
+  {
+    p->dataPageCount += 1;
+    p->dataPage[i] = page;
+  }
+}
+
 int kill_process(process *p)
 {
   if (p != NULL && p->pid != 1 && p->pid != 0)
@@ -187,8 +189,8 @@ void set_rsp_process(process *p, uint64_t rsp)
 
 uint64_t get_rsp_process(process *p)
 {
-  printString("GET_RSP\n", 0, 155, 255);
-  printHex(p);
+  //printString("GET_RSP\n", 0, 155, 255);
+  //printHex(p);
   if (p != NULL)
     return p->rsp;
   return -1;

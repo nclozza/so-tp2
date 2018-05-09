@@ -164,7 +164,13 @@ int callFunction(char *buffer)
 	}	
 
 	if(valid==0)
+	{
+		sysPrintString(argv[0], CB, CG, CR);
+		sysPrintString("\n", CB, CG, CR);
+		sysPrintString(argv[1], CB, CG, CR);
+		sysPrintString("\n", CB, CG, CR);
 		sysPrintString("Wrong input\n", CB, CG, CR);
+	}
 
 	return 1;
 }

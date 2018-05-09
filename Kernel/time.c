@@ -16,8 +16,8 @@ typedef struct c_sleep_process
 
 static sleep_process *sleeping_processes = NULL;
 
-static sleep_process *create_sleep_process(uint64_t ticks);
-static void add_sleep_process(sleep_process *p);
+// static sleep_process *create_sleep_process(uint64_t ticks);
+// static void add_sleep_process(sleep_process *p);
 
 /* Controla la cantidad de ticks del timer tick */
 void timer_handler()
@@ -25,6 +25,7 @@ void timer_handler()
 	//printString("ESTOY EN EL TIMER HANDLER, HOLA CONI", 0, 155, 255);
 	ticks++;
 
+	/*
 	sleep_process *current = sleeping_processes;
 	sleep_process *prev = NULL;
 	sleep_process *sp;
@@ -51,9 +52,11 @@ void timer_handler()
 			current = current->next;
 		}
 	}
+	*/
 }
 
 /* Bloquea el proceso actual y lo pone en una lista con los ticks necesarios hasta despertar */
+/* TODO: SE USA PARA EL SLEEP DE USERLAND, NOSOTROS NO LO USAMOS
 int sleep(uint64_t milliseconds)
 {
 
@@ -80,6 +83,7 @@ static sleep_process *create_sleep_process(uint64_t ticks)
 	new_sleep_p->p = get_current_process();
 	return new_sleep_p;
 }
+*/
 
 static void add_sleep_process(sleep_process *p)
 {

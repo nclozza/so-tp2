@@ -9,6 +9,7 @@
 #include "tests.h"
 #include "scheduler.h"
 #include "pageallocator.h"
+#include "init.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -61,11 +62,13 @@ int main()
 	*/
 	//runTests();
 
-	exec_process(createProcess((uint64_t)sampleCodeModuleAddress, 0, "shell"));
+	//printString("ESTOY ADENTRO DE MAIN\n", 0, 155, 255);
+	exec_process(createProcess((uint64_t)init, 0, "init"));
 
 	//module();
 
-	while(1);
+	while (1)
+		;
 
 	return 0;
 }
