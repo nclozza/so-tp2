@@ -17,16 +17,18 @@ void putItemIntoBuffer()
 {
   items++;
   sysPrintString("Added an item\n",0,155,255);
-  sysPrintString("Total items: \n", 0,155,255);
+  sysPrintString("Total items: ", 0,155,255);
   sysPrintInt(items,0,155,255);
+  sysPrintString("\n", 0,155,255);
 }
 
 void removeItemFromBuffer()
 {
   items--;
   sysPrintString("Removed an item\n",0,155,255);
-  sysPrintString("Total items: \n", 0,155,255);
+  sysPrintString("Total items: ", 0,155,255);
   sysPrintInt(items,0,155,255);
+  sysPrintString("\n", 0,155,255);
 }
 
 
@@ -42,7 +44,6 @@ void producer()
 
     sysMutexUp(buffer_mutex);
     sysSemPost(emptySem);
-    
 }
 
 void consumer() 
@@ -50,7 +51,6 @@ void consumer()
     sysSemWait(emptySem);
     sysMutexDown(buffer_mutex);
 
-    removeItemFromBuffer();
     if(items != 0)
        	removeItemFromBuffer();
     else
@@ -69,6 +69,12 @@ void runProdCons()
   for(int i = 0; i < BUFFER_SIZE; i++)
   {
     sysSemPost(fullSem);
+  }
+
+  while(1)
+  {
+    producer();
+    consumer();
   }
 
   sysMutexClose(buffer_mutex);
