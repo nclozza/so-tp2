@@ -5,8 +5,8 @@
 #define MAX_DIGITS 20
 
 extern int sysCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
-
 static unsigned long int next = 1;
+
 void *memcpy(void *destination, const void *source, uint64_t length)
 {
   /*
@@ -255,9 +255,9 @@ int sysCloseMessage(uint64_t arg1, uint64_t id)
   return (int)sysCall(22, arg1,id,0,0,0);
 }
 
-int sysExec(void* function,char** argv,char*name)
+int sysExec(void* function,int argc, char** argv,char*name)
 {
-  return (uint64_t)sysCall(23,(uint64_t)function,(uint64_t)argv,(uint64_t)name,0,0);
+  return (uint64_t)sysCall(23,(uint64_t)function,argc,(uint64_t)argv,(uint64_t)name,0);
 }
 void sysSetForeground(int pid)
 {
@@ -271,7 +271,10 @@ int sysPpid()
 {
   return (int)sysCall(26,0,0,0,0,0);
 }
-
+uint64_t sysGetPage()
+{
+  return sysCall(29,0,0,0,0,0);
+}
 void checkIsNotNull(void* value)
 {
   if(value == NULL)
@@ -295,10 +298,6 @@ void checkIsNull(void* value)
   }
 }
 
-int rand()
-{
-  return 0;
-}
 
 void checkAreNotEqual(uint64_t value1, uint64_t value2)
 {
@@ -366,4 +365,10 @@ void ok()
 void fail()
 {
   sysPrintString("Fail\n",0,0,255);
+}
+
+int rand()
+{
+  next = next * 1103515245 + 12345;
+  return (unsigned int)(next/65536)% 32768;
 }

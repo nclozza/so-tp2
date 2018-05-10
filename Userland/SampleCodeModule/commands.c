@@ -11,18 +11,20 @@
 static int R = DR;
 static int G = DG;
 static int B = DB;
-static int red  = 7;
-static int green = 8;
-static int blue = 9;
-static int defaultColor = 10;
+
 int timeZone = -3;
 
-int help(int argc, char *argv[])
+void printArg(char* name, int argc)
 {
-	// sysPrintString("adentro de help\n",0,155,255);
-	// sysPrintInt(argc,0,155,255);
-	// sysPrintString("\n",0,155,255);
-	argc = 0;
+	sysPrintString("in ",0,155,255);
+	sysPrintString(name,0,155,255);
+	sysPrintString("is : ",0,155,255);
+	sysPrintInt(argc,0,155,255);
+	sysPrintString("\n",0,155,255);
+}
+void help(int argc, char *argv[])
+{
+
 	if (argc > 2)
 		sysEndProcess();
 
@@ -82,7 +84,7 @@ int help(int argc, char *argv[])
 
 	sysEndProcess();
 }
-int echo(int argc,char* argv[])
+void echo(int argc,char* argv[])
 {
 	for (int i = 1; i < argc ; i++)
 	{
@@ -95,9 +97,8 @@ int echo(int argc,char* argv[])
 	sysEndProcess();
 }
 
-int clear(int argc, char *argv[])
+void clear(int argc, char *argv[])
 {
-	argc = 0;
 	if (argc != 1)
 	{
 		sysPrintString("No extra parameters for clear\n", CB, CG, CR);
@@ -109,11 +110,11 @@ int clear(int argc, char *argv[])
 	sysEndProcess();
 }
 
-int calculate(int argc, char *argv[])
+void calculate(int argc, char *argv[])
 {
 	/*calculate operation n1 n2*/
 	if(argc!=4)
-		return 1;
+		sysEndProcess();
 	char* input01 = argv[1];
 	char* input02 = argv[2];
 	char* input03 = argv[3];
@@ -134,9 +135,8 @@ int calculate(int argc, char *argv[])
 	sysEndProcess();
 }
 
-int opcode(int argc,char* argv[])
+void opcode(int argc,char* argv[])
 {
-	argc = 1;
 	if (argc != 1)
 	{
 		sysPrintString("No extra parameters for opcode\n", CB, CG, CR);
@@ -146,7 +146,7 @@ int opcode(int argc,char* argv[])
 	sysEndProcess();
 }
 
-int prodcons(int argc,char* argv[])
+void prodcons(int argc,char* argv[])
 {
 	if (argc != 1)
 		sysEndProcess();
@@ -154,7 +154,7 @@ int prodcons(int argc,char* argv[])
 	sysEndProcess();
 }
 
-int plot(int argc,char* argv[])
+void plot(int argc,char* argv[])
 {
 
 	if (argc != (GRAPH_PARAMETERS + 1))
@@ -183,7 +183,7 @@ int plot(int argc,char* argv[])
 	sysEndProcess();
 }
 
-int displayTime(int argc, char *argv[])
+void displayTime(int argc, char *argv[])
 {
 	if (argc != 1)
 	{
@@ -218,7 +218,7 @@ int displayTime(int argc, char *argv[])
 	sysEndProcess();
 }
 
-int setTimeZone(int argc, char *argv[])
+void setTimeZone(int argc, char *argv[])
 {
 	int input1 = toInt(argv[1]);
 	if (argc != 2)
@@ -238,39 +238,39 @@ int setTimeZone(int argc, char *argv[])
 	}
 }
 
-int exit(int argc,char* argv[])
+void exit(int argc,char* argv[])
 {
 	//MATAR LA SHELL
-	return EXITCODE;
+	sysEndProcess();
 }
 
-int setFontColor(int argc,char* argv[])
+void setFontColor(int argc,char* argv[])
 {
 	if (argc != 2)
 		{
 			sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
-			return 1;
+			sysEndProcess();
 		}
 		if (strcmp(argv[2], "red") == 0)
 		{
-			return red;
+			sysEndProcess();
 		}
 		else if (strcmp(argv[2], "green") == 0)
 		{
-			return green;
+			sysEndProcess();
 		}
 		else if (strcmp(argv[2], "blue") == 0)
 		{
-			return blue;
+			sysEndProcess();
 		}
 		else if (strcmp(argv[2], "default") == 0)
 		{
-			return defaultColor;
+			sysEndProcess();
 		}
 		else
 		{
 			sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
-			return 1;
+			sysEndProcess();
 		}
 
 		sysPrintString("Set font color\n", B, G, R);	

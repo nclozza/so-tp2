@@ -10,7 +10,7 @@ void _hlt();
 
 void init()
 {
-	exec_process(createProcess((uint64_t)sampleCodeModuleAddress, 0, "shell"));
+	exec_process(createProcess((uint64_t)sampleCodeModuleAddress, 0,0, "shell"));
 	//set_foreground_process(get_process_by_pid(1));
 
 	while (1)

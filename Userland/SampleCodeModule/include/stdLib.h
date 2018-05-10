@@ -23,10 +23,11 @@ void copy(char *copy, char *original, int len);
 int subStrleng(const char *s, const char c);
 uint64_t sysMalloc(uint64_t bytes);
 void sysFree(uint64_t address);
-int sysExec(void* function,char** argv,char*name);
+int sysExec(void* function,int argc, char** argv,char*name);
 void sysEndProcess();
 int sysPpid();
-void setForeground(int pid);
+void sysSetForeground(int pid);
+uint64_t sysGetPage();
 
 void sysMutexUp(uint64_t mut);
 void sysMutexDown(uint64_t mut);

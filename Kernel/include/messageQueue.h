@@ -4,6 +4,7 @@
 #include "lib.h"
 #include "genericQueue.h"
 #include "memorymanager.h"
+#include "defs.h"
 
 #define MESSAGE_OPERATIONS 5
 #define MAX_QUEUES 10
@@ -16,7 +17,6 @@
 #define READ 3
 #define WRITE 4
 
-#define NULL (void*)0
 
 typedef struct messageCDT* messageADT;
 typedef int (messageOperation)(char, int);
