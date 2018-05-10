@@ -6,9 +6,10 @@
 #include "mathLib.h"
 #include "semaphoreUserlandTests.h"
 #include "commands.h"
-
+#include "execProcess.h"
 #define STEP 10
 #define BUFFERSIZE 1024
+
 
 static int R = DR;
 static int G = DG;
@@ -43,7 +44,8 @@ void startShell()
 	int counter = 0;
 	char ch;
 	//runUserlandSemaphoreTests();
-	
+	sysPrintString("$> ", CB, CG, CR);
+
 	while (isRunning)
 	{
 
@@ -101,69 +103,49 @@ int callFunction(char *buffer)
 
 	int words;
 	char** argv;	
-	parseParams(buffer,&words,&argv);
 
-	//call echo.c con words,input[1],input[1],...,input[words]
-	//call clear.c con words
-	//call calculate.c con words, input[1], input[2], input[3]
-	//call help.c con words, input[1]
-	//call plot.c con input, words
-	//call displayTime.c con words, timeZone
-	//call setTimeZone.c con words, input[1], timeZone
-
+	int foreground = 0;
+	if(*buffer=='&'){
+		buffer++;
+		foreground=1;
+	}
 	
+	parseParams(buffer,&words,&argv);
 	int i,valid=0;	
 	for(i = 0; i < CMD_SIZE && valid==0; i++)
 	{
 		if(strcmp(argv[0],commands[i].name)==0)
-		{						
-
-			int status = commands[i].function(words,argv);
-			if(status == ERROR)
-			{
-				sysPrintString("Error\n",0,155,255);
-				return ERROR;
-			}
-			else if(status == EXITCODE)
-			{
-				isRunning = 0;				
-				for(int i = 0 ; i < words; i++)
-				{
-					sysFree((uint64_t)argv[i]);
-				}
-				sysFree((uint64_t)argv);
-			}			
-			valid = 1;	
+		{	
+			execProcess(commands[i].function,words,argv,commands[i].name,foreground);		
+			valid = 1;			
 		}
 	}	
 
 	if(valid==0)
-	{		
 		sysPrintString("Wrong input\n", CB, CG, CR);
-	}
 
 	return 1;
 }
+
+
+
+
+
 
 void parseParams(char * command, int * argc, char *** argv) {
   char buffer[BUFFERSIZE];
   int count = 0, size = 0, i = 0, j = 0;
   do {
-    if(command[i] != ' ' && command[i] != 0) 
-    {
+    if(command[i] != ' ' && command[i] != 0) {
       buffer[j] = command[i];
       j++;
-    } 
-    else if(j != 0) 
-    {
-      if(size - count == 0) 
-      {
+    } else if(j != 0) {
+      if(size - count == 0) {
         size += STEP;
         (*argv) = (char **)sysMalloc(sizeof(void*)*size);
       }
       (*argv)[count] = (char*)sysMalloc(sizeof(char)*(j+1));
-      for (int k = 0; k < j; k++) 
-      {
+      for (int k = 0; k < j; k++) {
         (*argv)[count][k] = buffer[k];
       }
       (*argv)[count][j] = 0; //Null terminated
@@ -174,32 +156,3 @@ void parseParams(char * command, int * argc, char *** argv) {
 
   (*argc) = count;
 }
-// int wordLength = 0;
-	// int words = 0;
-	// char input[MAX_WORDS][MAX_WORD_LENGTH] = {{0}};
-	// char *aux = buffer;
-	// int foreground = 0;
-	// if(*aux=='&')
-	// {
-	// 	foreground = 1;
-	// 	aux++;
-	// }
-	// if(foreground==1)
-	// 	sysPrintString("foreground true\n",0,155,255);
-
-	// while (*aux != '\0' && wordLength < MAX_WORD_LENGTH)
-	// {
-	// 	if (*aux == ' ' || *aux == '\n')
-	// 	{
-	// 		(*argv)[wordLength] = '\0';
-	// 		wordLength = 0;
-	// 		words++;
-	// 	}
-	// 	else
-	// 	{
-	// 		input[words][wordLength] = *aux;
-	// 		wordLength++;
-	// 	}
-
-	// 	aux++;
-	// }

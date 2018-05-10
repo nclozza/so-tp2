@@ -5,8 +5,45 @@
 #define MAX_DIGITS 20
 
 extern int sysCall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
-
 static unsigned long int next = 1;
+
+void *memcpy(void *destination, const void *source, uint64_t length)
+{
+  /*
+  * memcpy does not support overlapping buffers, so always do it
+  * forwards. (Don't change this without adjusting memmove.)
+  *
+  * For speedy copying, optimize the common case where both pointers
+  * and the length are word-aligned, and copy word-at-a-time instead
+  * of byte-at-a-time. Otherwise, copy by bytes.
+  *
+  * The alignment logic below should be portable. We rely on
+  * the compiler to be reasonably intelligent about optimizing
+  * the divides and modulos out. Fortunately, it is.
+  */
+  uint64_t i;
+
+  if ((uint64_t)destination % sizeof(uint32_t) == 0 &&
+      (uint64_t)source % sizeof(uint32_t) == 0 &&
+      length % sizeof(uint32_t) == 0)
+  {
+    uint32_t *d = (uint32_t *)destination;
+    const uint32_t *s = (const uint32_t *)source;
+
+    for (i = 0; i < length / sizeof(uint32_t); i++)
+      d[i] = s[i];
+  }
+  else
+  {
+    uint8_t *d = (uint8_t *)destination;
+    const uint8_t *s = (const uint8_t *)source;
+
+    for (i = 0; i < length; i++)
+      d[i] = s[i];
+  }
+
+  return destination;
+}
 
 void ok();
 void fail();
@@ -133,13 +170,13 @@ void sysPaintPixel(int x, int y, char B, char G, char R)
 }
 
 uint64_t sysMalloc(uint64_t bytes)
-{  
-  return sysCall(6,bytes,0,0,0,0);
+{
+  return sysCall(6, bytes, 0, 0, 0, 0);
 }
 
 void sysFree(uint64_t address)
 {
-  sysCall(7,address,0,0,0,0);
+  sysCall(7, address, 0, 0, 0, 0);
 }
 
 void sysMutexUp(uint64_t mut)
@@ -216,6 +253,37 @@ int sysWriteMessage(uint64_t content, uint64_t id)
 int sysCloseMessage(uint64_t arg1, uint64_t id)
 {
   return (int)sysCall(22, arg1,id,0,0,0);
+}
+
+int sysExec(void* function,int argc, char** argv,char*name)
+{
+  return (uint64_t)sysCall(23,(uint64_t)function,argc,(uint64_t)argv,(uint64_t)name,0);
+}
+void sysSetForeground(int pid)
+{
+  sysCall(24,(uint64_t)pid,0,0,0,0);
+}
+void sysEndProcess()
+{
+  sysCall(25,0,0,0,0,0);
+}
+int sysPpid()
+{
+  return (int)sysCall(26,0,0,0,0,0);
+}
+uint64_t sysGetPage()
+{
+  return sysCall(29,0,0,0,0,0);
+}
+
+void sysPrintPIDS()
+{
+  sysCall(27,0,0,0,0,0);
+}
+
+void sysExitShell()
+{
+  sysCall(28,0,0,0,0,0);
 }
 
 void checkIsNotNull(void* value)
@@ -309,9 +377,8 @@ void fail()
   sysPrintString("Fail\n",0,0,255);
 }
 
-//Taken from the K&R C programming language book. Returns a pseudo-random integer of 0-32767.
 int rand()
 {
-    next = next * 1103515245 + 12345;
-    return (unsigned int)(next/65536) % 32768;
+  next = next * 1103515245 + 12345;
+  return (unsigned int)(next/65536)% 32768;
 }

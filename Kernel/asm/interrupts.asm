@@ -13,11 +13,16 @@ GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
 
+GLOBAL _change_process
+GLOBAL _yield_process
+GLOBAL _yield_interrupt
 GLOBAL _divideByZeroHandler
 GLOBAL _overflowHandler
 GLOBAL _opcodeHandler
 GLOBAL _generalProtection
 
+EXTERN timer_handler
+EXTERN next_process
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN printInt
@@ -66,7 +71,6 @@ _cli:
 	cli
 	ret
 
-
 _sti:
 	sti
 	ret
@@ -90,7 +94,22 @@ picSlaveMask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
-	irqHandlerMaster 0
+	pushState
+
+	;call timer_handler
+
+	mov rdi, rsp
+	call next_process
+
+	mov rsp, rax
+
+	;End Of Interrupt
+	mov al, 0x20
+	out 0x20, al
+	
+	popState
+
+	iretq
 
 ;Keyboard
 _irq01Handler:
@@ -127,6 +146,26 @@ _opcodeHandler:
 
 _generalProtection:
 	exceptionHandler 13
+
+_change_process:
+	mov rsp, rdi
+	popState
+	iretq
+
+_yield_process:
+	int 70h       	
+	ret
+
+_yield_interrupt:
+	pushState
+
+	mov rdi, rsp
+	call next_process
+
+	mov rsp, rax
+	popState
+
+	iretq
 
 haltcpu:
 	cli

@@ -25,8 +25,8 @@ void initializePageAllocator()
 	uint64_t ram = *((uint64_t *)SYSTEM_RAM_ADDRESS);
 	size = (ram * MB) / PAGE_SIZE;
 	reserved = (uint64_t)&endOfKernel / (PAGE_SIZE);
-	availablePage = (reserved + 1);
-	reservedStack = (availablePage + PAGE_QTY + 1) * PAGE_SIZE;
+	availablePage = (reserved + 2);
+	reservedStack = (availablePage + PAGE_QTY) * PAGE_SIZE;
 	availableStackPage = reservedStack;
 }
 
@@ -38,10 +38,10 @@ uint64_t getStackPage()
 		stackPageIndex--;
 		return stackpage;
 	}
-	else if (availableStackPage < (MAX_PROCESSES + reservedStack))
+	else if (availableStackPage < (MAX_PROCESSES * MB + reservedStack))
 	{
-		uint64_t stackpage = availableStackPage * MB;
-		availableStackPage++;
+		uint64_t stackpage = availableStackPage;
+		availableStackPage += MB;
 		return stackpage;
 	}
 	else

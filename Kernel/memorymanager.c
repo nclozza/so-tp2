@@ -31,7 +31,7 @@ void free(void *page)
 	}
 }
 
-void* realloc(void* ptr, uint64_t size)
+void *realloc(void *ptr, uint64_t size)
 {
 	void *newptr = malloc(size);
 	memcpy(newptr, ptr, size);
