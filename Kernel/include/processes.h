@@ -33,7 +33,7 @@ typedef char status;
 
 void initialize_process_mutex();
 
-process *createProcess(uint64_t rip, uint64_t params, const char *name);
+process *createProcess(uint64_t rip, uint64_t argc, uint64_t argv, const char *name);
 void destroy_process(process *p);
 
 void set_rsp_process(process *p, uint64_t rsp);
@@ -53,11 +53,9 @@ void lockTable();
 void unlockTable();
 uint64_t number_processes();
 int insertProcess(process *p);
-process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name);
 void setNullAllProcessPages(process *process);
-uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t params);
+uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t argc, uint64_t argv);
 void exitShell();
-
 process *get_process_by_pid(uint64_t pid);
 
 /* Quizas no tengan que estar aca */

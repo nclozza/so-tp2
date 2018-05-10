@@ -8,7 +8,7 @@
 #include "semaphore.h"
 #include "messageQueue.h"
 #include "scheduler.h"
-#include "processes.h"
+#include "pageallocator.h"
 
 #define ERROR 1
 #define SUCCESS 0
@@ -28,12 +28,9 @@ void freeMemory(uint64_t page)
 }
 void setForeground(int pid)
 {
-  process *p = get_process_by_pid(pid);
-  if (p == NULL)
-  {
-    printString(": name of process is: ", 0, 155, 255);
+  process*p = get_process_by_pid(pid);
+  if(p==NULL)
     return;
-  }
   set_foreground_process(p);
 }
 uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9)
@@ -94,7 +91,7 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
   case 22:
     return closeMessage((char *)rsi, (int)rdx);
   case 23:
-    return exec_process(createProcess(rsi, rdx, (char *)rcx));
+    return exec_process(createProcess(rsi, rdx, rcx,(char *) r8));    
   case 24:
     setForeground((int)rsi);
     return SUCCESS;
@@ -109,6 +106,8 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
   case 28:
     exitShell();
     return SUCCESS;
+  case 29:
+    return getAvailablePage();
   }
   return ERROR;
 }

@@ -59,7 +59,7 @@ int main()
 
 	//runTests();
 
-	exec_process(createProcess((uint64_t)init, 0, "init"));
+	exec_process(createProcess((uint64_t)init, 0,0, "init"));
 
 	while (1)
 		;

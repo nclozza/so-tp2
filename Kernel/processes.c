@@ -66,7 +66,7 @@ int insertProcess(process *p)
   return -1;
 }
 
-process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name)
+process *createProcess(uint64_t newProcessRIP, uint64_t argc, uint64_t argv, const char *name)
 {
   process *newProcess = (process *)malloc(sizeof(*newProcess));
 
@@ -76,7 +76,7 @@ process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name
 
   newProcess->status = READY;
 
-  newProcess->rsp = createNewProcessStack(newProcessRIP, newProcess->stackPage, params);
+  newProcess->rsp = createNewProcessStack(newProcessRIP, newProcess->stackPage, argc,argv);
   setNullAllProcessPages(newProcess);
 
   /* Agerga proceso a la tabla de procesos. Adentro usa un lock. */
@@ -93,6 +93,12 @@ process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name
     foreground = newProcess;
     newProcess->ppid = 0;
   }
+
+  // printString("PID: ", 0, 155, 255);
+  // printInt(newProcess->pid, 0, 155, 255);
+  // printString("\nPPID: ", 0, 155, 255);
+  // printInt(newProcess->ppid, 0, 155, 255);
+  // printString("\n", 0, 155, 255);
 
   return newProcess;
 }
@@ -121,8 +127,6 @@ void setNullAllProcessPages(process *process)
 
 void destroy_process(process *p)
 {
-  printString("DELETE PROCESS", 0, 155, 255);
-  printInt(p->pid, 0, 155, 255);
   if (p != NULL)
   {
     processesNumber--;
@@ -193,6 +197,8 @@ void set_rsp_process(process *p, uint64_t rsp)
 
 uint64_t get_rsp_process(process *p)
 {
+  //printString("GET_RSP\n", 0, 155, 255);
+  //printHex(p);
   if (p != NULL)
     return p->rsp;
   return -1;
@@ -245,9 +251,7 @@ void block_read_process(process *p)
 void set_foreground_process(process *p)
 {
   if (foreground == get_current_process())
-  {
     set_foreground_force_process(p);
-  }
 }
 
 void set_foreground_force_process(process *p)
@@ -284,7 +288,7 @@ uint64_t number_processes()
 /* Llena el stack para que sea hookeado al cargar un nuevo proceso
 ** https://bitbucket.org/RowDaBoat/wyrm */
 
-uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t params)
+uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t argc, uint64_t argv)
 {
   stackFrame *newStackFrame = (stackFrame *)stackPage - 1;
 
@@ -298,8 +302,8 @@ uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t params
   newStackFrame->r10 = 0x008;
   newStackFrame->r9 = 0x009;
   newStackFrame->r8 = 0x00A;
-  newStackFrame->rsi = 0x00B;
-  newStackFrame->rdi = params;
+  newStackFrame->rsi = argv;
+  newStackFrame->rdi = argc;
   newStackFrame->rbp = 0x00D;
   newStackFrame->rdx = 0x00E;
   newStackFrame->rcx = 0x00F;

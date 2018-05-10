@@ -103,23 +103,20 @@ int callFunction(char *buffer)
 
 	int words;
 	char** argv;	
-	parseParams(buffer,&words,&argv);
 
-	//call echo.c con words,input[1],input[1],...,input[words]
-	//call clear.c con words
-	//call calculate.c con words, input[1], input[2], input[3]
-	//call help.c con words, input[1]
-	//call plot.c con input, words
-	//call displayTime.c con words, timeZone
-	//call setTimeZone.c con words, input[1], timeZone
-	int foreground = 1;
+	int foreground = 0;
+	if(*buffer=='&'){
+		buffer++;
+		foreground=1;
+	}
 	
+	parseParams(buffer,&words,&argv);
 	int i,valid=0;	
 	for(i = 0; i < CMD_SIZE && valid==0; i++)
 	{
 		if(strcmp(argv[0],commands[i].name)==0)
 		{	
-			execProcess(commands[i].function,argv,commands[i].name,foreground);		
+			execProcess(commands[i].function,words,argv,commands[i].name,foreground);		
 			valid = 1;			
 		}
 	}	
