@@ -73,7 +73,7 @@ process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name
   strcpyKernel(newProcess->name, name);
 
   newProcess->stackPage = getStackPage(); /* Pide al MemoryAllocator espacio para el stack */
-  
+
   newProcess->status = READY;
 
   newProcess->rsp = createNewProcessStack(newProcessRIP, newProcess->stackPage, params);
@@ -99,7 +99,8 @@ process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name
 
 process *get_process_by_pid(uint64_t pid)
 {
-  if (pid < MAX_PROCESSES && processesTable[pid] != NULL && !is_delete_process(processesTable[pid])){
+  if (pid < MAX_PROCESSES && processesTable[pid] != NULL && !is_delete_process(processesTable[pid]))
+  {
     return processesTable[pid];
   }
 
@@ -120,6 +121,8 @@ void setNullAllProcessPages(process *process)
 
 void destroy_process(process *p)
 {
+  printString("DELETE PROCESS", 0, 155, 255);
+  printInt(p->pid, 0, 155, 255);
   if (p != NULL)
   {
     processesNumber--;
@@ -159,6 +162,12 @@ void add_data_page(process *p, void *page)
     p->dataPageCount += 1;
     p->dataPage[i] = page;
   }
+}
+
+void exitShell()
+{
+  process *shell = get_process_by_pid(1);
+  shell->status = DELETE;
 }
 
 int kill_process(process *p)
@@ -309,8 +318,8 @@ uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t params
 void printPIDS()
 {
   int i;
-  for (i=0; i<processesNumber; i++)
+  for (i = 0; i < processesNumber; i++)
   {
-    printInt(processesTable[i]->pid,0,0,0);
+    printInt(processesTable[i]->pid, 0, 0, 0);
   }
 }

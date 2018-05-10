@@ -26,6 +26,8 @@ void sysFree(uint64_t address);
 int sysExec(void* function,char** argv,char*name);
 void sysEndProcess();
 int sysPpid();
+void sysExitShell();
+
 void setForeground(int pid);
 
 void sysMutexUp(uint64_t mut);

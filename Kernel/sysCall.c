@@ -28,12 +28,13 @@ void freeMemory(uint64_t page)
 }
 void setForeground(int pid)
 {
-  process*p = get_process_by_pid(pid);
-  if(p==NULL){
-    printString(": name of process is: ",0,155,255);
+  process *p = get_process_by_pid(pid);
+  if (p == NULL)
+  {
+    printString(": name of process is: ", 0, 155, 255);
     return;
   }
-  set_foreground_process(pid);
+  set_foreground_process(p);
 }
 uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9)
 {
@@ -60,21 +61,21 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
     freeMemory(rsi);
     return SUCCESS;
   case 8:
-    mutex_unlock((mutex_t*)rsi);
+    mutex_unlock((mutex_t *)rsi);
     return SUCCESS;
   case 9:
-    mutex_lock((mutex_t*)rsi);
+    mutex_lock((mutex_t *)rsi);
     return SUCCESS;
   case 10:
-    return (uint64_t)mutex_init((char*)rsi);
+    return (uint64_t)mutex_init((char *)rsi);
   case 11:
-    return (uint64_t)mutex_close((mutex_t*)rsi);
+    return (uint64_t)mutex_close((mutex_t *)rsi);
   case 12:
-    return sem_open((char*)rsi);    
+    return sem_open((char *)rsi);
   case 13:
-    return sem_close((int)rsi);    
+    return sem_close((int)rsi);
   case 14:
-    return sem_wait((int)rsi);    
+    return sem_wait((int)rsi);
   case 15:
     return sem_post((int)rsi);
   case 16:
@@ -83,17 +84,17 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
     freeSemaphoresList();
     return SUCCESS;
   case 18:
-    return createMessage((char*) rsi, (int) rdx);
+    return createMessage((char *)rsi, (int)rdx);
   case 19:
-    return openMessage((char*) rsi, (int) rdx);
+    return openMessage((char *)rsi, (int)rdx);
   case 20:
-    return readMessage((char*) rsi, (int) rdx);
+    return readMessage((char *)rsi, (int)rdx);
   case 21:
-    return writeMessage((char*) rsi, (int) rdx);
+    return writeMessage((char *)rsi, (int)rdx);
   case 22:
-    return closeMessage((char*) rsi, (int) rdx);
+    return closeMessage((char *)rsi, (int)rdx);
   case 23:
-    return exec_process(createProcess(rsi, rdx, (char *) rcx));    
+    return exec_process(createProcess(rsi, rdx, (char *)rcx));
   case 24:
     setForeground((int)rsi);
     return SUCCESS;
@@ -101,9 +102,12 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
     end_process();
     return SUCCESS;
   case 26:
-    return ppid_process(get_current_process()); 
+    return ppid_process(get_current_process());
   case 27:
     printPIDS();
+    return SUCCESS;
+  case 28:
+    exitShell();
     return SUCCESS;
   }
   return ERROR;

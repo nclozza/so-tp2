@@ -11,7 +11,7 @@ int setFontColor(int argc,char* argv[]);
 int clear(int argc,char* argv[]);
 int calculate(int argc,char* argv[]);
 int plot(int argc,char* argv[]);
-int exit(int argc,char* argv[]);
+void exit(int argc,char* argv[]);
 int opcode(int argc,char* argv[]);
 int prodcons(int argc,char* argv[]);
 int ps(int argc, char* argv[]);

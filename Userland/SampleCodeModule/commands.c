@@ -11,7 +11,7 @@
 static int R = DR;
 static int G = DG;
 static int B = DB;
-static int red  = 7;
+static int red = 7;
 static int green = 8;
 static int blue = 9;
 static int defaultColor = 10;
@@ -28,7 +28,7 @@ int help(int argc, char *argv[])
 
 	if (argc == 2)
 	{
-		char* input1 = argv[1];
+		char *input1 = argv[1];
 
 		if (strcmp(input1, "echo\n") == 0)
 		{
@@ -86,9 +86,9 @@ int help(int argc, char *argv[])
 
 	sysEndProcess();
 }
-int echo(int argc,char* argv[])
+int echo(int argc, char *argv[])
 {
-	for (int i = 1; i < argc ; i++)
+	for (int i = 1; i < argc; i++)
 	{
 		sysPrintString(argv[i], B, G, R);
 		sysPrintString(" ", B, G, R);
@@ -116,11 +116,11 @@ int clear(int argc, char *argv[])
 int calculate(int argc, char *argv[])
 {
 	/*calculate operation n1 n2*/
-	if(argc!=4)
+	if (argc != 4)
 		return 1;
-	char* input01 = argv[1];
-	char* input02 = argv[2];
-	char* input03 = argv[3];
+	char *input01 = argv[1];
+	char *input02 = argv[2];
+	char *input03 = argv[3];
 
 	int ver = calculateVerifications(argc, input02, input03);
 
@@ -138,7 +138,7 @@ int calculate(int argc, char *argv[])
 	sysEndProcess();
 }
 
-int opcode(int argc,char* argv[])
+int opcode(int argc, char *argv[])
 {
 	argc = 1;
 	if (argc != 1)
@@ -150,18 +150,19 @@ int opcode(int argc,char* argv[])
 	sysEndProcess();
 }
 
-int prodcons(int argc,char* argv[])
+int prodcons(int argc, char *argv[])
 {
 	if (argc != 1)
 		sysPrintString("No extra parameters for prodcons\n", CB, CG, CR);
-		sysEndProcess();
+	sysEndProcess();
 	runProdCons();
 	sysEndProcess();
 }
 
-int ps(int argc, char* argv[])
+int ps(int argc, char *argv[])
 {
-	if(argc != 1){
+	if (argc != 1)
+	{
 		sysPrintString("No extra parameters for ps\n", CB, CG, CR);
 		sysEndProcess();
 	}
@@ -169,7 +170,7 @@ int ps(int argc, char* argv[])
 	sysEndProcess();
 }
 
-int plot(int argc,char* argv[])
+int plot(int argc, char *argv[])
 {
 
 	if (argc != (GRAPH_PARAMETERS + 1))
@@ -253,40 +254,39 @@ int setTimeZone(int argc, char *argv[])
 	}
 }
 
-int exit(int argc,char* argv[])
+void exit(int argc, char *argv[])
 {
-	//MATAR LA SHELL
-	return EXITCODE;
+	sysExitShell();
 }
 
-int setFontColor(int argc,char* argv[])
+int setFontColor(int argc, char *argv[])
 {
 	if (argc != 2)
-		{
-			sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
-			return 1;
-		}
-		if (strcmp(argv[2], "red") == 0)
-		{
-			return red;
-		}
-		else if (strcmp(argv[2], "green") == 0)
-		{
-			return green;
-		}
-		else if (strcmp(argv[2], "blue") == 0)
-		{
-			return blue;
-		}
-		else if (strcmp(argv[2], "default") == 0)
-		{
-			return defaultColor;
-		}
-		else
-		{
-			sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
-			return 1;
-		}
+	{
+		sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
+		return 1;
+	}
+	if (strcmp(argv[2], "red") == 0)
+	{
+		return red;
+	}
+	else if (strcmp(argv[2], "green") == 0)
+	{
+		return green;
+	}
+	else if (strcmp(argv[2], "blue") == 0)
+	{
+		return blue;
+	}
+	else if (strcmp(argv[2], "default") == 0)
+	{
+		return defaultColor;
+	}
+	else
+	{
+		sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
+		return 1;
+	}
 
-		sysPrintString("Set font color\n", B, G, R);	
+	sysPrintString("Set font color\n", B, G, R);
 }

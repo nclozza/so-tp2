@@ -56,6 +56,7 @@ int insertProcess(process *p);
 process *createProcess(uint64_t newProcessRIP, uint64_t params, const char *name);
 void setNullAllProcessPages(process *process);
 uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t params);
+void exitShell();
 
 process *get_process_by_pid(uint64_t pid);
 
