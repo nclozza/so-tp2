@@ -29,8 +29,12 @@ static command commands[] = {
 	{"plot\0",plot},
 	{"plot\n",plot},	
 	{"exit\n",exit},
+	{"opcode\0",opcode},
 	{"opcode\n",opcode},
-	{"prodcons\n",prodcons}
+	{"prodcons\0",prodcons},
+	{"prodcons\n",prodcons},
+	{"ps\0",ps},
+	{"ps\n",ps}
 };
 
 //static int timeZone = -3;

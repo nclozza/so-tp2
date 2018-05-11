@@ -1,7 +1,7 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
-#define CMD_SIZE 15
+#define CMD_SIZE 19
 
 void help(int argc,char* argv[]);
 void echo(int argc,char* argv[]);
