@@ -322,8 +322,10 @@ uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t argc, 
 void printPIDS()
 {
   int i;
+  printString("PIDS:\n", 0, 155, 255);
   for (i = 0; i < processesNumber; i++)
   {
-    printInt(processesTable[i]->pid, 0, 0, 0);
+    printInt(processesTable[i]->pid, 0, 155, 255);
+    printString("\n", 0, 155, 255);
   }
 }
