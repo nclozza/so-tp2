@@ -1,6 +1,8 @@
 #ifndef SEMAPHORE_H_
 #define SEMAPHORE_H_
 
+#define NULL ((void *)0)
+
 typedef struct sem_t
 {
 	char *name;
@@ -10,11 +12,11 @@ typedef struct sem_t
 
 typedef struct sem_t *semADT;
 
-int sem_open(char *name);
-int sem_post(int id);
-int sem_wait(int id);
+int semOpen(char *name);
+int semPost(int id);
+int semWait(int id);
 int semaphoresListSize();
-int sem_close(int id);
+int semClose(int id);
 void freeSemaphoresList();
 
 #endif

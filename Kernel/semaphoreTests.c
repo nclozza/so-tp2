@@ -59,7 +59,7 @@ void givenAName()
 
 void whenNameIsPassedToOpen()
 {
-	openedSemaphore = sem_open(name);
+	openedSemaphore = semOpen(name);
 }
 
 void thenSemaphoreIsReturned()
@@ -75,7 +75,7 @@ void givenASemaphore()
 
 void whenSemaphoreIsPosted()
 {
-	testingSemaphoreValue = sem_post(testingSemaphore);
+	testingSemaphoreValue = semPost(testingSemaphore);
 }
 
 void thenValueOfSemaphoreIncreases()
@@ -99,7 +99,7 @@ void thenSizeOfSemaphoreListIncreases()
 void whenSemaphoreIsClosed()
 {
 	if(testingSemaphore!=-1)
-		sem_close(testingSemaphore);
+		semClose(testingSemaphore);
 }
 void thenSizeOfSemaphoreListDecreases()
 {	
@@ -110,7 +110,7 @@ void thenSizeOfSemaphoreListDecreases()
 
 void finishedTesting()
 {
-	sem_close(openedSemaphore);
+	semClose(openedSemaphore);
 	freeSemaphoresList();
 }
 

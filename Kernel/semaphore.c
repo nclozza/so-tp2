@@ -1,15 +1,13 @@
 #include <stdint.h>
-//#include <stdio.h>
 #include "semaphore.h"
 #include "memorymanager.h"
 #include "lib.h"
-#define NULL ((void *)0)
 
 static semADT* semaphores;
 static int id = 0;
 static int numberOfSemaphores = 0;
 
-int sem_open(char *name)
+int semOpen(char *name)
 {
 	int i;
 	for (i = 0; i < numberOfSemaphores; i++)
@@ -31,7 +29,7 @@ int sem_open(char *name)
 	return newSemaphore->id;
 }
 
-int sem_post(int id)
+int semPost(int id)
 {
 	sem_t* sem = NULL;
 	int i;
@@ -49,7 +47,7 @@ int sem_post(int id)
 	return sem->value;
 }
 
-int sem_wait(int id)
+int semWait(int id)
 {
 	sem_t* sem = NULL;
 	int i;
@@ -77,7 +75,7 @@ int semaphoresListSize()
 	return numberOfSemaphores;
 }
 
-int sem_close(int id)
+int semClose(int id)
 {
 	int i;
 	for (i = 0; i < numberOfSemaphores; i++)

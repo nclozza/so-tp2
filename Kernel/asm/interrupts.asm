@@ -13,16 +13,16 @@ GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
 
-GLOBAL _change_process
-GLOBAL _yield_process
+GLOBAL _changeProcess
+GLOBAL _yieldProcess
 GLOBAL _yield_interrupt
 GLOBAL _divideByZeroHandler
 GLOBAL _overflowHandler
 GLOBAL _opcodeHandler
 GLOBAL _generalProtection
 
-EXTERN timer_handler
-EXTERN next_process
+EXTERN timerHandler
+EXTERN nextProcess
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN printInt
@@ -96,10 +96,10 @@ picSlaveMask:
 _irq00Handler:
 	pushState
 
-	;call timer_handler
+	;call timerHandler
 
 	mov rdi, rsp
-	call next_process
+	call nextProcess
 
 	mov rsp, rax
 
@@ -147,12 +147,12 @@ _opcodeHandler:
 _generalProtection:
 	exceptionHandler 13
 
-_change_process:
+_changeProcess:
 	mov rsp, rdi
 	popState
 	iretq
 
-_yield_process:
+_yieldProcess:
 	int 70h       	
 	ret
 
@@ -160,7 +160,7 @@ _yield_interrupt:
 	pushState
 
 	mov rdi, rsp
-	call next_process
+	call nextProcess
 
 	mov rsp, rax
 	popState

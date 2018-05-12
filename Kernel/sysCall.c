@@ -16,7 +16,7 @@
 uint64_t mallocMemory(uint64_t size)
 {
   void *page = (void *)malloc(size);
-  add_data_page(get_current_process(), page);
+  addDataPage(getCurrentProcess(), page);
   //add Process to scheduler
   return (uint64_t)page;
 }
@@ -28,10 +28,10 @@ void freeMemory(uint64_t page)
 }
 void setForeground(int pid)
 {
-  process*p = get_process_by_pid(pid);
+  process*p = getProcessByPid(pid);
   if(p==NULL)
     return;
-  set_foreground_process(p);
+  setProcessForeground(p);
 }
 uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9)
 {
@@ -58,23 +58,23 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
     freeMemory(rsi);
     return SUCCESS;
   case 8:
-    mutex_unlock((mutex_t *)rsi);
+    mutexUnlock((mutex_t *)rsi);
     return SUCCESS;
   case 9:
-    mutex_lock((mutex_t *)rsi);
+    mutexLock((mutex_t *)rsi);
     return SUCCESS;
   case 10:
-    return (uint64_t)mutex_init((char *)rsi);
+    return (uint64_t)mutexInit((char *)rsi);
   case 11:
-    return (uint64_t)mutex_close((mutex_t *)rsi);
+    return (uint64_t)mutexClose((mutex_t *)rsi);
   case 12:
-    return sem_open((char *)rsi);
+    return semOpen((char *)rsi);
   case 13:
-    return sem_close((int)rsi);
+    return semClose((int)rsi);
   case 14:
-    return sem_wait((int)rsi);
+    return semWait((int)rsi);
   case 15:
-    return sem_post((int)rsi);
+    return semPost((int)rsi);
   case 16:
     return semaphoresListSize();
   case 17:
@@ -91,15 +91,15 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
   case 22:
     return closeMessage((char *)rsi, (int)rdx);
   case 23:
-    return exec_process(createProcess(rsi, rdx, rcx,(char *) r8));    
+    return runProcess(createProcess(rsi, rdx, rcx,(char *) r8));    
   case 24:
     setForeground((int)rsi);
     return SUCCESS;
   case 25:
-    end_process();
+    killProcess();
     return SUCCESS;
   case 26:
-    return ppid_process(get_current_process());
+    return getProcessPpid(getCurrentProcess());
   case 27:
     printPIDS();
     return SUCCESS;
