@@ -322,10 +322,53 @@ uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t argc, 
 void printPIDS()
 {
   int i;
-  printString("PIDs:\n", 0, 155, 255);
   for (i = 0; i < processesNumber; i++)
   {
+    printString("PID: ", 0, 155, 255);
     printInt(processesTable[i]->pid, 0, 155, 255);
     printString("\n", 0, 155, 255);
+
+    printString("PPID: ", 0, 155, 255);
+    printInt(processesTable[i]->ppid, 0, 155, 255);
+    printString("\n", 0, 155, 255);
+
+    printString("Name: ", 0, 155, 255);
+    printString(processesTable[i]->name, 0, 155, 255);
+    printString("\n", 0, 155, 255);
+
+    printString("Status: ", 0, 155, 255);
+    char printStatus = processesTable[i]->status;
+    if(printStatus == RUNNING)
+    {
+      printString("Running", 0, 155, 255);
+    }
+    else if(printStatus == READY)
+    {
+      printString("Ready", 0, 155, 255);
+    }
+    else if(printStatus == BLOCKED)
+    {
+      printString("Blocked", 0, 155, 255);
+    }
+    else if(printStatus == BLOCKED_READ)
+    {
+      printString("Blocked Read", 0, 155, 255);
+    }
+    else if(printStatus == DELETE)
+    {
+      printString("Awaiting Deletion", 0, 155, 255);
+    }
+    else if(printStatus == BLOCKED_FOREGROUND)
+    {
+      printString("Blocked Foreground", 0, 155, 255);
+    }
+    else
+    {
+      printString("Error", 0, 155, 255);
+    }
+    printString("\n", 0, 155, 255);
+
+    printString("-------------------------------\n", 0, 155, 255);
+
   }
 }
