@@ -9,7 +9,7 @@ void exceptionDispatcher(uint64_t exception, uint64_t *rsp)
 	switch (exception)
 	{
 	case ZERO_EXCEPTION_ID:
-		zero_division(rsp);
+		zeroDivision(rsp);
 		break;
 	case OVERFLOW_EXCEPTION_ID:
 		overflow(rsp);
@@ -22,7 +22,7 @@ void exceptionDispatcher(uint64_t exception, uint64_t *rsp)
 	}
 }
 
-void zero_division(uint64_t *rsp)
+void zeroDivision(uint64_t *rsp)
 {
 	printString("Error: division by zero\n", 0, 155, 255);
 	printRegs(rsp);

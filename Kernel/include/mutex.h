@@ -10,11 +10,11 @@ typedef struct mutex_t
 
 typedef struct mutex_t* mutexADT;
 
-mutex_t* mutex_init(char *name);
-int mutex_lock(mutex_t * mut);
-int mutex_unlock(mutex_t * mut);
+mutex_t* mutexInit(char *name);
+int mutexLock(mutex_t * mut);
+int mutexUnlock(mutex_t * mut);
 int mutexListSize();
-int mutex_close(mutex_t* mut);
+int mutexClose(mutex_t* mut);
 void closeAllMutex();
 void freeMutexList();
 

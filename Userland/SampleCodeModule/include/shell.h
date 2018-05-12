@@ -10,7 +10,7 @@
 #define DG 255
 #define DB 255
 #define NULL ((void *)0)
-#define helpIns "echo arguments ...         - Prints arguments\n\
+#define helpIns "\necho arguments ...          - Prints arguments\n\
 				displayTime                 - Prints date and time to screen\n\
 				setTimeZone timezone        - Set timezone \n\
 				setFontColor color          - Changes font color\n\

@@ -7,72 +7,59 @@
 #include "defs.h"
 #include "interrupts.h"
 
-#define QUANTUM 1
-
-typedef struct c_node
-{
-	int quantum;
-	process *p;
-	struct c_node *next;
-} list_node;
-
-static void add_process(process *p);
-static void set_next_current();
-
-void _change_process(uint64_t rsp);
+static void addProcess(process *p);
+static void setNextCurrent();
 
 /* Proceso actualmente corriendo */
-static list_node *current = NULL;
-static list_node *prev = NULL;
+static nodeList *current = NULL;
+static nodeList *prev = NULL;
 
-void _yield_process();
-
-process *get_current_process()
+process *getCurrentProcess()
 {
 	return current->p;
 }
 
-uint64_t next_process(uint64_t current_rsp)
+uint64_t nextProcess(uint64_t current_rsp)
 {
 	if (current == NULL)
 	{
 		return current_rsp;
 	}
 
-	unassign_quantum();
+	decreaseQuantum();
 
 	if (current->quantum > 0)
 		return current_rsp;
 
 	current->quantum = QUANTUM;
 
-	set_rsp_process(current->p, current_rsp);
+	setProcessRsp(current->p, current_rsp);
 
 	prev = current;
 	current = current->next;
 
-	set_next_current();
+	setNextCurrent();
 
-	return get_rsp_process(current->p);
+	return getProcessRsp(current->p);
 }
 
-uint64_t exec_process(process *new_process)
+uint64_t runProcess(process *new_process)
 {
 	int pid;
 
-	add_process(new_process);
+	addProcess(new_process);
 
-	pid = pid_process(new_process);
+	pid = getProcessPid(new_process);
 
 	if (pid == 0)
-		_change_process(get_rsp_process(current->p));
+		_changeProcess(getProcessRsp(current->p));
 
 	return pid;
 }
 
-static void add_process(process *p)
+static void addProcess(process *p)
 {
-	list_node *new_node = (list_node *)malloc(sizeof(*new_node));
+	nodeList *new_node = (nodeList *)malloc(sizeof(*new_node));
 
 	new_node->p = p;
 	new_node->quantum = QUANTUM;
@@ -90,44 +77,44 @@ static void add_process(process *p)
 	}
 }
 
-void yield_process()
+void yieldProcess()
 {
 	current->next->quantum += 1; /* Quantum al siguiente proceso pues el actual quitó tiempo */
 	current->quantum = 0;
-	_yield_process();
+	_yieldProcess();
 }
 
 /* Se avanza con el proceso que está delante */
-void end_process()
+void killProcess()
 {
 
-	list_node *n = current;
+	nodeList *n = current;
 
-	destroy_process(n->p);
+	removeProcess(n->p);
 
 	prev->next = current->next;
 
 	current = current->next;
 
-	set_next_current();
+	setNextCurrent();
 
 	free((void *)n);
 
-	assign_quantum(); /* Se le da un quantum al nuevo proceso */
+	increaseQuantum(); /* Se le da un quantum al nuevo proceso */
 
-	_change_process(get_rsp_process(current->p));
+	_changeProcess(getProcessRsp(current->p));
 }
 
-static void set_next_current()
+static void setNextCurrent()
 {
-	while (is_blocked_process(current->p) || is_delete_process(current->p))
+	while (isProcessBlocked(current->p) || isProcessDeleted(current->p))
 	{
-		list_node *next = current->next;
+		nodeList *next = current->next;
 
-		if (is_delete_process(current->p))
+		if (isProcessDeleted(current->p))
 		{
 			prev->next = next;
-			destroy_process(current->p);
+			removeProcess(current->p);
 			free((void *)current);
 		}
 		else
@@ -137,12 +124,12 @@ static void set_next_current()
 	}
 }
 
-void assign_quantum()
+void increaseQuantum()
 {
 	current->quantum += 1;
 }
 
-void unassign_quantum()
+void decreaseQuantum()
 {
 	current->quantum -= 1;
 }
