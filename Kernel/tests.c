@@ -4,6 +4,7 @@
 #include "videoDriver.h"
 #include "genericQueueTests.h"
 #include "messageQueueTests.h"
+#include "schedulerTests.h"
 
 void runTests()
 {
@@ -13,5 +14,6 @@ void runTests()
 	runMutexTests();
     runGenericQueueTests();
     runMessageQueueTests();
+    runSchedulerTests();
     printString("Finished testing\n", 128, 128, 128);
 }

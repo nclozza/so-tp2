@@ -57,7 +57,7 @@ int main()
 	paintBackGround();
 	initializePageAllocator();
 
-	//runTests();
+	runTests();
 
 	runProcess(createProcess((uint64_t)init, 0,0, "init"));
 
