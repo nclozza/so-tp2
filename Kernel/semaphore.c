@@ -44,7 +44,7 @@ int semPost(int id)
 	}
 	if(sem == NULL)
 		return 1;
-	unblockProcess(getCurrentProcess());
+	unblockProcessesFromList(sem->id);	
 	sem->value++;
 	return sem->value;
 }
@@ -66,7 +66,9 @@ int semWait(int id)
 	sem->value--;
 	if(sem->value < 0)
 	{
-		blockProcess(getCurrentProcess());
+		process* p = getCurrentProcess();
+		blockProcess(p);
+		addBlockedProcessToList(sem->id, p);
 
 	}
 	return 0;

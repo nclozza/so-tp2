@@ -10,6 +10,9 @@
 static void addProcess(process *p);
 static void setNextCurrent();
 
+static blockedProcessADT* blockedProcesses;
+static int numberOfBlockedProcesses = 0;
+
 /* Proceso actualmente corriendo */
 static nodeList *current = NULL;
 static nodeList *prev = NULL;
@@ -17,6 +20,28 @@ static nodeList *prev = NULL;
 process *getCurrentProcess()
 {
 	return current->p;
+}
+
+void unblockProcessesFromList(int semId)
+{
+	for(int i = 0; i < numberOfBlockedProcesses; i++)
+	{
+		if(blockedProcesses[i]->semId == semId)
+		{
+			printString("Im unblocking a process\n",0,155,255);
+			unblockProcess(blockedProcesses[i]->process);
+		}
+	}
+}
+
+void addBlockedProcessToList(int semId, process* p)
+{
+	blockedProcessADT newBlockedProcess = (blockedProcessADT)malloc(sizeof(blockedProcess));
+	newBlockedProcess->process = p;
+	newBlockedProcess->semId = semId;
+	numberOfBlockedProcesses++;
+	blockedProcesses = (blockedProcessADT *)realloc(blockedProcesses,numberOfBlockedProcesses  * sizeof(blockedProcessADT));
+	blockedProcesses[numberOfBlockedProcesses - 1] = newBlockedProcess;
 }
 
 uint64_t nextProcess(uint64_t current_rsp)

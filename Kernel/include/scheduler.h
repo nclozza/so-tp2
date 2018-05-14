@@ -16,6 +16,16 @@ typedef struct node
 	struct node *next;
 } nodeList;
 
+typedef struct blockedProcess
+{
+	process* process;
+	int semId;
+} blockedProcess;
+
+typedef struct blockedProcess* blockedProcessADT;
+void addBlockedProcessToList(int semId, process* p);
+void unblockProcessesFromList(int semId);
+
 uint64_t nextProcess(uint64_t current_rsp);
 
 uint64_t runProcess(process * new_process);
