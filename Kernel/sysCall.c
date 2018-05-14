@@ -28,10 +28,7 @@ void freeMemory(uint64_t page)
 }
 void setForeground(int pid)
 {
-  process*p = getProcessByPid(pid);
-  if(p==NULL)
-    return;
-  setProcessForeground(p);
+  setProcessForeground(pid);
 }
 uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9)
 {
@@ -91,7 +88,7 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
   case 22:
     return closeMessage((char *)rsi, (int)rdx);
   case 23:
-    return runProcess(createProcess(rsi, rdx, rcx,(char *) r8));    
+    return runProcess(createProcess(rsi, rdx, rcx, (char *)r8));
   case 24:
     setForeground((int)rsi);
     return SUCCESS;

@@ -2,6 +2,7 @@
 #include "lib.h"
 #include "videoDriver.h"
 #include "font.h"
+#include "processes.h"
 
 static unsigned char **video_start = (unsigned char **)0x0005C28;
 static unsigned int current_x = 0;
@@ -67,6 +68,10 @@ void paintPixel(int x, int y, char B, char G, char R)
 
 void writeChar(char c, int B, int G, int R)
 {
+	if (isProcessRunningInForeground() == 0)
+	{
+		return;
+	}
 	checkLine();
 	if (c < 31)
 	{
