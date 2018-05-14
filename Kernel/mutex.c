@@ -2,6 +2,8 @@
 #include "mutex.h"
 #include "memorymanager.h"
 #include "lib.h"
+#include "processes.h"
+#include "scheduler.h"
 
 static mutexADT* mutex;
 static int id = 0;
@@ -36,8 +38,8 @@ int mutexLock(mutex_t * mut)
 	    mut->value--;
     }        
 	else
-	{
-		//TODO: SCHEDULER REMOVES	
+	{		
+		blockProcess(getCurrentProcess());	
 	}
 	return 0;
 }
@@ -45,8 +47,8 @@ int mutexLock(mutex_t * mut)
 int mutexUnlock(mutex_t * mut)
 {
 	if(mut->value == 0)
-	{
-    	//TODO: SCHEDULER ADDS
+	{    	
+    	unblockProcess(getCurrentProcess());
 
 		mut->value++;
 	}

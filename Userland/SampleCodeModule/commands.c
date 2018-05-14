@@ -13,14 +13,24 @@ static int G = DG;
 static int B = DB;
 
 int timeZone = -3;
-
-void printArg(char* name, int argc)
+uint64_t m;
+int s;
+void printName(int argc, char* argv[])
 {
-	sysPrintString("in ",0,155,255);
-	sysPrintString(name,0,155,255);
-	sysPrintString("is : ",0,155,255);
-	sysPrintInt(argc,0,155,255);
-	sysPrintString("\n",0,155,255);
+	// sysMutexDown(m);	
+	sysSemWait(s);	
+		sysPrintString("I'm process: ",0,155,255);
+		sysPrintString(argv[1],0,155,255);		
+	sysSemPost(s);
+	// sysMutexUp(m);
+}
+void createMutex()
+{	
+	m = sysMutexInit("printMutex");	
+}
+void createSem()
+{	
+	s = sysSemOpen("printSem");	
 }
 void help(int argc, char *argv[])
 {

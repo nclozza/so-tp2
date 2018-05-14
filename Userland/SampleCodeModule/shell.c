@@ -34,7 +34,9 @@ static command commands[] = {
 	{"prodcons\0",prodcons},
 	{"prodcons\n",prodcons},
 	{"ps\0",ps},
-	{"ps\n",ps}
+	{"ps\n",ps},
+	{"print\n",printName},
+	{"print\0",printName}
 };
 
 //static int timeZone = -3;
@@ -48,6 +50,8 @@ void startShell()
 	int counter = 0;
 	char ch;
 	//runUserlandSemaphoreTests();
+	createMutex();
+	createSem();
 	sysPrintString("$> ", CB, CG, CR);
 
 	while (isRunning)

@@ -2,6 +2,8 @@
 #include "semaphore.h"
 #include "memorymanager.h"
 #include "lib.h"
+#include "processes.h"
+#include "scheduler.h"
 
 static semADT* semaphores;
 static int id = 0;
@@ -20,11 +22,11 @@ int semOpen(char *name)
 	semADT newSemaphore = (semADT)malloc(sizeof(sem_t));
 	newSemaphore->name = (char *)malloc(strlenKernel(name) + 1);
 	strcpyKernel(newSemaphore->name, name);
-	newSemaphore->value = 0;
+	newSemaphore->value = 1;
 	newSemaphore->id = id;
 	id++;
 	numberOfSemaphores++;
-	semaphores = (semADT *)malloc(numberOfSemaphores  * sizeof(semADT)); // realloc
+	semaphores = (semADT *)realloc(semaphores,numberOfSemaphores  * sizeof(semADT));
 	semaphores[numberOfSemaphores - 1] = newSemaphore;
 	return newSemaphore->id;
 }
@@ -42,7 +44,7 @@ int semPost(int id)
 	}
 	if(sem == NULL)
 		return 1;
-	//TODO: SCHEDULER ADDS
+	unblockProcess(getCurrentProcess());
 	sem->value++;
 	return sem->value;
 }
@@ -64,8 +66,8 @@ int semWait(int id)
 	sem->value--;
 	if(sem->value < 0)
 	{
-		while(1);
-		//TODO: SCHEDULER REMOVES	
+		blockProcess(getCurrentProcess());
+
 	}
 	return 0;
 }
