@@ -7,7 +7,7 @@
 #define GENERAL_PROTECTION_EXCEPTION_ID 13
 
 void exceptionDispatcher(uint64_t exception, uint64_t *rsp);
-void zero_division(uint64_t *rsp);
+void zeroDivision(uint64_t *rsp);
 void overflow(uint64_t *rsp);
 void opcode(uint64_t *rsp);
 void generalProtection(uint64_t *rsp);

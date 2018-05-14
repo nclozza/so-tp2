@@ -7,17 +7,28 @@
 #include "defs.h"
 
 #define MAX_PROCESSES 128
+#define QUANTUM 1
 
-uint64_t next_process(uint64_t current_rsp);
+typedef struct node
+{
+	int quantum;
+	process *p;
+	struct node *next;
+} nodeList;
 
-uint64_t exec_process(process * new_process);
-void end_process();
-void yield_process();
+uint64_t nextProcess(uint64_t current_rsp);
 
-process * get_current_process();
+uint64_t runProcess(process * new_process);
+void killProcess();
+void yieldProcess();
 
-void assign_quantum();
-void unassign_quantum();
+void _changeProcess(uint64_t rsp);
+void _yieldProcess();
+
+process * getCurrentProcess();
+
+void increaseQuantum();
+void decreaseQuantum();
 
 
 #endif

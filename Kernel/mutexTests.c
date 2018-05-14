@@ -70,7 +70,7 @@ void givenAMutexName()
 
 void whenMutexIsPassedToOpen()
 {
-	openedMutex = mutex_init(mutexName);
+	openedMutex = mutexInit(mutexName);
 }
 
 void thenMutexIsReturned()
@@ -86,7 +86,7 @@ void givenAMutex()
 
 void whenMutexIsLocked()
 {
-	testingMutexValue = mutex_lock(testingMutex);
+	testingMutexValue = mutexLock(testingMutex);
 }
 
 void thenValueOfMutexDecreases()
@@ -101,7 +101,7 @@ void givenAMutexLocked()
 
 void whenUnlockedMutex()
 {
-    testingMutexValue = mutex_unlock(testingMutex);
+    testingMutexValue = mutexUnlock(testingMutex);
 }
 
 void thenValueOfMutexIncreases()
@@ -125,7 +125,7 @@ void thenSizeOfMutexListIncreases()
 void whenMutexIsClosed()
 {
 	if(testingMutex!=NULL)
-		mutex_close(testingMutex);
+		mutexClose(testingMutex);
 }
 void thenSizeOfMutexListDecreases()
 {
@@ -136,7 +136,7 @@ void thenSizeOfMutexListDecreases()
 
 void finishedMutexTesting()
 {
-	mutex_close(openedMutex);
+	mutexClose(openedMutex);
 	freeMutexList();
 }
 

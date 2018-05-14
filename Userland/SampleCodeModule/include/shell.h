@@ -10,7 +10,7 @@
 #define DG 255
 #define DB 255
 #define NULL ((void *)0)
-#define helpIns "echo arguments ...          - Prints arguments\n\
+#define helpIns "\necho arguments ...          - Prints arguments\n\
 				displayTime                 - Prints date and time to screen\n\
 				setTimeZone timezone        - Set timezone \n\
 				setFontColor color          - Changes font color\n\
@@ -21,7 +21,7 @@
 				exit                        - Exits the shell\n\
 				prodcons                    - Offers a solution for the producer-consumer problem\n\
 				opcode                      - Tests opcode exception\n\
-				ps							- Prints a list of all processes"
+				ps                          - Prints a list of all processes\n"
 #define ECHO_INS "Receives a variable amount of arguments, prints them in the screen (max 32).\n"
 #define DISPLAY_TIME_INS "Receives no arguments. Prints current date and time.\n\
 							Default timezone is UTC-3.\n"
@@ -41,7 +41,7 @@
 #define EXIT_INS "Quits the shell.\n"
 #define OPCODE_INS "Creates opcode exception for testing purposes.\n"
 #define PRODCONS_INS "Receives no arguments. Producers put items into a buffer and consumers retrieve them.\n"
-#define PS_INS "Receives no arguments. Lists all processes and their properties."
+#define PS_INS "Receives no arguments. Lists all processes and their properties.\n"
 
 #define ERROR 2 
 #define EXITCODE 14

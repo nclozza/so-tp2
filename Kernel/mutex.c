@@ -7,7 +7,7 @@ static mutexADT* mutex;
 static int id = 0;
 static int numberOfMutexes = 0;
 
-mutex_t* mutex_init(char *name)
+mutex_t* mutexInit(char *name)
 {
     int i;
 	for (i = 0; i < numberOfMutexes; i++)
@@ -29,7 +29,7 @@ mutex_t* mutex_init(char *name)
 	return newMutex;
 }
 
-int mutex_lock(mutex_t * mut)
+int mutexLock(mutex_t * mut)
 {
     if(mut->value == 1)
     {
@@ -42,7 +42,7 @@ int mutex_lock(mutex_t * mut)
 	return 0;
 }
 
-int mutex_unlock(mutex_t * mut)
+int mutexUnlock(mutex_t * mut)
 {
 	if(mut->value == 0)
 	{
@@ -59,7 +59,7 @@ int mutexListSize()
 }
 
 
-int mutex_close(mutex_t* mut)
+int mutexClose(mutex_t* mut)
 {
 	int i;
 	for(i = 0; i < numberOfMutexes; i++)
@@ -88,7 +88,7 @@ void closeAllMutex()
     int i;
     for (i=numberOfMutexes; i > 0; i--)
     {
-        mutex_close(mutex[i]);
+        mutexClose(mutex[i]);
     }
 }
 

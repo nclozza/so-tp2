@@ -7,26 +7,18 @@
 
 static unsigned long ticks = 0;
 
-typedef struct c_sleep_process
-{
-	process *p;
-	uint64_t ticks;
-	struct c_sleep_process *next;
-} sleep_process;
-
-
 /* Controla la cantidad de ticks del timer tick */
-void timer_handler()
+void timerHandler()
 {
 	ticks++;
 }
 
-int ticks_elapsed()
+int ticksElapsed()
 {
 	return ticks;
 }
 
-int seconds_elapsed()
+int secondsElapsed()
 {
 	return ticks / 18;
 }
