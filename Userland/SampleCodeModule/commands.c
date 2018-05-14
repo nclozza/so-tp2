@@ -17,12 +17,14 @@ uint64_t m;
 int s;
 void printName(int argc, char* argv[])
 {
-	// sysMutexDown(m);	
-	sysSemWait(s);	
-		sysPrintString("I'm process: ",0,155,255);
-		sysPrintString(argv[1],0,155,255);		
-	sysSemPost(s);
-	// sysMutexUp(m);
+	sysMutexDown(m);		
+		for(int i = 0 ; i < 100; i++){
+			sysPrintString("I'm process: ",0,155,255);
+			sysPrintString(argv[1],0,155,255);
+		}			
+	sysMutexUp(m);
+	sysEndProcess();
+	
 }
 void createMutex()
 {	

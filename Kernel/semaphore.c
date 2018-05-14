@@ -4,6 +4,7 @@
 #include "lib.h"
 #include "processes.h"
 #include "scheduler.h"
+#include "videoDriver.h"
 
 static semADT* semaphores;
 static int id = 0;
@@ -44,8 +45,12 @@ int semPost(int id)
 	}
 	if(sem == NULL)
 		return 1;
-	unblockProcessesFromList(sem->id);	
+	
+	if(sem->value<=0)
+		unblockProcessesFromList(sem->id,0);	
+
 	sem->value++;
+
 	return sem->value;
 }
 
@@ -66,9 +71,9 @@ int semWait(int id)
 	sem->value--;
 	if(sem->value < 0)
 	{
-		process* p = getCurrentProcess();
+		process* p = getCurrentProcess();		
 		blockProcess(p);
-		addBlockedProcessToList(sem->id, p);
+		addBlockedProcessToList(sem->id, p,0);
 
 	}
 	return 0;

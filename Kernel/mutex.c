@@ -39,7 +39,9 @@ int mutexLock(mutex_t * mut)
     }        
 	else
 	{		
-		blockProcess(getCurrentProcess());	
+		process* p = getCurrentProcess();		
+		blockProcess(p);
+		addBlockedProcessToList(mut->id, p,1);
 	}
 	return 0;
 }
@@ -48,7 +50,7 @@ int mutexUnlock(mutex_t * mut)
 {
 	if(mut->value == 0)
 	{    	
-    	unblockProcess(getCurrentProcess());
+    	unblockProcessesFromList(mut->id, 1);	
 
 		mut->value++;
 	}

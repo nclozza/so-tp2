@@ -20,11 +20,12 @@ typedef struct blockedProcess
 {
 	process* process;
 	int semId;
+	int isMutex;
 } blockedProcess;
 
 typedef struct blockedProcess* blockedProcessADT;
-void addBlockedProcessToList(int semId, process* p);
-void unblockProcessesFromList(int semId);
+void addBlockedProcessToList(int semId, process* p, int isMutex);
+void unblockProcessesFromList(int semId, int isMutex);
 
 uint64_t nextProcess(uint64_t current_rsp);
 

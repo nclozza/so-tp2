@@ -22,23 +22,30 @@ process *getCurrentProcess()
 	return current->p;
 }
 
-void unblockProcessesFromList(int semId)
+void unblockProcessesFromList(int semId, int isMutex)
 {
+	printString("Im unblocking in unblockProcessesFromList\n",0,155,255);
+	printInt(numberOfBlockedProcesses,0,155,255);
+	printString("\n",0,155,255);
 	for(int i = 0; i < numberOfBlockedProcesses; i++)
 	{
-		if(blockedProcesses[i]->semId == semId)
+		if(blockedProcesses[i]->semId == semId && blockedProcesses[i]->isMutex == isMutex)
 		{
 			printString("Im unblocking a process\n",0,155,255);
 			unblockProcess(blockedProcesses[i]->process);
 		}
 	}
+	printString("Im leaving unblockProcessesFromList\n",0,155,255);
+
 }
 
-void addBlockedProcessToList(int semId, process* p)
+void addBlockedProcessToList(int id, process* p, int isMutex)
 {
+	printString("Im blocking a process\n",0,155,255);
 	blockedProcessADT newBlockedProcess = (blockedProcessADT)malloc(sizeof(blockedProcess));
 	newBlockedProcess->process = p;
-	newBlockedProcess->semId = semId;
+	newBlockedProcess->semId = id;
+	newBlockedProcess->isMutex = isMutex;
 	numberOfBlockedProcesses++;
 	blockedProcesses = (blockedProcessADT *)realloc(blockedProcesses,numberOfBlockedProcesses  * sizeof(blockedProcessADT));
 	blockedProcesses[numberOfBlockedProcesses - 1] = newBlockedProcess;
