@@ -22,6 +22,12 @@ void thenProcesStatusIsBlocked();
 void givenABlockedProcess();
 void whenAProcessIsUnblocked();
 void thenProcessStatusIsReady();
+void givenAProcessPid();
+void whenGetAProcessByPid();
+void thenPidsAreEqual();
+void givenACreatedProcess();
+void whenAllProcessPagesAreNull();
+void thenProcessDataPageCountIsZero();
 //void whenProcessIsRunning();
 //void thenPidIsNotZero();
 //void givenARunningProcess();
@@ -35,12 +41,6 @@ void testCreateProcess()
     thenProcessIsNotNull();
 }
 
-void testRemoveProcess()
-{
-    givenACreatedProcess();
-    whenProcessIsRemoved();
-    thenProcessIsNull();
-}
 
 void testBlockProcess()
 {
@@ -48,6 +48,21 @@ void testBlockProcess()
     whenProcessIsBlocked();
     thenProcesStatusIsBlocked();
 }
+
+void testUnblockProcess()
+{
+    givenABlockedProcess();
+    whenAProcessIsUnblocked();
+    thenProcessStatusIsReady();
+}
+
+void testGetProcessByPid()
+{
+    givenAProcessPid();
+    whenGetAProcessByPid();
+    thenPidsAreEqual();    
+}
+
 /*
 void testRunProcess()
 {
@@ -63,11 +78,19 @@ void testKillProcess()
     thenPrintOk();
 }
 */
-void testUnblockProcess()
+
+void testSetNullProcessPages()
 {
-    givenABlockedProcess();
-    whenAProcessIsUnblocked();
-    thenProcessStatusIsReady();
+    givenACreatedProcess();
+    whenAllProcessPagesAreNull();
+    thenProcessDataPageCountIsZero();
+}
+
+void testRemoveProcess()
+{
+    givenACreatedProcess();
+    whenProcessIsRemoved();
+    thenProcessIsNull();
 }
 
 
@@ -168,23 +191,54 @@ void thenPidIsNotZero()
     checkIsNotZero(testPid);
 }
 
+void givenAProcessPid()
+{
+    givenACreatedProcess();
+    testPid = testProcess->pid;
+}
+
+void whenGetAProcessByPid()
+{
+    testProcess = getProcessByPid(testPid);
+}
+
+void thenPidsAreEqual()
+{
+    checkAreEqual(testPid, testProcess->pid);
+}
+
+void whenAllProcessPagesAreNull()
+{
+    setNullAllProcessPages(testProcess);
+}
+
+void thenProcessDataPageCountIsZero()
+{
+    checkIsZero(testProcess->dataPageCount);
+}
 
 
 void runSchedulerTests()
 {
-    printString("Testing Process is created...\n", 128, 128, 128);
+    printString("Testing process is created...\n", 128, 128, 128);
     testCreateProcess();
 
-    printString("Testing Process is blocked...\n", 128, 128, 128);    
+    printString("Testing process is blocked...\n", 128, 128, 128);    
     testBlockProcess();
     
-    printString("Testing Process is unblocked...\n", 128, 128, 128);    
+    printString("Testing process is unblocked...\n", 128, 128, 128);    
     testUnblockProcess();
+
+    printString("Testing get a process by PID...\n", 128, 128, 128);    
+    testGetProcessByPid();
 /*   
     printString("Testing Process is running...\n", 128, 128, 128);    
     testRunProcess();
 */
-    printString("Testing Process is removed...\n", 128, 128, 128);
+    printString("Testing set null all process pages...\n", 128, 128, 128);
+    testSetNullProcessPages();
+
+    printString("Testing process is removed...\n", 128, 128, 128);
     testRemoveProcess();
 
 }
