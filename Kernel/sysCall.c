@@ -58,15 +58,15 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
     freeMemory(rsi);
     return SUCCESS;
   case 8:
-    mutexUnlock((mutex_t *)rsi);
+    mutexUnlock((mutexADT)rsi);
     return SUCCESS;
   case 9:
-    mutexLock((mutex_t *)rsi);
+    mutexLock((mutexADT)rsi);
     return SUCCESS;
   case 10:
     return (uint64_t)mutexInit((char *)rsi);
   case 11:
-    return (uint64_t)mutexClose((mutex_t *)rsi);
+    return (uint64_t)mutexClose((mutexADT)rsi);
   case 12:
     return semOpen((char *)rsi);
   case 13:

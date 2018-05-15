@@ -22,63 +22,6 @@ process *getCurrentProcess()
 	return current->p;
 }
 
-void unblockProcessesFromList(int semId, int isMutex)
-{
-	blockedProcess *temp = firstBlockedProcess;
-	blockedProcess *prev;
-
-	while (temp != NULL && temp->semId == semId && temp->isMutex == isMutex)
-	{
-		unblockProcess(temp->process);
-		firstBlockedProcess = temp->next;
-		free(temp);
-		temp = firstBlockedProcess;
-	}
-
-	while (temp != NULL)
-	{
-		while (temp != NULL && temp->semId == semId && temp->isMutex == isMutex)
-		{
-			prev = temp;
-			temp = temp->next;
-		}
-
-		if (temp == NULL)
-		{
-			return;
-		}
-
-		prev->next = temp->next;
-
-		free(temp);
-		temp = prev->next;
-	}
-}
-
-void addBlockedProcessToList(int id, process *p, int isMutex)
-{
-	blockedProcess *newBlockedProcess = (blockedProcess *)malloc(sizeof(*newBlockedProcess));
-	newBlockedProcess->process = p;
-	newBlockedProcess->semId = id;
-	newBlockedProcess->isMutex = isMutex;
-	newBlockedProcess->next = NULL;
-
-	if (firstBlockedProcess == NULL)
-	{
-		firstBlockedProcess = newBlockedProcess;
-	}
-	else
-	{
-		blockedProcess *auxBlockedProcess = firstBlockedProcess;
-		while (auxBlockedProcess->next != NULL)
-		{
-			auxBlockedProcess = auxBlockedProcess->next;
-		}
-
-		auxBlockedProcess->next = newBlockedProcess;
-	}
-}
-
 uint64_t nextProcess(uint64_t current_rsp)
 {
 	if (current == NULL)

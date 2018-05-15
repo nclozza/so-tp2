@@ -18,23 +18,19 @@ int s;
 
 void printName(int argc, char *argv[])
 {
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 100; i++)
 	{
-		sysMutexDown(m);
-		for (int j = 0; j < 10000; j++)
-		{
-			for (int k = 0; k < 10000; k++)
+		for(int j =0;j<1000;j++){
+			for(int k = 0; k < 1000; k++){
 				;
+			}
 		}
+		sysSemWait(s);
+		// sysMutexDown(m);		
 		sysPrintString("I'm process: ", 0, 155, 255);
 		sysPrintString(argv[1], 0, 155, 255);
-		sysMutexUp(m);
-
-		if (i == 5)
-		{
-			sysPrintString("IMPRIMO LISTA DE BLOQUEADOS\n", 0, 155, 255);
-			sysPrintBlockedProcesses();
-		}
+		sysSemPost(s);
+		// sysMutexUp(m);
 	}
 	sysEndProcess();
 }

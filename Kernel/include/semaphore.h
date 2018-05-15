@@ -3,12 +3,6 @@
 
 #define NULL ((void *)0)
 
-typedef struct sem_t
-{
-	char *name;
-	int value;
-	int id;
-} sem_t;
 
 typedef struct sem_t *semADT;
 

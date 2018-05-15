@@ -4,10 +4,19 @@
 #include "lib.h"
 #include "processes.h"
 #include "scheduler.h"
+#include "videoDriver.h"
 
 static mutexADT *mutex;
 static int id = 0;
 static int numberOfMutexes = 0;
+
+typedef struct mutex_t
+{
+	char* name;
+	int value;
+	int id;	
+	process* blockedProcesses[MAX_PROCESSES];
+} mutex_t;
 
 mutex_t *mutexInit(char *name)
 {
@@ -24,6 +33,11 @@ mutex_t *mutexInit(char *name)
 	strcpyKernel(newMutex->name, name);
 	newMutex->value = 1;
 	newMutex->id = id;
+	for(int i = 0; i < MAX_PROCESSES; i++)
+	{
+		newMutex->blockedProcesses[i] = NULL;
+	}
+
 	id++;
 	numberOfMutexes++;
 	mutex = (mutexADT *)malloc(numberOfMutexes * sizeof(mutexADT));
@@ -33,27 +47,23 @@ mutex_t *mutexInit(char *name)
 
 int mutexLock(mutex_t *mut)
 {
-	if (mut->value == 1)
-	{
-		mut->value--;
-	}
-	else
+	while(mut->value==0)
 	{
 		process *p = getCurrentProcess();
-		blockProcess(p);
-		addBlockedProcessToList(mut->id, p, 1);
+		blockProcess(p);		
+		mut->blockedProcesses[getProcessPid(p)]= p;		
+		yieldProcess();
 	}
+	mut->value = 0;
 	return 0;
 }
 
 int mutexUnlock(mutex_t *mut)
 {
-	if (mut->value == 0)
-	{
-		unblockProcessesFromList(mut->id, 1);
-
-		mut->value++;
+	for(int i = 0; i < MAX_PROCESSES; i++){		
+		unblockProcess(mut->blockedProcesses[i]);
 	}
+	mut->value = 1;
 	return mut->value;
 }
 

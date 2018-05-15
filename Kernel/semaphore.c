@@ -10,6 +10,14 @@ static semADT* semaphores;
 static int id = 0;
 static int numberOfSemaphores = 0;
 
+typedef struct sem_t
+{
+	char *name;
+	int value;
+	int id;
+	process* blockedProcesses[MAX_PROCESSES];
+} sem_t;
+
 int semOpen(char *name)
 {
 	int i;
@@ -25,6 +33,10 @@ int semOpen(char *name)
 	strcpyKernel(newSemaphore->name, name);
 	newSemaphore->value = 1;
 	newSemaphore->id = id;
+	for(int i = 0; i < MAX_PROCESSES; i++)
+	{
+		newSemaphore->blockedProcesses[i] = NULL;
+	}
 	id++;
 	numberOfSemaphores++;
 	semaphores = (semADT *)realloc(semaphores,numberOfSemaphores  * sizeof(semADT));
@@ -47,10 +59,12 @@ int semPost(int id)
 		return 1;
 	
 	if(sem->value<=0)
-		unblockProcessesFromList(sem->id,0);	
-
+	{
+		for(int i = 0; i < MAX_PROCESSES; i++){		
+			unblockProcess(sem->blockedProcesses[i]);
+		}
+	}
 	sem->value++;
-
 	return sem->value;
 }
 
@@ -69,13 +83,19 @@ int semWait(int id)
 		return 1;
 
 	sem->value--;
-	if(sem->value < 0)
+	if(sem->value<0)
 	{
-		process* p = getCurrentProcess();		
-		blockProcess(p);
-		addBlockedProcessToList(sem->id, p,0);
-
-	}
+		sem->value = 0;
+		
+		while(sem->value == 0)
+		{
+			process* p = getCurrentProcess();		
+			blockProcess(p);
+			sem->blockedProcesses[getProcessPid(p)]= p;		
+			yieldProcess();
+		}
+		sem->value = 0;
+	}	
 	return 0;
 }
 
