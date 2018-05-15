@@ -28,11 +28,6 @@ void thenPidsAreEqual();
 void givenACreatedProcess();
 void whenAllProcessPagesAreNull();
 void thenProcessDataPageCountIsZero();
-//void whenProcessIsRunning();
-//void thenPidIsNotZero();
-//void givenARunningProcess();
-//void whenProcessIsKilled();
-//void thenPrintOk();
 
 void testCreateProcess()
 {
@@ -62,22 +57,6 @@ void testGetProcessByPid()
     whenGetAProcessByPid();
     thenPidsAreEqual();    
 }
-
-/*
-void testRunProcess()
-{
-    givenACreatedProcess();
-    whenProcessIsRunning();
-    thenPidIsNotZero();
-}
-
-void testKillProcess()
-{
-    givenARunningProcess();
-    whenProcessIsKilled();
-    thenPrintOk();
-}
-*/
 
 void testSetNullProcessPages()
 {
@@ -231,10 +210,7 @@ void runSchedulerTests()
 
     printString("Testing get a process by PID...\n", 128, 128, 128);    
     testGetProcessByPid();
-/*   
-    printString("Testing Process is running...\n", 128, 128, 128);    
-    testRunProcess();
-*/
+
     printString("Testing set null all process pages...\n", 128, 128, 128);
     testSetNullProcessPages();
 
