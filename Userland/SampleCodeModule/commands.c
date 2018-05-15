@@ -17,20 +17,23 @@ uint64_t m;
 int s;
 
 void printName(int argc, char *argv[])
-{
-	for (int i = 0; i < 100; i++)
+{	
+	if (argc > 1)
 	{
-		for(int j =0;j<1000;j++){
-			for(int k = 0; k < 1000; k++){
-				;
-			}
-		}
 		sysSemWait(s);
-		// sysMutexDown(m);		
-		sysPrintString("I'm process: ", 0, 155, 255);
-		sysPrintString(argv[1], 0, 155, 255);
+		for (int i = 0; i < 100; i++)
+		{
+			// sysMutexDown(m);		
+			sysPrintString("I'm process: ", 0, 155, 255);
+			sysPrintString(argv[1], 0, 155, 255);
+			// sysMutexUp(m);
+		}
 		sysSemPost(s);
-		// sysMutexUp(m);
+	}
+	else
+	{
+		sysPrintString("Wrong amount of parameters for print command\n\
+		Use command help for guidelines\n", 0, 155, 255);
 	}
 	sysEndProcess();
 }
