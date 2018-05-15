@@ -1,8 +1,10 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
-#define CMD_SIZE 19
-
+#define CMD_SIZE 21
+void printName(int argc, char* argv[]);
+void createMutex();
+void createSem();
 void help(int argc,char* argv[]);
 void echo(int argc,char* argv[]);
 void displayTime(int argc,char* argv[]);

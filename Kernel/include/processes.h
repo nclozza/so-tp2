@@ -28,6 +28,7 @@ typedef struct
   uint64_t pid;
   uint64_t ppid;
 } process;
+
 //typedef struct c_process process;
 typedef char status;
 

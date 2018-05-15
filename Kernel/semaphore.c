@@ -2,10 +2,21 @@
 #include "semaphore.h"
 #include "memorymanager.h"
 #include "lib.h"
+#include "processes.h"
+#include "scheduler.h"
+#include "videoDriver.h"
 
 static semADT* semaphores;
 static int id = 0;
 static int numberOfSemaphores = 0;
+
+typedef struct sem_t
+{
+	char *name;
+	int value;
+	int id;
+	process* blockedProcesses[MAX_PROCESSES];
+} sem_t;
 
 int semOpen(char *name)
 {
@@ -20,11 +31,15 @@ int semOpen(char *name)
 	semADT newSemaphore = (semADT)malloc(sizeof(sem_t));
 	newSemaphore->name = (char *)malloc(strlenKernel(name) + 1);
 	strcpyKernel(newSemaphore->name, name);
-	newSemaphore->value = 0;
+	newSemaphore->value = 1;
 	newSemaphore->id = id;
+	for(int i = 0; i < MAX_PROCESSES; i++)
+	{
+		newSemaphore->blockedProcesses[i] = NULL;
+	}
 	id++;
 	numberOfSemaphores++;
-	semaphores = (semADT *)malloc(numberOfSemaphores  * sizeof(semADT)); // realloc
+	semaphores = (semADT *)realloc(semaphores,numberOfSemaphores  * sizeof(semADT));
 	semaphores[numberOfSemaphores - 1] = newSemaphore;
 	return newSemaphore->id;
 }
@@ -42,7 +57,13 @@ int semPost(int id)
 	}
 	if(sem == NULL)
 		return 1;
-	//TODO: SCHEDULER ADDS
+	
+	if(sem->value<=0)
+	{
+		for(int i = 0; i < MAX_PROCESSES; i++){		
+			unblockProcess(sem->blockedProcesses[i]);
+		}
+	}
 	sem->value++;
 	return sem->value;
 }
@@ -62,11 +83,19 @@ int semWait(int id)
 		return 1;
 
 	sem->value--;
-	if(sem->value < 0)
+	if(sem->value<0)
 	{
-		while(1);
-		//TODO: SCHEDULER REMOVES	
-	}
+		sem->value = 0;
+		
+		while(sem->value == 0)
+		{
+			process* p = getCurrentProcess();		
+			blockProcess(p);
+			sem->blockedProcesses[getProcessPid(p)]= p;		
+			yieldProcess();
+		}
+		sem->value = 0;
+	}	
 	return 0;
 }
 

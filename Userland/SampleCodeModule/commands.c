@@ -13,14 +13,38 @@ static int G = DG;
 static int B = DB;
 
 int timeZone = -3;
+uint64_t m;
+int s;
 
-void printArg(char *name, int argc)
+void printName(int argc, char *argv[])
+{	
+	if (argc > 1)
+	{
+		sysSemWait(s);
+		for (int i = 0; i < 100; i++)
+		{
+			// sysMutexDown(m);		
+			sysPrintString("I'm process: ", 0, 155, 255);
+			sysPrintString(argv[1], 0, 155, 255);
+			// sysMutexUp(m);
+		}
+		sysSemPost(s);
+	}
+	else
+	{
+		sysPrintString("Wrong amount of parameters for print command\n\
+		Use command help for guidelines\n", 0, 155, 255);
+	}
+	sysEndProcess();
+}
+
+void createMutex()
 {
-	sysPrintString("in ", 0, 155, 255);
-	sysPrintString(name, 0, 155, 255);
-	sysPrintString("is : ", 0, 155, 255);
-	sysPrintInt(argc, 0, 155, 255);
-	sysPrintString("\n", 0, 155, 255);
+	m = sysMutexInit("printMutex");
+}
+void createSem()
+{
+	s = sysSemOpen("printSem");
 }
 void help(int argc, char *argv[])
 {

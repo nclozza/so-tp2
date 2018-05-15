@@ -10,6 +10,9 @@
 static void addProcess(process *p);
 static void setNextCurrent();
 
+/* Procesos actualmente bloqueados */
+static blockedProcess *firstBlockedProcess;
+
 /* Proceso actualmente corriendo */
 static nodeList *current = NULL;
 static nodeList *prev = NULL;
@@ -125,4 +128,16 @@ void increaseQuantum()
 void decreaseQuantum()
 {
 	current->quantum -= 1;
+}
+
+void printBlockedProcessesList()
+{
+	blockedProcess *temp = firstBlockedProcess;
+	while (temp != NULL)
+	{
+		printString("PID: ", 0, 155, 255);
+		printInt(temp->process->pid, 0, 155, 255);
+		printString("\n", 0, 155, 255);
+		temp = temp->next;
+	}
 }

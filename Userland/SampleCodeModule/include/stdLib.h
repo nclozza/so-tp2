@@ -25,10 +25,11 @@ uint64_t sysMalloc(uint64_t bytes);
 void sysFree(uint64_t address);
 int sysExec(void* function,int argc, char** argv,char*name);
 void sysEndProcess();
-int sysPpid();
 void sysSetForeground(int pid);
-uint64_t sysGetPage();
+int sysPpid();
 void sysExitShell();
+uint64_t sysGetPage();
+void sysPrintBlockedProcesses();
 
 void sysMutexUp(uint64_t mut);
 void sysMutexDown(uint64_t mut);

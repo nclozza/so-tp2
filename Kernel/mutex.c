@@ -2,77 +2,90 @@
 #include "mutex.h"
 #include "memorymanager.h"
 #include "lib.h"
+#include "processes.h"
+#include "scheduler.h"
+#include "videoDriver.h"
 
-static mutexADT* mutex;
+static mutexADT *mutex;
 static int id = 0;
 static int numberOfMutexes = 0;
 
-mutex_t* mutexInit(char *name)
+typedef struct mutex_t
 {
-    int i;
+	char* name;
+	int value;
+	int id;	
+	process* blockedProcesses[MAX_PROCESSES];
+} mutex_t;
+
+mutex_t *mutexInit(char *name)
+{
+	int i;
 	for (i = 0; i < numberOfMutexes; i++)
 	{
-		if(strcmpKernel(name,mutex[i]->name)==0)
-		{			
+		if (strcmpKernel(name, mutex[i]->name) == 0)
+		{
 			return mutex[i];
 		}
 	}
 	mutexADT newMutex = (mutexADT)malloc(sizeof(mutex_t));
-	newMutex->name = (char*)malloc(strlenKernel(name)+1);
-	strcpyKernel(newMutex->name,name); 
+	newMutex->name = (char *)malloc(strlenKernel(name) + 1);
+	strcpyKernel(newMutex->name, name);
 	newMutex->value = 1;
 	newMutex->id = id;
+	for(int i = 0; i < MAX_PROCESSES; i++)
+	{
+		newMutex->blockedProcesses[i] = NULL;
+	}
+
 	id++;
 	numberOfMutexes++;
-	mutex = (mutexADT*)malloc(numberOfMutexes * sizeof(mutexADT));
+	mutex = (mutexADT *)malloc(numberOfMutexes * sizeof(mutexADT));
 	mutex[numberOfMutexes - 1] = newMutex;
 	return newMutex;
 }
 
-int mutexLock(mutex_t * mut)
+int mutexLock(mutex_t *mut)
 {
-    if(mut->value == 1)
-    {
-	    mut->value--;
-    }        
-	else
+	while(mut->value==0)
 	{
-		//TODO: SCHEDULER REMOVES	
+		process *p = getCurrentProcess();
+		blockProcess(p);		
+		mut->blockedProcesses[getProcessPid(p)]= p;		
+		yieldProcess();
 	}
+	mut->value = 0;
 	return 0;
 }
 
-int mutexUnlock(mutex_t * mut)
+int mutexUnlock(mutex_t *mut)
 {
-	if(mut->value == 0)
-	{
-    	//TODO: SCHEDULER ADDS
-
-		mut->value++;
+	for(int i = 0; i < MAX_PROCESSES; i++){		
+		unblockProcess(mut->blockedProcesses[i]);
 	}
+	mut->value = 1;
 	return mut->value;
 }
 
 int mutexListSize()
 {
-    return numberOfMutexes;
+	return numberOfMutexes;
 }
 
-
-int mutexClose(mutex_t* mut)
+int mutexClose(mutex_t *mut)
 {
 	int i;
-	for(i = 0; i < numberOfMutexes; i++)
+	for (i = 0; i < numberOfMutexes; i++)
 	{
-		if(mutex[i]->id == mut->id)
-		{			
+		if (mutex[i]->id == mut->id)
+		{
 			free(mutex[i]->name);
 			free(mutex[i]);
 
 			int j;
-			for(j = i; j < numberOfMutexes-1; j++)
+			for (j = i; j < numberOfMutexes - 1; j++)
 			{
-				mutex[j] = mutex[j+1];
+				mutex[j] = mutex[j + 1];
 			}
 
 			numberOfMutexes--;
@@ -85,11 +98,11 @@ int mutexClose(mutex_t* mut)
 
 void closeAllMutex()
 {
-    int i;
-    for (i=numberOfMutexes; i > 0; i--)
-    {
-        mutexClose(mutex[i]);
-    }
+	int i;
+	for (i = numberOfMutexes; i > 0; i--)
+	{
+		mutexClose(mutex[i]);
+	}
 }
 
 void freeMutexList()
