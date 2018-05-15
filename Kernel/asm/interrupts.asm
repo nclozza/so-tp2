@@ -14,8 +14,6 @@ GLOBAL _irq04Handler
 GLOBAL _irq05Handler
 
 GLOBAL _changeProcess
-GLOBAL _yieldProcess
-GLOBAL _yield_interrupt
 GLOBAL _divideByZeroHandler
 GLOBAL _overflowHandler
 GLOBAL _opcodeHandler
@@ -150,21 +148,6 @@ _generalProtection:
 _changeProcess:
 	mov rsp, rdi
 	popState
-	iretq
-
-_yieldProcess:
-	int 70h       	
-	ret
-
-_yield_interrupt:
-	pushState
-
-	mov rdi, rsp
-	call nextProcess
-
-	mov rsp, rax
-	popState
-
 	iretq
 
 haltcpu:

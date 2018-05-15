@@ -80,13 +80,6 @@ static void addProcess(process *p)
 	}
 }
 
-void yieldProcess()
-{
-	current->next->quantum += 1; /* Quantum al siguiente proceso pues el actual quitó tiempo */
-	current->quantum = 0;
-	_yieldProcess();
-}
-
 /* Se avanza con el proceso que está delante */
 void killProcess()
 {
