@@ -189,7 +189,11 @@ uint64_t getProcessPpid(process *p)
 void blockProcess(process *p)
 {
   if (p != NULL && p->status != DELETE)
+  {
+    printString("AAAAAAAAAAAAAAAA BLOCKING PID: ", 0, 155, 255);
+    printInt(p->pid, 0, 155, 255);
     p->status = BLOCKED;
+  }
 }
 
 void unblockProcess(process *p)

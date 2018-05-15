@@ -10,8 +10,8 @@
 static void addProcess(process *p);
 static void setNextCurrent();
 
-static blockedProcessADT* blockedProcesses;
-static int numberOfBlockedProcesses = 0;
+/* Procesos actualmente bloqueados */
+static blockedProcess *firstBlockedProcess;
 
 /* Proceso actualmente corriendo */
 static nodeList *current = NULL;
@@ -24,31 +24,59 @@ process *getCurrentProcess()
 
 void unblockProcessesFromList(int semId, int isMutex)
 {
-	printString("Im unblocking in unblockProcessesFromList\n",0,155,255);
-	printInt(numberOfBlockedProcesses,0,155,255);
-	printString("\n",0,155,255);
-	for(int i = 0; i < numberOfBlockedProcesses; i++)
-	{
-		if(blockedProcesses[i]->semId == semId && blockedProcesses[i]->isMutex == isMutex)
-		{
-			printString("Im unblocking a process\n",0,155,255);
-			unblockProcess(blockedProcesses[i]->process);
-		}
-	}
-	printString("Im leaving unblockProcessesFromList\n",0,155,255);
+	blockedProcess *temp = firstBlockedProcess;
+	blockedProcess *prev;
 
+	while (temp != NULL && temp->semId == semId && temp->isMutex == isMutex)
+	{
+		unblockProcess(temp->process);
+		firstBlockedProcess = temp->next;
+		free(temp);
+		temp = firstBlockedProcess;
+	}
+
+	while (temp != NULL)
+	{
+		while (temp != NULL && temp->semId == semId && temp->isMutex == isMutex)
+		{
+			prev = temp;
+			temp = temp->next;
+		}
+
+		if (temp == NULL)
+		{
+			return;
+		}
+
+		prev->next = temp->next;
+
+		free(temp);
+		temp = prev->next;
+	}
 }
 
-void addBlockedProcessToList(int id, process* p, int isMutex)
+void addBlockedProcessToList(int id, process *p, int isMutex)
 {
-	printString("Im blocking a process\n",0,155,255);
-	blockedProcessADT newBlockedProcess = (blockedProcessADT)malloc(sizeof(blockedProcess));
+	blockedProcess *newBlockedProcess = (blockedProcess *)malloc(sizeof(*newBlockedProcess));
 	newBlockedProcess->process = p;
 	newBlockedProcess->semId = id;
 	newBlockedProcess->isMutex = isMutex;
-	numberOfBlockedProcesses++;
-	blockedProcesses = (blockedProcessADT *)realloc(blockedProcesses,numberOfBlockedProcesses  * sizeof(blockedProcessADT));
-	blockedProcesses[numberOfBlockedProcesses - 1] = newBlockedProcess;
+	newBlockedProcess->next = NULL;
+
+	if (firstBlockedProcess == NULL)
+	{
+		firstBlockedProcess = newBlockedProcess;
+	}
+	else
+	{
+		blockedProcess *auxBlockedProcess = firstBlockedProcess;
+		while (auxBlockedProcess->next != NULL)
+		{
+			auxBlockedProcess = auxBlockedProcess->next;
+		}
+
+		auxBlockedProcess->next = newBlockedProcess;
+	}
 }
 
 uint64_t nextProcess(uint64_t current_rsp)
@@ -164,4 +192,16 @@ void increaseQuantum()
 void decreaseQuantum()
 {
 	current->quantum -= 1;
+}
+
+void printBlockedProcessesList()
+{
+	blockedProcess *temp = firstBlockedProcess;
+	while (temp != NULL)
+	{
+		printString("PID: ", 0, 155, 255);
+		printInt(temp->process->pid, 0, 155, 255);
+		printString("\n", 0, 155, 255);
+		temp = temp->next;
+	}
 }

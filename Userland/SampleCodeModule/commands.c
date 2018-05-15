@@ -15,24 +15,37 @@ static int B = DB;
 int timeZone = -3;
 uint64_t m;
 int s;
-void printName(int argc, char* argv[])
+
+void printName(int argc, char *argv[])
 {
-	sysMutexDown(m);		
-		for(int i = 0 ; i < 100; i++){
-			sysPrintString("I'm process: ",0,155,255);
-			sysPrintString(argv[1],0,155,255);
-		}			
-	sysMutexUp(m);
+	for (int i = 0; i < 10; i++)
+	{
+		sysMutexDown(m);
+		for (int j = 0; j < 10000; j++)
+		{
+			for (int k = 0; k < 10000; k++)
+				;
+		}
+		sysPrintString("I'm process: ", 0, 155, 255);
+		sysPrintString(argv[1], 0, 155, 255);
+		sysMutexUp(m);
+
+		if (i == 5)
+		{
+			sysPrintString("IMPRIMO LISTA DE BLOQUEADOS\n", 0, 155, 255);
+			sysPrintBlockedProcesses();
+		}
+	}
 	sysEndProcess();
-	
 }
+
 void createMutex()
-{	
-	m = sysMutexInit("printMutex");	
+{
+	m = sysMutexInit("printMutex");
 }
 void createSem()
-{	
-	s = sysSemOpen("printSem");	
+{
+	s = sysSemOpen("printSem");
 }
 void help(int argc, char *argv[])
 {
@@ -42,7 +55,7 @@ void help(int argc, char *argv[])
 
 	if (argc == 2)
 	{
-		char* input1 = argv[1];
+		char *input1 = argv[1];
 
 		if (strcmp(input1, "echo\n") == 0)
 		{
@@ -100,9 +113,9 @@ void help(int argc, char *argv[])
 
 	sysEndProcess();
 }
-void echo(int argc,char* argv[])
+void echo(int argc, char *argv[])
 {
-	for (int i = 1; i < argc ; i++)
+	for (int i = 1; i < argc; i++)
 	{
 		sysPrintString(argv[i], B, G, R);
 		sysPrintString(" ", B, G, R);
@@ -129,11 +142,11 @@ void clear(int argc, char *argv[])
 void calculate(int argc, char *argv[])
 {
 	/*calculate operation n1 n2*/
-	if(argc!=4)
+	if (argc != 4)
 		sysEndProcess();
-	char* input01 = argv[1];
-	char* input02 = argv[2];
-	char* input03 = argv[3];
+	char *input01 = argv[1];
+	char *input02 = argv[2];
+	char *input03 = argv[3];
 
 	int ver = calculateVerifications(argc, input02, input03);
 
@@ -151,7 +164,7 @@ void calculate(int argc, char *argv[])
 	sysEndProcess();
 }
 
-void opcode(int argc,char* argv[])
+void opcode(int argc, char *argv[])
 {
 	if (argc != 1)
 	{
@@ -162,14 +175,14 @@ void opcode(int argc,char* argv[])
 	sysEndProcess();
 }
 
-void prodcons(int argc,char* argv[])
+void prodcons(int argc, char *argv[])
 {
 	if (argc != 1)
 	{
 		sysPrintString("No extra parameters for prodcons\n", CB, CG, CR);
 		sysEndProcess();
 	}
-		
+
 	runProdCons();
 	sysEndProcess();
 }
@@ -185,7 +198,7 @@ void ps(int argc, char *argv[])
 	sysEndProcess();
 }
 
-void plot(int argc,char* argv[])
+void plot(int argc, char *argv[])
 {
 
 	if (argc != (GRAPH_PARAMETERS + 1))
@@ -269,39 +282,39 @@ void setTimeZone(int argc, char *argv[])
 	}
 }
 
-void exit(int argc,char* argv[])
+void exit(int argc, char *argv[])
 {
 	sysExitShell();
 }
 
-void setFontColor(int argc,char* argv[])
+void setFontColor(int argc, char *argv[])
 {
 	if (argc != 2)
-		{
-			sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
-			sysEndProcess();
-		}
-		if (strcmp(argv[2], "red") == 0)
-		{
-			sysEndProcess();
-		}
-		else if (strcmp(argv[2], "green") == 0)
-		{
-			sysEndProcess();
-		}
-		else if (strcmp(argv[2], "blue") == 0)
-		{
-			sysEndProcess();
-		}
-		else if (strcmp(argv[2], "default") == 0)
-		{
-			sysEndProcess();
-		}
-		else
-		{
-			sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
-			sysEndProcess();
-		}
+	{
+		sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
+		sysEndProcess();
+	}
+	if (strcmp(argv[2], "red") == 0)
+	{
+		sysEndProcess();
+	}
+	else if (strcmp(argv[2], "green") == 0)
+	{
+		sysEndProcess();
+	}
+	else if (strcmp(argv[2], "blue") == 0)
+	{
+		sysEndProcess();
+	}
+	else if (strcmp(argv[2], "default") == 0)
+	{
+		sysEndProcess();
+	}
+	else
+	{
+		sysPrintString("Wrong parameters for setFontColor\n", CB, CG, CR);
+		sysEndProcess();
+	}
 
-		sysPrintString("Set font color\n", B, G, R);	
+	sysPrintString("Set font color\n", B, G, R);
 }
