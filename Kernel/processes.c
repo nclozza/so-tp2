@@ -7,7 +7,6 @@
 #include "scheduler.h"
 #include "videoDriver.h"
 
-static void unblockForegroundProcess(process *p);
 static void freeDataPages(process *p);
 
 static process *processesTable[MAX_PROCESSES] = {NULL};
@@ -43,7 +42,7 @@ process *createProcess(uint64_t newProcessRIP, uint64_t argc, uint64_t argv, con
 
   newProcess->status = READY;
 
-  newProcess->rsp = createNewProcessStack(newProcessRIP, newProcess->stackPage, argc,argv);
+  newProcess->rsp = createNewProcessStack(newProcessRIP, newProcess->stackPage, argc, argv);
   setNullAllProcessPages(newProcess);
 
   /* Agerga proceso a la tabla de procesos. Adentro usa un lock. */
@@ -60,12 +59,6 @@ process *createProcess(uint64_t newProcessRIP, uint64_t argc, uint64_t argv, con
     foreground = newProcess;
     newProcess->ppid = 0;
   }
-
-  // printString("PID: ", 0, 155, 255);
-  // printInt(newProcess->pid, 0, 155, 255);
-  // printString("\nPPID: ", 0, 155, 255);
-  // printInt(newProcess->ppid, 0, 155, 255);
-  // printString("\n", 0, 155, 255);
 
   return newProcess;
 }
@@ -99,13 +92,12 @@ void removeProcess(process *p)
     processesNumber--;
     freeDataPages(p);
     if (foreground == p)
-      setProcessForeground(processesTable[p->ppid]);
+      setProcessForeground(processesTable[p->ppid]->pid);
     processesTable[p->pid] = NULL;
     free((void *)p->stackPage);
     free((void *)p);
   }
 }
-
 
 /* Libera las páginas de datos usadas por el proceso. */
 static void freeDataPages(process *p)
@@ -165,8 +157,6 @@ void setProcessRsp(process *p, uint64_t rsp)
 
 uint64_t getProcessRsp(process *p)
 {
-  //printString("GET_RSP\n", 0, 155, 255);
-  //printHex(p);
   if (p != NULL)
     return p->rsp;
   return -1;
@@ -203,46 +193,28 @@ void unblockProcess(process *p)
 int isProcessBlocked(process *p)
 {
   if (p != NULL)
-    return p->status == BLOCKED || p->status == BLOCKED_READ || p->status == BLOCKED_FOREGROUND;
+    return p->status == BLOCKED;
   return 1;
 }
 
-void unblockReadProcess(process *p)
+void setProcessForeground(int pid)
 {
-  if (p->status == BLOCKED_READ)
-    unblockProcess(p);
-}
-
-void blockReadProcess(process *p)
-{
-  p->status = BLOCKED_READ;
-}
-
-void setProcessForeground(process *p)
-{
-  if (foreground == getCurrentProcess())
-    setProcessForegroundForce(p);
-}
-
-void setProcessForegroundForce(process *p)
-{
+  process *p = getProcessByPid(pid);
   if (p != NULL && p->pid != 0)
   {
     foreground = p;
-    unblockForegroundProcess(p);
   }
 }
 
-static void unblockForegroundProcess(process *p)
+int isProcessRunningInForeground()
 {
-  if (p != NULL && p->status == BLOCKED_FOREGROUND)
-    p->status = READY;
-}
+  process *currentProcessRunning = getCurrentProcess();
+  if (currentProcessRunning != NULL && foreground != NULL)
+  {
+    return currentProcessRunning->pid == foreground->pid;
+  }
 
-void blockProcessForeground(process *p)
-{
-  if (p != NULL)
-    p->status = BLOCKED_FOREGROUND;
+  return 0;
 }
 
 process *getProcessForeground()
@@ -308,29 +280,21 @@ void printPIDS()
 
     printString("Status: ", 0, 155, 255);
     char printStatus = processesTable[i]->status;
-    if(printStatus == RUNNING)
+    if (printStatus == RUNNING)
     {
       printString("Running", 0, 155, 255);
     }
-    else if(printStatus == READY)
+    else if (printStatus == READY)
     {
       printString("Ready", 0, 155, 255);
     }
-    else if(printStatus == BLOCKED)
+    else if (printStatus == BLOCKED)
     {
       printString("Blocked", 0, 155, 255);
     }
-    else if(printStatus == BLOCKED_READ)
-    {
-      printString("Blocked Read", 0, 155, 255);
-    }
-    else if(printStatus == DELETE)
+    else if (printStatus == DELETE)
     {
       printString("Awaiting Deletion", 0, 155, 255);
-    }
-    else if(printStatus == BLOCKED_FOREGROUND)
-    {
-      printString("Blocked Foreground", 0, 155, 255);
     }
     else
     {
@@ -339,6 +303,5 @@ void printPIDS()
     printString("\n", 0, 155, 255);
 
     printString("-------------------------------\n", 0, 155, 255);
-
   }
 }

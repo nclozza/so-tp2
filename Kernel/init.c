@@ -8,7 +8,9 @@ static void *const sampleCodeModuleAddress = (void *)0x400000;
 
 void init()
 {
-	runProcess(createProcess((uint64_t)sampleCodeModuleAddress, 0,0, "shell"));
+	process *shell = createProcess((uint64_t)sampleCodeModuleAddress, 0,0, "shell");
+	setProcessForeground(shell->pid);
+	runProcess(shell);
 	//setProcessForeground(getProcessByPid(1));
 
 	while (1)

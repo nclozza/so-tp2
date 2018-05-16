@@ -9,9 +9,7 @@
 #define RUNNING 0
 #define READY 1
 #define BLOCKED 2
-#define BLOCKED_READ 3
 #define DELETE 4
-#define BLOCKED_FOREGROUND 5
 
 #define MAX_FDS 64
 #define MAX_DATA_PAGES 64
@@ -76,9 +74,6 @@ uint64_t getProcessRsp(process *p);
 void blockProcess(process *p);
 void unblockProcess(process *p);
 int isProcessBlocked(process *p);
-void unblockReadProcess(process *p);
-void blockReadProcess(process *p);
-void blockProcessForeground(process *p); /* Se desbloquea al hacer set_foreground */
 uint64_t getProcessPid(process *p);
 uint64_t getProcessPpid(process *p);
 uint64_t getProcessesNumber();
@@ -91,20 +86,15 @@ void setNullAllProcessPages(process *process);
 uint64_t createNewProcessStack(uint64_t rip, uint64_t stackPage, uint64_t argc, uint64_t argv);
 void exitShell();
 process *getProcessByPid(uint64_t pid);
+int isProcessRunningInForeground();
 
 /* Quizas no tengan que estar aca */
-void setProcessForeground(process *p);
-void setProcessForegroundForce(process *p);
+void setProcessForeground(int pid);
 process *getProcessForeground();
 
 /* kill settea que hay que borrar el proceso. No lo borra. is_delete devuelve 1 si hay que borrarlo. */
 int deleteProcess(process *p);
 int isProcessDeleted(process *p);
-
-/* Archivos del proceso */
-int set_file_open(process *p, int fd);
-int set_file_closed(process *p, int fd);
-int file_is_open(process *p, int fd);
 
 /* Paginas de datos que devuelve el memory allocator */
 void addDataPage(process *p, void *page);
