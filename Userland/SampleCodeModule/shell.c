@@ -38,7 +38,6 @@ static command commands[] = {
 		{"print\0", printName}};
 
 //static int timeZone = -3;
-void parseParams(char *command, int *argc, char ***argv);
 
 void startShell()
 {

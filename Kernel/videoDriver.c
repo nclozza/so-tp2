@@ -68,10 +68,12 @@ void paintPixel(int x, int y, char B, char G, char R)
 
 void writeChar(char c, int B, int G, int R)
 {
+	
 	if (isProcessRunningInForeground() == 0)
 	{
 		return;
 	}
+
 	checkLine();
 	if (c < 31)
 	{

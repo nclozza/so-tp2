@@ -45,9 +45,6 @@ void *memcpy(void *destination, const void *source, uint64_t length)
   return destination;
 }
 
-void ok();
-void fail();
-
 void reset(char *string, int size)
 {
   for (int i = 0; i < size; i++)

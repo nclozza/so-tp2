@@ -213,7 +213,10 @@ int isProcessRunningInForeground()
   {
     return currentProcessRunning->pid == foreground->pid;
   }
-
+  else if ((currentProcessRunning == NULL) && (foreground == NULL))
+  {
+    return 1;
+  }
   return 0;
 }
 

@@ -33,7 +33,7 @@ void printName(int argc, char *argv[])
 	else
 	{
 		sysPrintString("Wrong amount of parameters for print command\n\
-		Use command help for guidelines\n", 0, 155, 255);
+		Use command help for guidelines\n", CB, CG, CR);
 	}
 	sysEndProcess();
 }

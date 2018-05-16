@@ -48,10 +48,10 @@
 #define EXITCODE 14
 
 						
+void parseParams(char *command, int *argc, char ***argv);
 void startShell();
 int callFunction(char *buffer);
 int graph(char input[][MAX_WORD_LENGTH], int words);
-
 
 int overflowGenerator(int n);
 int calculateVerifications(int words, char *input2, char *input3);
