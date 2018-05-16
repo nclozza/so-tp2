@@ -286,7 +286,16 @@ void sysExitShell()
   sysCall(28,0,0,0,0,0);
 }
 
+<<<<<<< HEAD
 void checkIsNotNull(void* value)
+=======
+int sysDeleteThisProcess(int pid)
+{
+  return sysCall(31, (uint64_t)pid, 0, 0, 0, 0);
+}
+
+void checkIsNotNull(void *value)
+>>>>>>> 756be46... Prodcons now allows multiple producers and consumers
 {
   if(value == NULL)
   {

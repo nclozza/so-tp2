@@ -108,6 +108,14 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
     return SUCCESS;
   case 29:
     return getAvailablePage();
+<<<<<<< HEAD
+=======
+  case 30:
+    printBlockedProcessesList();
+    return SUCCESS;
+  case 31:
+    return deleteThisProcess((int) rsi);
+>>>>>>> 756be46... Prodcons now allows multiple producers and consumers
   }
   return ERROR;
 }

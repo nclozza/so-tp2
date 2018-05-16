@@ -97,6 +97,7 @@ void setProcessForegroundForce(process *p);
 process *getProcessForeground();
 
 /* kill settea que hay que borrar el proceso. No lo borra. is_delete devuelve 1 si hay que borrarlo. */
+int deleteThisProcess(int pid);
 int deleteProcess(process *p);
 int isProcessDeleted(process *p);
 

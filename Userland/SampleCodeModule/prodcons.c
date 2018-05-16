@@ -5,13 +5,12 @@
 #include "plotLib.h"
 #include "mathLib.h"
 #include "prodcons.h"
+#include "execProcess.h"
 
-
-uint64_t buffer_mutex = 0;
-static int items = 0;
+uint64_t bufferMutex = 0;
 int fullSem = 0;
 int emptySem = 0;
-
+static int items = 0;
 
 void putItemIntoBuffer()
 {
@@ -19,7 +18,7 @@ void putItemIntoBuffer()
   sysPrintString("Added an item\n",0,155,255);
   sysPrintString("Total items: ", 0,155,255);
   sysPrintInt(items,0,155,255);
-  sysPrintString("\n", 0,155,255);
+  sysPrintString("\n\n", 0,155,255);
 }
 
 void removeItemFromBuffer()
@@ -28,70 +27,176 @@ void removeItemFromBuffer()
   sysPrintString("Removed an item\n",0,155,255);
   sysPrintString("Total items: ", 0,155,255);
   sysPrintInt(items,0,155,255);
-  sysPrintString("\n", 0,155,255);
+  sysPrintString("\n\n", 0,155,255);
 }
 
-
-void producer() 
+void producer(int argc)
 {
-    sysSemWait(fullSem);  //if buffer is full: wait; else: pass
-    sysMutexDown(buffer_mutex);
+  while(1)
+  { 
+    sysSemWait(fullSem);
+    sysMutexDown(bufferMutex);
 
-    if(items < BUFFER_SIZE)
-     	putItemIntoBuffer();
-    else
-       	sysPrintString("Can't add anymore items, buffer is full\n",0,155,255);  //should never get here because fullSem allowed it to pass
+    sysPrintString("Producer: ",0,155,255);
+    sysPrintInt(argc,0,155,255);
+    sysPrintString("\n", 0,155,255);
+    putItemIntoBuffer();
 
-    sysMutexUp(buffer_mutex);
-    sysSemPost(emptySem); //alert: there's an item to consume
+    sysMutexUp(bufferMutex);
+    sysSemPost(emptySem);
+  }
 }
 
-void consumer() 
+void consumer(int argc)
 {
-    sysSemWait(emptySem); //if buffer is empty: wait; else: pass
-    sysMutexDown(buffer_mutex);
+  while(1)
+  {
+    sysSemWait(emptySem);
+    sysMutexDown(bufferMutex);
 
-    if(items != 0)
-       	removeItemFromBuffer();
-    else
-      	sysPrintString("Can't remove anymore items, buffer is empty\n",0,155,255); //should never get here because fullSem allowed it to pass
-    
-    sysMutexUp(buffer_mutex);
-    sysSemPost(fullSem);  //alert: there's space for one item
+    sysPrintString("Consumer: ",0,155,255);
+    sysPrintInt(argc,0,155,255);
+    sysPrintString("\n", 0,155,255);
+    removeItemFromBuffer();
+
+    sysMutexUp(bufferMutex);
+    sysSemPost(fullSem);
+  }
+}
+
+void closeSemaphoresAndMutexes()
+{
+  sysMutexClose(bufferMutex);
+  sysSemClose(fullSem);
+  sysSemClose(emptySem);
+}
+
+void removeLastProducer(int *prodc, int *producers)
+{
+  if(*prodc == 0)
+  {
+    return;
+  }
+  else
+  {
+    sysMutexDown(bufferMutex);
+    sysDeleteThisProcess(producers[--*prodc]);
+    sysMutexUp(bufferMutex);
+    return;
+  }
+}
+
+void removeLastConsumer(int *consc, int *consumers)
+{
+  if(*consc == 0) 
+  {
+    return;
+  }
+  else
+  {
+    sysDeleteThisProcess(consumers[--*consc]);
+  }
 }
 
 void runProdCons()
 {
-  int iterations = 0;
-  int random;
+  char c;
+  int prodc = 0;
+  int consc = 0;
+  int producers[MAX_PRODUCERS];
+  int consumers[MAX_CONSUMERS];
 
-  buffer_mutex = sysMutexInit("buffer_mutex");
+  items = 0;
+  bufferMutex = sysMutexInit("bufferMutex");
   fullSem = sysSemOpen("fullSem");
   emptySem = sysSemOpen("emptySem");
+  sysSemWait(emptySem); //Semaphores are initialized in 1 and I need it to start with 0;
 
-  for(int i = 0; i < BUFFER_SIZE; i++)
+  for(int i = 0; i < BUFFER_SIZE - 1; i++)
   {
     sysSemPost(fullSem);
   }
 
-  while(iterations < MAX_ITERATIONS)
+  sysPrintString("- Press 'p' to add a producer\n", 0, 155, 255);
+  sysPrintString("- Press 'c' to add a consumer\n", 0, 155, 255);
+  sysPrintString("- Press 'o' to remove a producer\n", 0, 155, 255);
+  sysPrintString("- Press 'x' to remove a consumer\n", 0, 155, 255);
+  sysPrintString("- Press 'q' to quit prodcons\n\n", 0, 155, 255);
+
+
+  while(1)
   {
-    random = rand() % 2; //generates 0s and 1s randomly 
-    
-    if (random == 0)
+    sysGetChar(&c);
+    switch(c)
     {
-      producer();
-    }
-    else
-    {
-      consumer();
-    }
+      case ADD_PRODUCER:
+      if(prodc >= MAX_PRODUCERS)
+      {
+        sysPrintString("Can't add more producers\n\n", 0, 155, 255);
+      }
+      else
+      {
+        sysPrintString("Added producer ", 0, 155, 255);
+        sysPrintInt(prodc + 1, 0, 155, 255);
+        sysPrintString("\n\n", 0, 155, 255);
+        producers[prodc] = execProcess(producer, prodc + 1, NULL, "producer", 0);
+        prodc++;
+      }
+      break;
 
-    iterations++;
+      case ADD_CONSUMER:
+      if(consc >= MAX_CONSUMERS)
+      {
+        sysPrintString("Can't add more consumers\n\n", 0, 155, 255);
+      }
+      else
+      {
+        sysPrintString("Added consumer ", 0, 155, 255);
+        sysPrintInt(consc + 1, 0, 155, 255);
+        sysPrintString("\n\n", 0, 155, 255);
+        consumers[consc] = execProcess(consumer, consc + 1, NULL, "consumer", 0);
+        consc++;
+      }
+      break;
+
+      case REMOVE_PRODUCER:
+      if(prodc == 0)
+      {
+        sysPrintString("Can't remove more producers\n\n", 0, 155, 255);
+      }
+      else
+      {
+        removeLastProducer(&prodc, producers);
+        sysPrintString("Removed producer ", 0, 155, 255);
+        sysPrintInt(prodc + 1, 0, 155, 255);
+        sysPrintString("\n\n", 0, 155, 255);
+      }
+      break;
+
+      case REMOVE_CONSUMER:
+      if(consc == 0)
+      {
+        sysPrintString("Can't remove more consumers\n\n", 0, 155, 255);
+      }
+      else
+      {
+        removeLastConsumer(&consc, consumers);
+        sysPrintString("Removed consumer ", 0, 155, 255);
+        sysPrintInt(consc + 1, 0, 155, 255);
+        sysPrintString("\n\n", 0, 155, 255);
+      }
+      break;
+
+      case QUIT:
+      while (consc > 0) {
+        removeLastConsumer(&consc, consumers);
+      } 
+      while (prodc > 0) {
+        removeLastProducer(&prodc, producers);
+      }
+      sysPrintString("Quitting successfully\n\n", 0, 155, 255);
+      closeSemaphoresAndMutexes();
+      return;
+    }
   }
-
-  sysMutexClose(buffer_mutex);
-  sysSemClose(fullSem);
-  sysSemClose(emptySem);
-
 }

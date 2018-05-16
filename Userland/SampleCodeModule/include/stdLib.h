@@ -25,6 +25,11 @@ uint64_t sysMalloc(uint64_t bytes);
 void sysFree(uint64_t address);
 int sysExec(void* function,int argc, char** argv,char*name);
 void sysEndProcess();
+<<<<<<< HEAD
+=======
+int sysDeleteThisProcess(int pid);
+void sysSetForeground(int pid);
+>>>>>>> 756be46... Prodcons now allows multiple producers and consumers
 int sysPpid();
 void sysSetForeground(int pid);
 uint64_t sysGetPage();
