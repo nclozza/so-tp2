@@ -7,6 +7,7 @@
 #include "mathLib.h"
 #include "prodcons.h"
 #include "calculate.h"
+#include "sysCallLib.h"
 
 static int R = DR;
 static int G = DG;

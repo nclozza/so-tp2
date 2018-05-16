@@ -1,6 +1,8 @@
 #include "stdLib.h"
 #include "shell.h"
 #include <stdint.h>
+#include "sysCallLib.h"
+
 char* name;
 int openedSemaphore = -1;
 int testingSemaphore = -1;

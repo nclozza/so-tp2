@@ -4,6 +4,7 @@
 #include "stdio.h"
 #include "plotLib.h"
 #include "mathLib.h"
+#include "sysCallLib.h"
 
 int calculateVerifications(int words, char *input2, char *input3)
 {

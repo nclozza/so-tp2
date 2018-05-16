@@ -7,6 +7,7 @@
 #include "semaphoreUserlandTests.h"
 #include "commands.h"
 #include "execProcess.h"
+#include "sysCallLib.h"
 #define STEP 10
 #define BUFFERSIZE 1024
 

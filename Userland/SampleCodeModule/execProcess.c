@@ -1,5 +1,6 @@
 #include "stdLib.h"
 #include "shell.h"
+#include "sysCallLib.h"
 
 typedef void (*entry_point)(int, char **);
 

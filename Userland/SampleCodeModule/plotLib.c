@@ -3,6 +3,7 @@
 #include "stdLib.h"
 #include <stdint.h>
 #include "shell.h"
+#include "sysCallLib.h"
 
 int graphMain(float a, float b, float c)
 {
