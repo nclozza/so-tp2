@@ -12,7 +12,6 @@ typedef struct messageCDT
 static int id = 0;
 static int messagesCount = 0;
 static messageADT* messages;
-//static messageOperation messageOperations[MESSAGE_OPERATIONS];
 static queueADT rMsgQueues[MAX_QUEUES], wMsgQueues[MAX_QUEUES];
 
 uint8_t initMsg(int msgId)
@@ -78,7 +77,7 @@ int readMessage(char* buffer, int id)
 		if(messages[i]->id == id)
 		{
 			if(messages[i]->contentCount <= 0)
-				//block(id, READ);													//preguntarle a nico (se deberia bloquear porque no hay nada que leer, espera que alguien haga un write)
+				blockMessage(id, READ);			//Should be blocked because there's nothing left to read
 
 			strcpyKernel(buffer, messages[i]->buffer);
 			messages[i]->contentCount = 0;
@@ -86,7 +85,7 @@ int readMessage(char* buffer, int id)
 			for(int j=0; j<=((messages[i]->messageSize)*MAX_SIZE_BUFFER); j++)
 				messages[i]->buffer[j] = 0;
 
-			//unblock(messages[i]->id, WRITE);										//preguntarle a nico (avisa que ya termino de leer y que hay lugar para escribir)
+			unblockMessage(messages[i]->id, WRITE);		//Alerts there's space to write
 			return SUCCESS;
 		}
 	}
@@ -103,11 +102,11 @@ int writeMessage(char* content, int id)
 				return FAIL;
 
 			if(messages[i]->contentCount >= MAX_SIZE_BUFFER)
-				//block(messages[i]->id, WRITE);					//preguntarle a nico (se deberia bloquear porque no hay lugar para escribir, espera que alguien haga un read)
+				blockMessage(messages[i]->id, WRITE);		//Should be blocked because there's no space to write
 
 			messages[i]->contentCount++;
 			strcatKernel(messages[i]->buffer, content);
-			//unblock(messages[i]->id, READ);						//preguntarle a nico (avisa que ya termino de escribir y que hay algo para leer)
+			unblockMessage(messages[i]->id, READ);			//Alerts there's something to read
 			return SUCCESS;
 		}
 	}
@@ -133,25 +132,6 @@ int closeMessage(char*arg1, int id)
 	return FAIL;
 }
 
-/*
-int executeMessage(int operation, char* arg1, int arg2)
-{
-	if(operation < 0 || operation > MESSAGE_OPERATIONS)
-		return -1;
-
-	return (messageOperations[operation])(arg1, arg2);
-}
-
-void setupMessages()
-{
-	messageOperations[OPEN] = &openMessage;
-	messageOperations[CLOSE] = &closeMessage;
-	messageOperations[INIT] = &createMessage;
-	messageOperations[READ] = &readMessage;
-	messageOperations[WRITE] = &writeMessage;
-}
-*/
-
 void destroyMsg(int msgId)
 {
   if(msgId < MAX_QUEUES || msgId >= 0)
@@ -174,4 +154,28 @@ uint8_t openQueue(int i, queueADT * array)
     return FAIL;
 
   return SUCCESS;
+}
+
+void blockMessage(int i, int type)
+{
+	if(type == READ)
+	{
+		block(rMsgQueues[i]);
+	}
+	else if(type == WRITE)
+	{
+		block(wMsgQueues[i]);
+	}
+}
+
+void unblockMessage(int i, int type)
+{
+	if(type == READ)
+	{
+		unblock(rMsgQueues[i]);
+	}
+	else if(type == WRITE)
+	{
+		unblock(wMsgQueues[i]);
+	}
 }

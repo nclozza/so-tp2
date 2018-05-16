@@ -5,20 +5,16 @@
 #include "genericQueue.h"
 #include "memorymanager.h"
 #include "defs.h"
+#include "scheduler.h"
 
 #define MESSAGE_OPERATIONS 5
 #define MAX_QUEUES 10
 #define MAX_SIZE_BUFFER 10
 
-//operations
-#define OPEN 0
-#define CLOSE 1
-#define INIT 2
-#define READ 3
-#define WRITE 4
+#define READ 1
+#define WRITE 2
 
 typedef struct messageCDT *messageADT;
-typedef int(messageOperation)(char, int);
 
 void msgString(char *buffer);
 int createMessage(char *name, int messageSize);
@@ -32,5 +28,7 @@ uint8_t initMsg(int msgId);
 uint8_t openQueue(int i, queueADT *array);
 void destroyMsg(int msgId);
 void initMessages();
+void blockMessage(int i, int type);
+void unblockMessage(int i, int type);
 
 #endif

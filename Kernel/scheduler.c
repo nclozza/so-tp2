@@ -133,3 +133,24 @@ void decreaseQuantum()
 {
 	current->quantum -= 1;
 }
+
+void block(queueADT queue)
+{
+  blockProcess(current->p);
+  enqueue(queue, current);
+}
+
+void unblock(queueADT queue)
+{
+	nodeList *node = dequeue(queue);
+	if(node != NULL)
+	{
+		if(node->p->status == DELETE)
+		{
+			unblock(queue);
+		}
+  
+		unblockProcess(current->p);
+		addProcess(current->p);
+	}
+}
