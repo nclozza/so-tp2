@@ -15,7 +15,7 @@ void sysWriteChar(char ch, unsigned char color_blue, unsigned char color_green, 
 void sysGetChar(char *ch);
 uint64_t sysMalloc(uint64_t bytes);
 void sysFree(uint64_t address);
-int sysExec(void* function,int argc, char** argv,char*name);
+int sysExec(void *function, int argc, char **argv, char *name);
 void sysEndProcess();
 void sysSetForeground(int pid);
 int sysPpid();
@@ -24,9 +24,9 @@ uint64_t sysGetPage();
 void sysPrintBlockedProcesses();
 void sysMutexUp(uint64_t mut);
 void sysMutexDown(uint64_t mut);
-uint64_t sysMutexInit(char* name);
+uint64_t sysMutexInit(char *name);
 uint64_t sysMutexClose(uint64_t mut);
-int sysSemOpen(char* name);
+int sysSemOpen(char *name);
 int sysSemClose(int id);
 int sysSemWait(int id);
 int sysSemPost(int id);
@@ -38,6 +38,6 @@ int sysReadMessage(uint64_t buffer, uint64_t id);
 int sysWriteMessage(uint64_t content, uint64_t id);
 void sysPrintPIDS();
 int sysDeleteThisProcess(int pid);
-
+void sysWhileTrue();
 
 #endif

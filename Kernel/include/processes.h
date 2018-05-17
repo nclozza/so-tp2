@@ -9,9 +9,8 @@
 #define RUNNING 0
 #define READY 1
 #define BLOCKED 2
-#define DELETE 4
+#define DELETE 3
 
-#define MAX_FDS 64
 #define MAX_DATA_PAGES 64
 #define MAX_PROCESS_NAME 64
 
@@ -27,10 +26,9 @@ typedef struct
   uint64_t ppid;
 } process;
 
-//typedef struct c_process process;
 typedef char status;
 
-/* El stack newStackFrame y el llenado del mismo se tomó de
+/* Tomado de
 ** https://bitbucket.org/RowDaBoat/wyrm
 */
 typedef struct
@@ -63,8 +61,6 @@ typedef struct
   uint64_t base;
 } stackFrame;
 
-void initialize_process_mutex();
-
 process *createProcess(uint64_t rip, uint64_t argc, uint64_t argv, const char *name);
 void removeProcess(process *p);
 
@@ -88,27 +84,17 @@ void exitShell();
 process *getProcessByPid(uint64_t pid);
 int isProcessRunningInForeground();
 
-/* Quizas no tengan que estar aca */
 void setProcessForeground(int pid);
 process *getProcessForeground();
 
-/* kill settea que hay que borrar el proceso. No lo borra. is_delete devuelve 1 si hay que borrarlo. */
 int deleteThisProcess(int pid);
 int deleteProcess(process *p);
 int isProcessDeleted(process *p);
 
-/* Paginas de datos que devuelve el memory allocator */
 void addDataPage(process *p, void *page);
-void remove_data_page(process *p, void *page);
-
-void *stack_page_process(process *p);
-void data_pages_process(process *p, void *page_array[]);
-
-int get_name_process(char *buffer, process *p);
-
-/* Devuelve los pids actuales. Termina el arreglo con -1 */
-int get_current_pids(int pid_array[]);
 
 void printPIDS();
+void whileTrue();
+void _hlt();
 
 #endif

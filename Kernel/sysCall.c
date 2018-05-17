@@ -110,6 +110,9 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
     return SUCCESS;
   case 31:
     return deleteThisProcess((int) rsi);
+  case 32:
+    whileTrue();
+    return SUCCESS;
   }
   return ERROR;
 }

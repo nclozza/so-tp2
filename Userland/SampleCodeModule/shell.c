@@ -36,7 +36,9 @@ static command commands[] = {
 		{"ps\0", ps},
 		{"ps\n", ps},
 		{"print\n", printName},
-		{"print\0", printName}};
+		{"print\0", printName},
+		{"whileTrue\n", whileTrue},
+		{"kill\0", kill}};
 
 //static int timeZone = -3;
 
