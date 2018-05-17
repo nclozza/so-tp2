@@ -82,29 +82,20 @@ static void addProcess(process *p)
 
 void yieldProcess()	
 {	
-	current->next->quantum += 1; /* Quantum al siguiente proceso pues el actual quitó tiempo */	
+	current->next->quantum += 1;
 	current->quantum = 0;	
 	_yieldProcess();	
 }
 
-/* Se avanza con el proceso que está delante */
 void killProcess()
 {
-
 	nodeList *n = current;
-
 	removeProcess(n->p);
-
 	prev->next = current->next;
-
 	current = current->next;
-
 	setNextCurrent();
-
 	free((void *)n);
-
-	increaseQuantum(); /* Se le da un quantum al nuevo proceso */
-
+	increaseQuantum();
 	_changeProcess(getProcessRsp(current->p));
 }
 
@@ -127,16 +118,6 @@ static void setNextCurrent()
 	}
 }
 
-void increaseQuantum()
-{
-	current->quantum += 1;
-}
-
-void decreaseQuantum()
-{
-	current->quantum -= 1;
-}
-
 void printBlockedProcessesList()
 {
 	blockedProcess *temp = firstBlockedProcess;
@@ -148,6 +129,17 @@ void printBlockedProcessesList()
 		temp = temp->next;
 	}
 }
+
+void increaseQuantum()
+{
+	current->quantum += 1;
+}
+
+void decreaseQuantum()
+{
+	current->quantum -= 1;
+}
+
 void block(queueADT queue)
 {
   blockProcess(current->p);

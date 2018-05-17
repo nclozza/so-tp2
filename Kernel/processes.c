@@ -35,20 +35,13 @@ int insertProcess(process *p)
 process *createProcess(uint64_t newProcessRIP, uint64_t argc, uint64_t argv, const char *name)
 {
   process *newProcess = (process *)malloc(sizeof(*newProcess));
-
   strcpyKernel(newProcess->name, name);
-
-  newProcess->stackPage = getStackPage(); /* Pide al MemoryAllocator espacio para el stack */
-
+  newProcess->stackPage = getStackPage();
   newProcess->status = READY;
-
   newProcess->rsp = createNewProcessStack(newProcessRIP, newProcess->stackPage, argc, argv);
   setNullAllProcessPages(newProcess);
-
-  /* Agerga proceso a la tabla de procesos. Adentro usa un lock. */
   insertProcess(newProcess);
 
-  /* No es el primer proceso */
   if (newProcess->pid != 0)
   {
     newProcess->ppid = getProcessPid(getCurrentProcess());
