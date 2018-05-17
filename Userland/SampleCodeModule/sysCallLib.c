@@ -210,3 +210,8 @@ void sysPrintBlockedProcesses()
 {
   sysCall(30, 0, 0, 0, 0, 0);
 }
+
+int sysDeleteThisProcess(int pid)
+{
+  return sysCall(31,(uint64_t)pid,0,0,0,0);
+}
