@@ -108,6 +108,8 @@ uint64_t sysCallHandler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
   case 30:
     printBlockedProcessesList();
     return SUCCESS;
+  case 31:
+    return deleteThisProcess((int) rsi);
   }
   return ERROR;
 }

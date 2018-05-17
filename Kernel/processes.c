@@ -134,6 +134,11 @@ void exitShell()
   shell->status = DELETE;
 }
 
+int deleteThisProcess(int pid)
+{
+  return deleteProcess(getProcessByPid(pid));
+}
+
 int deleteProcess(process *p)
 {
   if (p != NULL && p->pid != 1 && p->pid != 0)
