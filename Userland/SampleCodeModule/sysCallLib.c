@@ -23,7 +23,6 @@ void sysWriteChar(char ch, unsigned char color_blue, unsigned char color_green, 
   sysCall(4, ch, color_blue, color_green, color_red, 0);
 }
 
-
 void sysPrintInt(int num, int B, int G, int R)
 {
   int dig = countDigits(num);
@@ -62,7 +61,6 @@ void sysPrintFloat(float num, int B, int G, int R)
     sysPrintInt((int)aux, B, G, R);
   }
 }
-
 
 void sysGetChar(char *ch)
 {
@@ -213,5 +211,10 @@ void sysPrintBlockedProcesses()
 
 int sysDeleteThisProcess(int pid)
 {
-  return sysCall(31,(uint64_t)pid,0,0,0,0);
+  return sysCall(31, (uint64_t)pid, 0, 0, 0, 0);
+}
+
+void sysWhileTrue()
+{
+  sysCall(32, 0, 0, 0, 0, 0);
 }

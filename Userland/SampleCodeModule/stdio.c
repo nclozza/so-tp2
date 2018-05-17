@@ -64,9 +64,9 @@ int toInt(char *string)
 	}
 
 	length = strleng(string);
-	powerTo = length - 1;
+	powerTo = length - 2;
 
-	for (int i = 0; i < length; i++)
+	for (int i = 0; i < length - 1; i++)
 	{
 		int n = *string - '0';
 		rta += n * tenPow(powerTo);

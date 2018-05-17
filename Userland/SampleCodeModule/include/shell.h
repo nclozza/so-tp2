@@ -22,7 +22,10 @@
 				prodcons                    - Offers a solution for the producer-consumer problem\n\
 				opcode                      - Tests opcode exception\n\
 				ps                          - Prints a list of all processes\n\
-				print arguments...          - Create process 'print' and print the arguments\n"
+				print arguments argument    - Create process 'print' and print the arguments\n\
+				whileTrue                   - Create an empty while 1 process\n\
+				kill pid                    - Kill the process with the given pid\n"
+
 #define ECHO_INS "Receives a variable amount of arguments, prints them in the screen (max 32).\n"
 #define DISPLAY_TIME_INS "Receives no arguments. Prints current date and time.\n\
 							Default timezone is UTC-3.\n"
@@ -43,11 +46,12 @@
 #define OPCODE_INS "Creates opcode exception for testing purposes.\n"
 #define PRODCONS_INS "Receives no arguments. Producers put items into a buffer and consumers retrieve them.\n"
 #define PS_INS "Receives no arguments. Lists all processes and their properties.\n"
+#define WHILETRUE "Receives no arguments. Create an emprty process with a while 1. Run in background.\n"
+#define KILL "Receives 1 argument, correspond to the pid of the process to kill\n"
 
-#define ERROR 2 
+#define ERROR 2
 #define EXITCODE 14
 
-						
 void parseParams(char *command, int *argc, char ***argv);
 void startShell();
 int callFunction(char *buffer);

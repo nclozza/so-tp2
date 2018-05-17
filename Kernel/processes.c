@@ -136,7 +136,11 @@ void exitShell()
 
 int deleteThisProcess(int pid)
 {
-  return deleteProcess(getProcessByPid(pid));
+  if (pid != 0 && pid != 1)
+  {
+    return deleteProcess(getProcessByPid(pid));
+  }
+  return 0;
 }
 
 int deleteProcess(process *p)
@@ -184,7 +188,7 @@ uint64_t getProcessPpid(process *p)
 void blockProcess(process *p)
 {
   if (p != NULL && p->status != DELETE)
-  {       
+  {
     p->status = BLOCKED;
   }
 }
@@ -311,5 +315,13 @@ void printPIDS()
     printString("\n", 0, 155, 255);
 
     printString("-------------------------------\n", 0, 155, 255);
+  }
+}
+
+void whileTrue()
+{
+  while (1)
+  {
+    _hlt();
   }
 }
