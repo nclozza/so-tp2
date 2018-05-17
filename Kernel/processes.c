@@ -310,6 +310,10 @@ void printPIDS()
     }
     printString("\n", 0, 155, 255);
 
+    printString("Data Page: ", 0, 155, 255);
+    printInt((uint64_t)processesTable[i]->dataPage, 0, 155, 255);
+    printString("\n", 0, 155, 255);
+
     printString("-------------------------------\n", 0, 155, 255);
   }
 }
