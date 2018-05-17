@@ -62,7 +62,9 @@ int main()
 	runProcess(createProcess((uint64_t)init, 0,0, "init"));
 
 	while (1)
-		;
+	{
+		_hlt();
+	}
 
 	return 0;
 }
