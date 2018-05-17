@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include "processes.h"
-
+#include "genericQueue.h"
 #include "defs.h"
 
 #define MAX_PROCESSES 128
@@ -40,6 +40,9 @@ process * getCurrentProcess();
 
 void increaseQuantum();
 void decreaseQuantum();
+
+void block(queueADT queue);
+void unblock(queueADT queue);
 
 
 #endif
