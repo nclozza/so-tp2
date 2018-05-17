@@ -140,7 +140,7 @@ void runProdCons()
         sysPrintString("Added producer ", 0, 155, 255);
         sysPrintInt(prodc + 1, 0, 155, 255);
         sysPrintString("\n\n", 0, 155, 255);
-        producers[prodc] = execProcess(producer, prodc + 1, NULL, "producer", 0);
+        producers[prodc] = execProcess(producer, prodc + 1, NULL, "producer", 1);
         prodc++;
       }
       break;
@@ -155,7 +155,7 @@ void runProdCons()
         sysPrintString("Added consumer ", 0, 155, 255);
         sysPrintInt(consc + 1, 0, 155, 255);
         sysPrintString("\n\n", 0, 155, 255);
-        consumers[consc] = execProcess(consumer, consc + 1, NULL, "consumer", 0);
+        consumers[consc] = execProcess(consumer, consc + 1, NULL, "consumer", 1);
         consc++;
       }
       break;
