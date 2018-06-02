@@ -50,7 +50,7 @@ void createSem()
 }
 void help(int argc, char *argv[])
 {
-	sysPrintInt(argc,0,155,255);
+
 	if (argc > 2)
 		sysEndThread();
 

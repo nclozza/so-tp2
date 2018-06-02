@@ -46,6 +46,8 @@ uint64_t getProcessPpid(process *p);
 
 uint64_t getProcessesNumber();
 
+uint64_t getProcessThreadCount(int pid);
+
 void printPIDS();
 
 void whileTrue();

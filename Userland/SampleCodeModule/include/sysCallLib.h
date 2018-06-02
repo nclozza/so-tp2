@@ -40,5 +40,6 @@ void sysPrintPIDS();
 int sysDeleteThisThread(int pid);
 void sysWhileTrue();
 void sysWait(int pid);
+void sysCreateThread(int foreground, void * function, int argc, char** argv);
 
 #endif

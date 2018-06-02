@@ -246,3 +246,9 @@ int deleteThisProcess(int pid)
   }
   return 0;
 }
+
+
+uint64_t getProcessThreadCount(int pid)
+{
+  return processesTable[pid]->threadCount;
+}

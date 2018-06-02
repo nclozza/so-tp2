@@ -223,3 +223,8 @@ void sysWait(int pid)
 {
   sysCall(50,(uint64_t)pid,0,0,0,0);
 }
+
+void sysCreateThread(int foreground, void * function, int argc, char** argv)
+{
+  sysCall(51,foreground, (uint64_t)function, argc, (uint64_t)argv,0);
+}

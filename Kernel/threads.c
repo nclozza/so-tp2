@@ -3,7 +3,7 @@
 #include "defs.h"
 #include "memorymanager.h"
 #include "pageallocator.h"
-
+#include "videoDriver.h"
 typedef struct thread_t
 {
 	int tid;
@@ -21,8 +21,8 @@ threadADT createThread(int pid,int foreground, uint64_t rsp, int argc, char *arg
 	newTCB->pid = pid; 	
   newTCB->waiting = NULL;
 	newTCB->foreground = foreground;
-	newTCB->stackPage = getStackPage();
 	newTCB->status = READY;
+  newTCB->stackPage = getStackPage();
 	newTCB->rsp = createNewThreadStack(rsp, newTCB->stackPage, argc, (uint64_t)argv);	
 	return newTCB; 
 } 
@@ -65,10 +65,11 @@ int removeThread(threadADT thread)
 {
 	if(thread == NULL)
 		return -1;
-	removeThreadFromProcess(getProcessByPid(thread->pid), thread->tid);
-  unblockThread(thread->waiting);
+	removeThreadFromProcess(getProcessByPid(thread->pid), thread->tid);  
 	free((void *)thread->stackPage);
+  threadADT waiting = thread->waiting;   
 	free((void *)thread);
+  unblockThread(waiting);
 	return 0;
 }
 
@@ -101,7 +102,7 @@ void blockThread(threadADT t)
 }
 
 void unblockThread(threadADT t)
-{
+{  
   if (t != NULL && t->status != DELETE)
     t->status = READY;
 }
